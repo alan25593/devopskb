@@ -1,0 +1,45 @@
+prompt-nextjs-kb.md
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Dependency directories
+node_modules/
+jspm_packages/
+
+# Next.js build y outputs
+.next/
+out/
+build/
+
+# Cache de Next.js y herramientas de linting
+.eslintcache
+
+# Local env files (por si sumás variables locales después)
+.env*.local
+.env
+
+# Archivos del Sistema Operativo
+.DS_Store
+Thumbs.db
+
+# IDEs y Editores (VS Code, WebStorm)
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+.claude

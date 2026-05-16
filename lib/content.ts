@@ -1,0 +1,106 @@
+import fs from 'fs'
+import path from 'path'
+import matter from 'gray-matter'
+
+const contentDir = path.join(process.cwd(), 'content')
+
+export interface Article {
+  slug: string
+  category: string
+  title: string
+  description: string
+  keywords: string[]
+  tags: string[]
+  content: string
+}
+
+export function getAllArticles(): Article[] {
+  const articles: Article[] = []
+
+  if (!fs.existsSync(contentDir)) return articles
+
+  const categories = fs.readdirSync(contentDir)
+
+  for (const category of categories) {
+    const categoryPath = path.join(contentDir, category)
+    if (!fs.statSync(categoryPath).isDirectory()) continue
+
+    const files = fs.readdirSync(categoryPath).filter(f => f.endsWith('.md'))
+
+    for (const file of files) {
+      const slug = file.replace('.md', '')
+      const filePath = path.join(categoryPath, file)
+      const raw = fs.readFileSync(filePath, 'utf-8')
+      const { data, content } = matter(raw)
+
+      articles.push({
+        slug,
+        category,
+        title: data.title ?? slug,
+        description: data.description ?? '',
+        keywords: Array.isArray(data.keywords) ? data.keywords : [],
+        tags: Array.isArray(data.tags) ? data.tags : [],
+        content,
+      })
+    }
+  }
+
+  return articles
+}
+
+export function getArticle(category: string, slug: string): Article | null {
+  const filePath = path.join(contentDir, category, `${slug}.md`)
+  if (!fs.existsSync(filePath)) return null
+
+  const raw = fs.readFileSync(filePath, 'utf-8')
+  const { data, content } = matter(raw)
+
+  return {
+    slug,
+    category,
+    title: data.title ?? slug,
+    description: data.description ?? '',
+    keywords: Array.isArray(data.keywords) ? data.keywords : [],
+    tags: Array.isArray(data.tags) ? data.tags : [],
+    content,
+  }
+}
+
+export function getAllStaticParams() {
+  const articles = getAllArticles()
+  return articles.map(a => ({ category: a.category, slug: a.slug }))
+}
+
+export function getArticlesByCategory(category: string): Pick<Article, 'slug' | 'category' | 'title'>[] {
+  const categoryPath = path.join(contentDir, category)
+  if (!fs.existsSync(categoryPath)) return []
+
+  return fs.readdirSync(categoryPath)
+    .filter(f => f.endsWith('.md'))
+    .sort()
+    .map(file => {
+      const slug = file.replace('.md', '')
+      const raw = fs.readFileSync(path.join(categoryPath, file), 'utf-8')
+      const { data } = matter(raw)
+      return { slug, category, title: (data.title ?? slug) as string }
+    })
+}
+
+export function getAdjacentArticles(category: string, slug: string): {
+  prev: Article | null
+  next: Article | null
+} {
+  const categoryPath = path.join(contentDir, category)
+  if (!fs.existsSync(categoryPath)) return { prev: null, next: null }
+
+  const slugs = fs.readdirSync(categoryPath)
+    .filter(f => f.endsWith('.md'))
+    .sort()
+    .map(f => f.replace('.md', ''))
+
+  const idx = slugs.indexOf(slug)
+  return {
+    prev: idx > 0 ? getArticle(category, slugs[idx - 1]) : null,
+    next: idx < slugs.length - 1 ? getArticle(category, slugs[idx + 1]) : null,
+  }
+}
