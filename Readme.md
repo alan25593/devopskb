@@ -1,158 +1,169 @@
+# DevOps KB
 
-```markdown
-# 🧠 DevOps Knowledge Base (KB)
+Base de conocimiento técnica para equipos DevOps. Búsqueda rápida y offline de comandos, guías de troubleshooting y patrones de arquitectura para Docker, Kubernetes, Git y Terraform.
 
-Este proyecto es una Base de Conocimiento (KB) técnica, optimizada para desarrollarse y consultarse **100% de forma local y offline**. Está diseñada para buscar y encontrar comandos, arquitecturas y soluciones de infraestructura de forma ultra eficiente.
-
-Construida con **Next.js**, **Tailwind CSS** y un motor de búsqueda indexado local (**FlexSearch**).
+Funciona 100% offline — sin base de datos, sin backend, sin dependencias externas en runtime.
 
 ---
 
-## 🛠️ Stack Tecnológico
+## Características
 
-*   **Framework:** Next.js (App Router / Static Export)
-*   **Estilos:** Tailwind CSS
-*   **Búsqueda:** FlexSearch (Indexación semántica/fuzzy en cliente)
-*   **Contenido:** Archivos Markdown (`.md`) con Frontmatter
+- **Búsqueda en lenguaje natural** — busca "frenar un contenedor" y encuentra `docker compose stop`
+- **Offline-first** — todo el índice corre en el navegador (FlexSearch), sin requests externos
+- **Atajo de teclado** — `Ctrl+K` para abrir la búsqueda desde cualquier vista
+- **Copy-to-clipboard** — un clic para copiar cualquier bloque de código
+- **Navegación prev/next** — entre artículos de la misma categoría
+- **Responsive** — sidebar adaptado a móvil con menú hamburger
+- **Sin autenticación** — wiki interna de acceso libre
 
----
+### Categorías
 
-## 📂 Estructura del Proyecto y Paths
-
-La documentación se organiza de forma modular en la carpeta `/content`. El buscador indexará tanto el contenido como las palabras clave definidas en cada archivo.
-
-```text
-.
-├── /apps                 # Código fuente de Next.js
-├── /components           # Componentes de la UI (Searchbar, Layout, Sidebar)
-├── /content              # Base de datos de conocimiento (Markdown)
-│   ├── /git
-│   │   ├── comandos-utiles.md
-│   │   └── troubleshooting.md
-│   ├── /docker
-│   │   ├── docker-compose-tips.md
-│   │   └── optimizacion-imagenes.md
-│   ├── /kubernetes
-│   │   ├── pods-troubleshooting.md
-│   │   └── cluster-architecture.md
-│   └── /terraform
-│       ├── state-management.md
-│       └── buenas-practicas.md
-├── /public               # Assets estáticos
-└── README.md
-
-```
+| Categoría | Artículos |
+|-----------|-----------|
+| Docker | 7 |
+| Kubernetes | 10 |
+| Git | 6 |
+| Terraform | 9 |
 
 ---
 
-## 🔍 Estructura de un Documento (Clave para el Buscador)
+## Stack
 
-Para que búsquedas naturales como *"como frenaba un solo contenedor de un compose"* funcionen de manera eficaz, cada archivo `.md` debe incluir un bloque de **Frontmatter** con `keywords` y `category`.
+| Capa | Tecnología |
+|------|-----------|
+| Framework | Next.js 14 (App Router, static export) |
+| UI | React 18 + Tailwind CSS 3 |
+| Búsqueda | FlexSearch 0.7 (client-side) |
+| Markdown | gray-matter + react-markdown + remark-gfm |
+| Iconos | simple-icons |
+| Lenguaje | TypeScript 5 |
+| Salida | HTML/CSS/JS estático en `/out` |
 
-### Ejemplo de `/content/docker/docker-compose-tips.md`:
-
-```markdown
 ---
-title: "Frenar un contenedor específico en Docker Compose"
-category: "Docker"
-tags: ["docker-compose", "containers", "stop"]
-keywords: ["frenar un solo contenedor", "apagar service compose", "detener", "down"]
-description: "Comandos para manipular un único servicio dentro de un stack de docker-compose sin afectar al resto."
----
 
-# Manipulación de Servicios Individuales en Compose
+## Levantar el proyecto
 
-Si tenés un stack corriendo y querés frenar únicamente **un** contenedor, usás el nombre del servicio definido en el archivo `docker-compose.yml`.
+### Opción 1 — Docker (recomendado)
 
-### Frenar el contenedor sin borrarlo:
-```bash
-docker compose stop <nombre-del-servicio>
-
-```
-
-### Frenar y remover el contenedor:
+No requiere Node.js ni ninguna dependencia local. Solo Docker instalado.
 
 ```bash
-docker compose rm -f -s <nombre-del-servicio>
-
+git clone https://github.com/alan25593/devopskb.git
+cd devopskb
+docker compose up -d
 ```
 
+Abre [http://localhost:8080](http://localhost:8080).
+
+Detener:
+```bash
+docker compose down
 ```
+
+Reconstruir luego de agregar contenido:
+```bash
+docker compose up -d --build
+```
+
+> El `Dockerfile` incluido hace el build de Next.js dentro del contenedor (multi-stage) y sirve el resultado con nginx:alpine. No requiere que tengas nada instalado localmente.
 
 ---
 
-## 🚀 Configuración del Buscador Local (FlexSearch)
+### Opción 2 — Local con pnpm
 
-El buscador utiliza **FlexSearch** en modo `document`. Configuralo en tu componente de búsqueda de Next.js para que indexe los campos clave:
-
-```javascript
-import { Index } from "flexsearch";
-
-const index = new Index({
-  tokenize: "forward", // Permite buscar coincidencias parciales
-  language: "es",      // Optimiza para el idioma español
-});
-
-// Al cargar la app (u offline mediante un JSON pre-construido)
-index.add(id, `${title} ${category} ${keywords.join(" ")} ${content}`);
-
-```
-
----
-
-## 💻 Desarrollo Local
-
-### Prerrequisitos
-
-* Node.js (v18 o superior)
-* pnpm / npm / yarn
-
-### 1. Clonar e instalar dependencias
+**Requisitos:** Node.js 20+, pnpm
 
 ```bash
-cd apps
+git clone https://github.com/alan25593/devopskb.git
+cd devopskb
+pnpm install
+pnpm dev
+```
+
+Abre [http://localhost:3000](http://localhost:3000).
+
+---
+
+### Opción 3 — Local con npm
+
+**Requisitos:** Node.js 20+
+
+```bash
+git clone https://github.com/alan25593/devopskb.git
+cd devopskb
 npm install
-
-```
-
-### 2. Correr en modo desarrollo
-
-```bash
 npm run dev
-
 ```
 
-Abrir [http://localhost:3000](https://www.google.com/search?q=http://localhost:3000) en el navegador.
+Abre [http://localhost:3000](http://localhost:3000).
 
-### 3. Buildear para uso offline estático
+---
 
-Este comando genera una carpeta `/out` con HTML/JS/CSS puros que podés levantar con cualquier servidor local (incluso un contenedor Docker simple o doble click al `index.html` si está configurado en modo asset relativo).
+### Build de producción (sin Docker)
 
 ```bash
-npm run build
-
+pnpm build   # genera /out con HTML/CSS/JS estático
+pnpm start   # sirve el build localmente
 ```
 
 ---
 
-## 🐳 Despliegue Local Rápido (Opcional con Docker)
-
-Si querés dejar la KB corriendo en tu servidor local de forma fija sin dependencias de Node:
-
-```bash
-docker run -d \
-  --name devops-kb \
-  -p 8080:80 \
-  -v $(pwd)/out:/usr/share/nginx/html:ro \
-  nginx:alpine
+## Estructura del proyecto
 
 ```
-
+knowdb/
+├── app/
+│   ├── layout.tsx
+│   ├── page.tsx                         # Página principal con búsqueda
+│   └── article/[category]/[slug]/
+│       └── page.tsx                     # Vista de artículo individual
+├── components/
+│   ├── SearchPage.tsx                   # UI de búsqueda + FlexSearch
+│   ├── ArticleView.tsx                  # Renderizado markdown
+│   ├── Sidebar.tsx                      # Navegación lateral
+│   └── CategoryTag.tsx                  # Badge de categoría
+├── lib/
+│   ├── content.ts                       # Carga de archivos markdown
+│   └── categories.ts                    # Definición de categorías e iconos
+├── content/
+│   ├── docker/        (7 artículos)
+│   ├── git/           (6 artículos)
+│   ├── kubernetes/    (10 artículos)
+│   └── terraform/     (9 artículos)
+├── Dockerfile
+└── docker-compose.yml
 ```
 
 ---
 
-### 💡 Tip para que el buscador sea "inteligente":
-Cuando crees el hook de búsqueda en Next.js, hacé que **FlexSearch** priorice (tenga más peso/score) el campo `keywords` y `title` sobre el cuerpo del texto (`content`). Así, cuando busques "frenar", va a matchear directo con las intenciones de Docker que configuraste en los metadatos antes que con una palabra random perdida en un tutorial de Kubernetes.
+## Agregar contenido
 
+Los artículos son archivos `.md` dentro de `content/<categoria>/`. El nombre del archivo define el slug de la URL.
+
+**Ejemplo:** `content/docker/08-multi-stage.md`
+
+```markdown
+---
+title: "Builds multi-stage"
+category: "docker"
+tags: ["dockerfile", "optimización", "capas"]
+keywords: ["reducir tamaño de imagen", "multi-stage build", "imagen liviana"]
+description: "Cómo usar builds multi-stage para reducir el tamaño final de una imagen Docker."
+---
+
+## Concepto
+
+...
 ```
+
+Los `keywords` son frases en lenguaje natural que alimentan el índice de búsqueda. Mientras más descriptivos, mejor funciona la búsqueda semántica.
+
+---
+
+## Contribuir
+
+Las modificaciones requieren aprobación del code owner (`@alan25593`). Ver `.github/CODEOWNERS`.
+
+1. Crear una rama: `git checkout -b feat/nueva-categoria`
+2. Agregar o modificar artículos en `content/`
+3. Abrir un Pull Request hacia `main`

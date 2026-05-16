@@ -121,7 +121,7 @@ function SearchPageInner({ articles }: SearchPageProps) {
               <input
                 ref={inputRef}
                 type="text"
-                placeholder='Buscar... (ej: "frenar un contenedor", "rollback deployment")'
+                placeholder='Buscar... (ej: "forzar git push", "borrar contenedores y volumen")'
                 value={query}
                 onChange={e => setQuery(e.target.value)}
                 className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 pr-20 text-gray-100 placeholder-gray-600 focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 font-mono text-sm"
