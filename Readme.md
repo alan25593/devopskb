@@ -166,4 +166,4 @@ Las modificaciones requieren aprobación del code owner (`@alan25593`). Ver `.gi
 
 1. Crear una rama: `git checkout -b feat/nueva-categoria`
 2. Agregar o modificar artículos en `content/`
-3. Abrir un Pull Request hacia `main`
+3. Abrir un Pull Request hacia `master`
