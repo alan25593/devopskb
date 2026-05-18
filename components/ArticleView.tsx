@@ -179,7 +179,7 @@ export default function ArticleView({ article, prev, next, categoryArticles }: P
   const mainRef = useRef<HTMLElement>(null)
 
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="flex h-dvh overflow-hidden">
       <Sidebar
         activeCategory={article.category}
         activeSlug={article.slug}
@@ -197,10 +197,10 @@ export default function ArticleView({ article, prev, next, categoryArticles }: P
           </Link>
 
           <header className="mb-8">
-            <div className="flex items-center gap-2 mb-3">
+            <div className="flex flex-wrap items-center gap-2 mb-3">
               <CategoryTag category={article.category} />
               {article.tags.map(tag => (
-                <span key={tag} className="text-xs text-gray-400 bg-gray-800 border border-gray-700 px-2 py-0.5 rounded">
+                <span key={tag} className="text-xs text-gray-400 bg-gray-800 border border-gray-700 px-2 py-0.5 rounded shrink-0">
                   {tag}
                 </span>
               ))}

@@ -155,7 +155,7 @@ export default function Sidebar({ activeCategory, activeSlug, onCategoryChange, 
       {/* Sidebar panel */}
       <aside className={[
         'fixed md:static inset-y-0 left-0 z-50',
-        'w-64 md:w-56 shrink-0 bg-gray-900 border-r border-gray-800 flex flex-col h-screen',
+        'w-64 md:w-56 shrink-0 bg-gray-900 border-r border-gray-800 flex flex-col h-dvh',
         'transition-transform duration-200 ease-in-out md:translate-x-0',
         open ? 'translate-x-0' : '-translate-x-full',
       ].join(' ')}>
@@ -179,20 +179,31 @@ export default function Sidebar({ activeCategory, activeSlug, onCategoryChange, 
           {navContent}
         </nav>
 
-        <div className="p-4 border-t border-gray-800 space-y-2">
+        <div className="p-4 border-t border-gray-800 space-y-2 pb-[max(1rem,env(safe-area-inset-bottom))]">
           <p className="text-xs text-gray-600">Tu wiki DevOps</p>
-          <p className="text-xs text-gray-700">100% local · sin internet</p>
-          <div>
-            <p className="text-xs text-gray-600">Creado por</p>
-            <a
+          <a
+            href="https://github.com/alan25593/devopskb"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs text-gray-700 hover:text-green-400 transition-colors"
+          >100% local · sin internet ↗</a>
+          <p className="text-xs text-gray-600">
+            Creado por <a
               href="https://www.linkedin.com/in/alan-lampert/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-xs text-gray-500 hover:text-green-400 transition-colors"
-            >
-              Alan Lampert ↗
-            </a>
-          </div>
+              className="text-gray-500 hover:text-green-400 transition-colors"
+            >Alan Lampert ↗</a>
+          </p>
+          <a href="https://cafecito.app/tudevopsjr" rel="noopener" target="_blank" className="block mt-3">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              srcSet="https://cdn.cafecito.app/imgs/buttons/button_4.png 1x, https://cdn.cafecito.app/imgs/buttons/button_4_2x.png 2x, https://cdn.cafecito.app/imgs/buttons/button_4_3.75x.png 3.75x"
+              src="https://cdn.cafecito.app/imgs/buttons/button_4.png"
+              alt="Invitame un café en cafecito.app"
+              className="h-8 w-auto max-w-full"
+            />
+          </a>
         </div>
       </aside>
     </>
