@@ -94,7 +94,7 @@ function SearchPageInner({ articles }: SearchPageProps) {
         let matchIds: Set<number> | null = null
         for (const word of words) {
           const ids = searchWord(word, { limit: articles.length })
-          matchIds = matchIds === null ? ids : new Set([...matchIds].filter(id => ids.has(id)))
+          matchIds = matchIds === null ? ids : new Set([...matchIds].filter((id: number) => ids.has(id)))
         }
 
         if (!matchIds || matchIds.size === 0) {
