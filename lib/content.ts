@@ -66,6 +66,12 @@ export function getArticle(category: string, slug: string): Article | null {
   }
 }
 
+export type SearchArticle = Omit<Article, 'content'>
+
+export function getArticlesForSearch(): SearchArticle[] {
+  return getAllArticles().map(({ content: _content, ...rest }) => rest)
+}
+
 export function getAllStaticParams() {
   const articles = getAllArticles()
   return articles.map(a => ({ category: a.category, slug: a.slug }))

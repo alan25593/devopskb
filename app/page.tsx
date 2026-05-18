@@ -1,7 +1,7 @@
-import { getAllArticles } from '@/lib/content'
+import { getArticlesForSearch } from '@/lib/content'
 import SearchPage from '@/components/SearchPage'
 
 export default function Home() {
-  const articles = getAllArticles()
+  const articles = getArticlesForSearch()
   return <SearchPage articles={articles} />
 }

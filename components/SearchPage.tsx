@@ -1,9 +1,8 @@
 'use client'
 
-import { useState, useEffect, useRef, useMemo, Suspense } from 'react'
-import { useSearchParams } from 'next/navigation'
+import { useState, useEffect, useRef, useMemo } from 'react'
 import Link from 'next/link'
-import type { Article } from '@/lib/content'
+import type { SearchArticle } from '@/lib/content'
 import Sidebar from './Sidebar'
 import CategoryTag from './CategoryTag'
 
@@ -14,15 +13,15 @@ const _flexsearch = require('flexsearch')
 const FlexDocument = _flexsearch.Document ?? _flexsearch.default?.Document
 
 interface SearchPageProps {
-  articles: Article[]
+  articles: SearchArticle[]
 }
 
-function SearchPageInner({ articles }: SearchPageProps) {
-  const searchParams = useSearchParams()
-  const initialCat = searchParams.get('cat')
-
+export default function SearchPage({ articles }: SearchPageProps) {
   const [query, setQuery] = useState('')
-  const [activeCategory, setActiveCategory] = useState<string | null>(initialCat)
+  const [activeCategory, setActiveCategory] = useState<string | null>(() => {
+    if (typeof window === 'undefined') return null
+    return new URLSearchParams(window.location.search).get('cat')
+  })
   const inputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
@@ -37,7 +36,7 @@ function SearchPageInner({ articles }: SearchPageProps) {
     return () => window.removeEventListener('keydown', handler)
   }, [])
 
-  // Build FlexSearch Document index once
+  // Build FlexSearch Document index once from metadata only (no full content)
   const index = useMemo(() => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const idx = new FlexDocument({
@@ -49,7 +48,6 @@ function SearchPageInner({ articles }: SearchPageProps) {
           { field: 'title',       tokenize: 'forward', resolution: 8 },
           { field: 'category',    tokenize: 'forward', resolution: 7 },
           { field: 'description', tokenize: 'forward', resolution: 5 },
-          { field: 'content',     tokenize: 'strict',  resolution: 2 },
         ],
       },
     })
@@ -62,7 +60,6 @@ function SearchPageInner({ articles }: SearchPageProps) {
         tags: article.tags.join(' '),
         keywords: article.keywords.join(' '),
         description: article.description,
-        content: article.content,
       })
     })
 
@@ -160,7 +157,6 @@ function SearchPageInner({ articles }: SearchPageProps) {
             )}
           </div>
 
-
           <div className="space-y-2">
             {results.length === 0 && query && (
               <div className="text-center py-16">
@@ -209,13 +205,5 @@ function SearchPageInner({ articles }: SearchPageProps) {
         </div>
       </main>
     </div>
-  )
-}
-
-export default function SearchPage(props: SearchPageProps) {
-  return (
-    <Suspense fallback={<div className="flex h-screen items-center justify-center text-gray-600">Cargando...</div>}>
-      <SearchPageInner {...props} />
-    </Suspense>
   )
 }
