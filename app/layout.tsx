@@ -1,9 +1,30 @@
 import type { Metadata, Viewport } from 'next'
 import './globals.css'
 
+const BASE_URL = 'https://devopskb.vercel.app'
+
 export const metadata: Metadata = {
-  title: 'DevOps KB',
-  description: 'Base de conocimiento DevOps — offline',
+  metadataBase: new URL(BASE_URL),
+  title: {
+    default: 'DevOps KB',
+    template: '%s | DevOps KB',
+  },
+  description: 'Base de conocimiento DevOps — Docker, Kubernetes, Terraform, Linux, Git y Windows. Snippets listos para copiar.',
+  openGraph: {
+    siteName: 'DevOps KB',
+    type: 'website',
+    locale: 'es_AR',
+    url: BASE_URL,
+  },
+  twitter: {
+    card: 'summary',
+    title: 'DevOps KB',
+    description: 'Base de conocimiento DevOps — Docker, Kubernetes, Terraform, Linux, Git y Windows.',
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 }
 
 export const viewport: Viewport = {
