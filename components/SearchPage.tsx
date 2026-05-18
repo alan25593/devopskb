@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useMemo } from 'react'
 import Link from 'next/link'
 import type { SearchArticle } from '@/lib/content'
+import { CATEGORIES } from '@/lib/categories'
 import Sidebar from './Sidebar'
 import CategoryTag from './CategoryTag'
 
@@ -117,6 +118,8 @@ export default function SearchPage({ articles }: SearchPageProps) {
     return filtered
   }, [query, activeCategory, articles, index])
 
+  const isFiltering = query.length > 0 || activeCategory !== null
+
   return (
     <div className="flex h-dvh overflow-hidden">
       <Sidebar
@@ -127,8 +130,23 @@ export default function SearchPage({ articles }: SearchPageProps) {
 
       <main className="flex-1 overflow-auto">
         <div className="pt-14 px-4 pb-6 md:p-6 max-w-3xl mx-auto">
-          <div className="mb-6">
-            <div className="relative">
+
+          {!isFiltering && (
+            <header className="mb-8 text-center">
+              <h1 className="text-3xl font-bold text-gray-100 mb-2">
+                DevOps <span className="text-green-400">KB</span>
+              </h1>
+              <p className="text-gray-400 text-sm leading-relaxed">
+                Comandos, snippets y guías para Docker, Kubernetes, Terraform, Linux, Git y Windows.
+              </p>
+              <p className="text-xs text-gray-600 mt-2">
+                {articles.length} artículos · {CATEGORIES.length} tecnologías · snippets listos para copiar
+              </p>
+            </header>
+          )}
+
+          <div className="mb-4">
+            <div className="relative mb-3">
               <input
                 ref={inputRef}
                 type="text"
@@ -142,6 +160,37 @@ export default function SearchPage({ articles }: SearchPageProps) {
                 Ctrl K
               </kbd>
             </div>
+
+            <div className="flex flex-wrap gap-2">
+              {CATEGORIES.map(cat => {
+                const isActive = activeCategory === cat.id
+                return (
+                  <button
+                    key={cat.id}
+                    onClick={() => setActiveCategory(isActive ? null : cat.id)}
+                    className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border transition-colors ${
+                      isActive
+                        ? 'bg-green-900/50 border-green-700 text-green-300'
+                        : 'bg-gray-900 border-gray-800 text-gray-500 hover:border-gray-600 hover:text-gray-300'
+                    }`}
+                  >
+                    <svg role="img" viewBox="0 0 24 24" width="11" height="11" fill={`#${cat.hex}`} aria-hidden="true">
+                      <path d={cat.svgPath} />
+                    </svg>
+                    {cat.label}
+                  </button>
+                )
+              })}
+              {activeCategory && (
+                <button
+                  onClick={() => setActiveCategory(null)}
+                  className="px-3 py-1 rounded-full text-xs border border-gray-800 text-gray-600 hover:text-gray-400 transition-colors"
+                >
+                  × limpiar
+                </button>
+              )}
+            </div>
+
             {query && (
               <p className="text-xs text-gray-600 mt-2 flex items-center gap-2">
                 <span>
@@ -169,9 +218,9 @@ export default function SearchPage({ articles }: SearchPageProps) {
               </div>
             )}
 
-            {results.length === 0 && !query && (
+            {results.length === 0 && !query && activeCategory && (
               <div className="text-center py-16">
-                <p className="text-gray-700 text-sm">No hay artículos cargados aún.</p>
+                <p className="text-gray-700 text-sm">No hay artículos en esta categoría.</p>
               </div>
             )}
 
