@@ -162,6 +162,15 @@ function ScrollToTop({ targetRef }: { targetRef: React.RefObject<HTMLElement | n
   )
 }
 
+const CATEGORY_LABELS: Record<string, string> = {
+  docker: 'Docker',
+  git: 'Git',
+  kubernetes: 'Kubernetes',
+  linux: 'Linux',
+  terraform: 'Terraform',
+  windows: 'Windows',
+}
+
 interface NavArticle {
   slug: string
   category: string
@@ -177,6 +186,7 @@ interface Props {
 
 export default function ArticleView({ article, prev, next, categoryArticles }: Props) {
   const mainRef = useRef<HTMLElement>(null)
+  const categoryLabel = CATEGORY_LABELS[article.category] ?? article.category
 
   return (
     <div className="flex h-dvh overflow-hidden">
@@ -189,66 +199,81 @@ export default function ArticleView({ article, prev, next, categoryArticles }: P
 
       <main ref={mainRef} className="flex-1 overflow-auto">
         <div className="pt-14 px-4 pb-6 md:p-6 max-w-3xl mx-auto">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-green-400 transition-colors mb-6"
-          >
-            ← Volver a búsqueda
-          </Link>
 
-          <header className="mb-8">
-            <div className="flex flex-wrap items-center gap-2 mb-3">
-              <CategoryTag category={article.category} />
-              {article.tags.map(tag => (
-                <span key={tag} className="text-xs text-gray-400 bg-gray-800 border border-gray-700 px-2 py-0.5 rounded shrink-0">
-                  {tag}
-                </span>
-              ))}
+          <nav aria-label="Ruta de navegación" className="mb-6">
+            <ol className="flex items-center gap-1.5 text-sm text-gray-600 flex-wrap">
+              <li>
+                <Link href="/" className="hover:text-green-400 transition-colors">Inicio</Link>
+              </li>
+              <li aria-hidden="true">/</li>
+              <li>
+                <Link href={`/?cat=${article.category}`} className="hover:text-green-400 transition-colors">
+                  {categoryLabel}
+                </Link>
+              </li>
+              <li aria-hidden="true">/</li>
+              <li className="text-gray-400 truncate max-w-[200px]" aria-current="page">
+                {article.title}
+              </li>
+            </ol>
+          </nav>
+
+          <article>
+            <header className="mb-8">
+              <div className="flex flex-wrap items-center gap-2 mb-3">
+                <CategoryTag category={article.category} />
+                {article.tags.map(tag => (
+                  <span key={tag} className="text-xs text-gray-400 bg-gray-800 border border-gray-700 px-2 py-0.5 rounded shrink-0">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+              <h1 className="text-2xl font-bold text-gray-100 mb-2">{article.title}</h1>
+              {article.description && (
+                <p className="text-gray-400 leading-relaxed">{article.description}</p>
+              )}
+            </header>
+
+            <div className="prose prose-invert prose-green prose-sm max-w-none
+              prose-headings:text-gray-100
+              prose-p:text-gray-300
+              prose-strong:text-gray-100
+              prose-code:text-green-300
+              prose-pre:bg-gray-900
+              prose-a:text-green-400
+              prose-li:text-gray-300
+              prose-blockquote:border-green-700
+              prose-blockquote:text-gray-400
+              prose-hr:border-gray-800
+              prose-table:text-gray-300
+              prose-thead:text-gray-200
+            ">
+              <ReactMarkdown
+                remarkPlugins={[remarkGfm]}
+                components={{
+                  pre:  ({ children }) => <CodeBlock>{children}</CodeBlock>,
+                  code: ({ children, className }) => (
+                    <InlineOrBlockCode className={className}>{children}</InlineOrBlockCode>
+                  ),
+                  // Offset headings: markdown h1→h2, h2→h3, etc. to preserve single h1 per page
+                  h1: ({ children }) => <Heading level={2}>{children}</Heading>,
+                  h2: ({ children }) => <Heading level={2}>{children}</Heading>,
+                  h3: ({ children }) => <Heading level={3}>{children}</Heading>,
+                  h4: ({ children }) => <Heading level={4}>{children}</Heading>,
+                  table: ({ children }) => (
+                    <div className="overflow-x-auto">
+                      <table>{children}</table>
+                    </div>
+                  ),
+                }}
+              >
+                {article.content}
+              </ReactMarkdown>
             </div>
-            <h1 className="text-2xl font-bold text-gray-100 mb-2">{article.title}</h1>
-            {article.description && (
-              <p className="text-gray-400 leading-relaxed">{article.description}</p>
-            )}
-          </header>
-
-          <article className="prose prose-invert prose-green prose-sm max-w-none
-            prose-headings:text-gray-100
-            prose-p:text-gray-300
-            prose-strong:text-gray-100
-            prose-code:text-green-300
-            prose-pre:bg-gray-900
-            prose-a:text-green-400
-            prose-li:text-gray-300
-            prose-blockquote:border-green-700
-            prose-blockquote:text-gray-400
-            prose-hr:border-gray-800
-            prose-table:text-gray-300
-            prose-thead:text-gray-200
-          ">
-            <ReactMarkdown
-              remarkPlugins={[remarkGfm]}
-              components={{
-                pre:  ({ children }) => <CodeBlock>{children}</CodeBlock>,
-                code: ({ children, className }) => (
-                  <InlineOrBlockCode className={className}>{children}</InlineOrBlockCode>
-                ),
-                h1: ({ children }) => <Heading level={1}>{children}</Heading>,
-                h2: ({ children }) => <Heading level={2}>{children}</Heading>,
-                h3: ({ children }) => <Heading level={3}>{children}</Heading>,
-                h4: ({ children }) => <Heading level={4}>{children}</Heading>,
-                table: ({ children }) => (
-                  <div className="overflow-x-auto">
-                    <table>{children}</table>
-                  </div>
-                ),
-              }}
-            >
-              {article.content}
-            </ReactMarkdown>
           </article>
 
           {(prev || next) && (
-            <nav className="mt-12 pt-6 border-t border-gray-800 grid grid-cols-2 gap-4">
+            <nav aria-label="Navegación entre artículos" className="mt-12 pt-6 border-t border-gray-800 grid grid-cols-2 gap-4">
               {prev ? (
                 <Link
                   href={`/article/${prev.category}/${prev.slug}/`}
