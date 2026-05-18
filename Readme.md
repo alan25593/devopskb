@@ -157,7 +157,6 @@ description: "Cómo usar builds multi-stage para reducir el tamaño final de una
 ```
 
 Los `keywords` son frases en lenguaje natural que alimentan el índice de búsqueda. Mientras más descriptivos, mejor funciona la búsqueda semántica.
-
 ---
 
 ## Contribuir
