@@ -4,6 +4,8 @@ import matter from 'gray-matter'
 
 const contentDir = path.join(process.cwd(), 'content')
 
+let _cache: Article[] | null = null
+
 export interface Article {
   slug: string
   category: string
@@ -15,6 +17,8 @@ export interface Article {
 }
 
 export function getAllArticles(): Article[] {
+  if (_cache) return _cache
+
   const articles: Article[] = []
 
   if (!fs.existsSync(contentDir)) return articles
@@ -45,6 +49,7 @@ export function getAllArticles(): Article[] {
     }
   }
 
+  _cache = articles
   return articles
 }
 
@@ -78,18 +83,9 @@ export function getAllStaticParams() {
 }
 
 export function getArticlesByCategory(category: string): Pick<Article, 'slug' | 'category' | 'title'>[] {
-  const categoryPath = path.join(contentDir, category)
-  if (!fs.existsSync(categoryPath)) return []
-
-  return fs.readdirSync(categoryPath)
-    .filter(f => f.endsWith('.md'))
-    .sort()
-    .map(file => {
-      const slug = file.replace('.md', '')
-      const raw = fs.readFileSync(path.join(categoryPath, file), 'utf-8')
-      const { data } = matter(raw)
-      return { slug, category, title: (data.title ?? slug) as string }
-    })
+  return getAllArticles()
+    .filter(a => a.category === category)
+    .map(({ slug, category: cat, title }) => ({ slug, category: cat, title }))
 }
 
 export function getAdjacentArticles(category: string, slug: string): {

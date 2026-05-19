@@ -1,9 +1,9 @@
 ---
 title: "Linux: Redes, DNS y Diagnóstico de Conectividad"
 category: "linux"
-tags: ["redes", "dns", "networking", "tcpdump", "curl"]
-keywords: ["ver ip del servidor", "ip addr", "ip route", "tabla de ruteo", "dig dns", "nslookup", "resolver dominio", "tcpdump capturar trafico", "tcpdump puerto", "curl headers", "curl tiempo respuesta", "curl verbose", "traceroute", "mtr", "netstat", "ifconfig reemplazo", "diagnostico red linux", "ver interfaz de red", "curl write-out", "dns no resuelve"]
-description: "Herramientas de red en Linux: comando ip moderno, diagnóstico DNS con dig, captura de tráfico con tcpdump, curl avanzado para testing de APIs y trazado de rutas con mtr."
+tags: ["redes", "dns", "networking", "tcpdump", "curl", "nmap"]
+keywords: ["ver ip del servidor", "ip addr", "ip route", "tabla de ruteo", "dig dns", "nslookup", "resolver dominio", "tcpdump capturar trafico", "tcpdump puerto", "curl headers", "curl tiempo respuesta", "curl verbose", "traceroute", "mtr", "netstat", "ifconfig reemplazo", "diagnostico red linux", "ver interfaz de red", "curl write-out", "dns no resuelve", "nmap escanear puertos", "nmap descubrir hosts", "nmap subred", "nmap detectar servicios", "ver puertos abiertos", "auditar firewall", "ping sweep subred", "nmap output xml", "nmap scripts nse", "verificar conectividad microservicio"]
+description: "Herramientas de red en Linux: comando ip moderno, diagnóstico DNS con dig, captura de tráfico con tcpdump, curl avanzado para testing de APIs, trazado de rutas con mtr y auditoría de puertos con nmap."
 ---
 
 # Redes y diagnóstico de conectividad
@@ -16,6 +16,7 @@ description: "Herramientas de red en Linux: comando ip moderno, diagnóstico DNS
 - [curl avanzado para testing de APIs](#curl-avanzado-para-testing-de-apis)
 - [Trazado de ruta con mtr y traceroute](#trazado-de-ruta-con-mtr-y-traceroute)
 - [netstat: referencia para sistemas sin ss](#netstat-referencia-para-sistemas-sin-ss)
+- [Auditoría de puertos con nmap](#auditoría-de-puertos-con-nmap)
 
 ---
 
@@ -283,3 +284,143 @@ netstat -r
 # netstat -tnp   →  ss -tnp
 # netstat -r     →  ip route
 ```
+
+---
+
+## Auditoría de puertos con nmap
+
+`nmap` es la herramienta estándar para descubrir hosts, escanear puertos y detectar servicios en una red. Para DevOps es clave al verificar firewalls, confirmar que un servicio está expuesto en el puerto correcto o auditar una subred completa.
+
+```bash
+# Instalación
+apt-get install nmap    # Debian/Ubuntu
+yum install nmap        # RHEL/CentOS
+brew install nmap       # macOS
+```
+
+### Escaneo básico de puertos
+
+```bash
+# Escanear los 1000 puertos más comunes de un host
+nmap 10.0.0.5
+nmap servidor.ejemplo.com
+
+# Escanear puertos específicos
+nmap -p 80,443,8080,8443 10.0.0.5
+
+# Escanear un rango de puertos
+nmap -p 1-1024 10.0.0.5
+
+# Escanear TODOS los puertos (65535) — más lento pero exhaustivo
+nmap -p- 10.0.0.5
+
+# Escaneo rápido: solo los 100 puertos más comunes
+nmap -F 10.0.0.5
+```
+
+### Descubrimiento de hosts en una subred
+
+```bash
+# Ping sweep: ver qué hosts están activos sin escanear puertos
+nmap -sn 192.168.1.0/24
+nmap -sn 10.0.0.0/16
+
+# Ping sweep guardando los resultados
+nmap -sn 10.0.0.0/24 -oG - | grep "Up" | awk '{print $2}'
+
+# Escanear un rango de IPs
+nmap 10.0.0.1-50
+
+# Escanear múltiples hosts a la vez
+nmap 10.0.0.5 10.0.0.6 10.0.0.7
+```
+
+### Detección de servicios y sistema operativo
+
+```bash
+# Detectar versiones de servicios corriendo en los puertos abiertos
+nmap -sV 10.0.0.5
+
+# Detectar sistema operativo (requiere root/sudo)
+sudo nmap -O 10.0.0.5
+
+# Modo agresivo: combina detección de OS, versiones, scripts y traceroute
+sudo nmap -A 10.0.0.5
+
+# Solo mostrar puertos abiertos, ignorar cerrados/filtrados
+nmap --open 10.0.0.5
+```
+
+### Casos de uso DevOps
+
+```bash
+# Verificar si un microservicio está accesible desde otra máquina
+# (reemplaza un telnet o nc cuando no están disponibles)
+nmap -p 5432 db-server          # ¿está escuchando Postgres?
+nmap -p 6379 redis-server       # ¿está expuesto Redis?
+nmap -p 9200 elasticsearch      # ¿responde Elasticsearch?
+
+# Confirmar que el firewall bloquea lo que debe bloquear
+nmap -p 22,3306,5432 servidor-publico   # estos no deberían verse desde afuera
+
+# Ver qué puertos tiene abiertos un nodo de Kubernetes
+nmap -p 6443,10250,10255,30000-32767 k8s-node-ip
+
+# Auditar todos los hosts de una VPC/subred interna
+nmap -sn 10.0.0.0/24 --open
+
+# Verificar conectividad a través de un Security Group de AWS
+nmap -p 80,443 mi-ec2-ip
+```
+
+### Scripts NSE (Nmap Scripting Engine)
+
+Los scripts NSE permiten checks más específicos sin instalar herramientas adicionales.
+
+```bash
+# Verificar si un servidor MySQL tiene autenticación anónima
+nmap --script mysql-empty-password 10.0.0.5 -p 3306
+
+# Detectar vulnerabilidades HTTP básicas
+nmap --script http-headers 10.0.0.5 -p 80,443
+
+# Listar scripts disponibles para un servicio
+ls /usr/share/nmap/scripts/ | grep postgres
+ls /usr/share/nmap/scripts/ | grep ssl
+```
+
+### Guardar resultados
+
+```bash
+# Guardar en formato normal (legible)
+nmap -oN resultado.txt 10.0.0.5
+
+# Guardar en XML (para parsear con scripts o herramientas como nmap-parse-output)
+nmap -oX resultado.xml 10.0.0.5
+
+# Guardar en formato grepable
+nmap -oG resultado.gnmap 10.0.0.5
+
+# Guardar en los tres formatos a la vez (genera resultado.nmap, .xml y .gnmap)
+nmap -oA resultado 10.0.0.5
+
+# Ejemplo completo para un reporte de auditoría
+sudo nmap -sV -O --open -oA auditoria_$(date +%Y%m%d) 10.0.0.0/24
+```
+
+### Referencia de flags más usados
+
+| Flag | Descripción |
+|---|---|
+| `-sn` | Ping sweep, sin escaneo de puertos |
+| `-p <puertos>` | Puertos específicos (`80,443` o `1-1024` o `-` para todos) |
+| `-F` | Fast: solo los 100 más comunes |
+| `-sV` | Detectar versiones de servicios |
+| `-O` | Detectar sistema operativo (root) |
+| `-A` | Agresivo: OS + versiones + scripts + traceroute |
+| `--open` | Mostrar solo puertos abiertos |
+| `-oA <archivo>` | Guardar en los tres formatos |
+| `-T4` | Timing agresivo (más rápido en redes locales) |
+| `-v` | Verbose: ver progreso en tiempo real |
+
+> **Nota:** En producción o en nubes como AWS/GCP, los escaneos masivos pueden ser bloqueados por WAFs o sistemas de detección de intrusiones. Confirmá que tenés autorización antes de escanear redes que no sean tuyas o de tu equipo.

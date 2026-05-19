@@ -3,6 +3,9 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { CATEGORIES } from '@/lib/categories'
+import { TOOLS } from '@/lib/tools'
+
+const SHORT_TITLE_RE = /^(terraform|docker|kubernetes|git|linux|windows)[\s:—–-]+/i
 
 function BrandIcon({ hex, svgPath, label, size = 15 }: { hex: string; svgPath: string; label: string; size?: number }) {
   return (
@@ -50,12 +53,13 @@ interface NavArticle {
 interface SidebarProps {
   activeCategory?: string | null
   activeSlug?: string
+  activeToolSlug?: string
   onCategoryChange?: (cat: string | null) => void
   mode?: 'filter' | 'link'
   categoryArticles?: NavArticle[]
 }
 
-export default function Sidebar({ activeCategory, activeSlug, onCategoryChange, mode = 'filter', categoryArticles }: SidebarProps) {
+export default function Sidebar({ activeCategory, activeSlug, activeToolSlug, onCategoryChange, mode = 'filter', categoryArticles }: SidebarProps) {
   const [open, setOpen] = useState(false)
 
   const close = () => setOpen(false)
@@ -94,9 +98,7 @@ export default function Sidebar({ activeCategory, activeSlug, onCategoryChange, 
                 <div className="ml-5 mt-0.5 mb-2 border-l border-gray-800 pl-3 space-y-0.5">
                   {categoryArticles.map(a => {
                     const isCurrentArticle = a.slug === activeSlug
-                    const shortTitle = a.title.replace(
-                      new RegExp(`^(terraform|docker|kubernetes|git)[\\s:—–-]+`, 'i'), ''
-                    )
+                    const shortTitle = a.title.replace(SHORT_TITLE_RE, '')
                     return (
                       <Link
                         key={a.slug}
@@ -177,6 +179,38 @@ export default function Sidebar({ activeCategory, activeSlug, onCategoryChange, 
         <nav className="p-3 flex-1 overflow-y-auto">
           <p className="text-xs text-gray-600 uppercase tracking-wider mb-2 px-2">Tecnologías</p>
           {navContent}
+
+          <p className="text-xs text-gray-600 uppercase tracking-wider mt-5 mb-2 px-2">Herramientas</p>
+          {TOOLS.map(tool => {
+            const isActiveTool = activeToolSlug === tool.id
+            return (
+              <Link
+                key={tool.id}
+                href={tool.href}
+                onClick={close}
+                className={`flex items-center gap-2.5 px-3 py-2 rounded-md text-sm mb-1 transition-colors ${
+                  isActiveTool
+                    ? 'bg-green-900/50 text-green-300 font-medium'
+                    : 'text-gray-400 hover:bg-gray-800 hover:text-gray-200'
+                }`}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="15" height="15"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.75"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  style={{ flexShrink: 0 }}
+                >
+                  <path d={tool.iconPath} />
+                </svg>
+                <span>{tool.label}</span>
+              </Link>
+            )
+          })}
         </nav>
 
         <div className="p-4 border-t border-gray-800 space-y-2 pb-[max(1rem,env(safe-area-inset-bottom))]">

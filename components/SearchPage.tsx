@@ -67,9 +67,7 @@ export default function SearchPage({ articles }: SearchPageProps) {
     return idx
   }, [articles])
 
-  const [isFuzzy, setIsFuzzy] = useState(false)
-
-  const results = useMemo(() => {
+  const { results, isFuzzy } = useMemo(() => {
     let filtered = articles
     let fuzzy = false
 
@@ -114,8 +112,7 @@ export default function SearchPage({ articles }: SearchPageProps) {
       filtered = filtered.filter(a => a.category === activeCategory)
     }
 
-    setIsFuzzy(fuzzy)
-    return filtered
+    return { results: filtered, isFuzzy: fuzzy }
   }, [query, activeCategory, articles, index])
 
   const isFiltering = query.length > 0 || activeCategory !== null
