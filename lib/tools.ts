@@ -42,4 +42,11 @@ export const TOOLS: Tool[] = [
     href: '/tools/json',
     iconPath: 'M4 6h16M4 12h16M4 18h7',
   },
+  {
+    id: 'regex',
+    label: 'Regex Tester',
+    description: 'Construí, testá y entendé expresiones regulares. Librería de patrones comunes, builder visual y explicación token por token.',
+    href: '/tools/regex',
+    iconPath: 'M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4',
+  },
 ]
