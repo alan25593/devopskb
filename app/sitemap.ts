@@ -2,7 +2,7 @@ import type { MetadataRoute } from 'next'
 import { getAllArticles } from '@/lib/content'
 import { TOOLS } from '@/lib/tools'
 
-const BASE_URL = 'https://devopskb.vercel.app'
+const BASE_URL = 'https://kb.wiresops.com'
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const articles = getAllArticles()

@@ -238,6 +238,9 @@ export default function Sidebar({ activeCategory, activeSlug, activeToolSlug, on
               className="h-8 w-auto max-w-full"
             />
           </a>
+          <p className="text-xs text-gray-600 pt-3">
+            © 2026 <a href="https://wiresops.com" target="_blank" rel="noopener noreferrer" className="hover:text-green-400 transition-colors">WiresOps LLC</a>.<br />Todos los derechos reservados.
+          </p>
         </div>
       </aside>
     </>

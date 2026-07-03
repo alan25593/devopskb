@@ -38,7 +38,7 @@ export function generateMetadata({ params }: Props): Metadata {
   }
 }
 
-const BASE_URL = 'https://devopskb.vercel.app'
+const BASE_URL = 'https://kb.wiresops.com'
 
 const CATEGORY_LABELS: Record<string, string> = {
   docker: 'Docker', git: 'Git', kubernetes: 'Kubernetes',
