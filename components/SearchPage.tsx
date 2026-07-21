@@ -217,9 +217,9 @@ export default function SearchPage({ articles }: SearchPageProps) {
                       href={`/article/${article.category}/${article.slug}/`}
                       className="block bg-slate-900/30 backdrop-blur-sm border border-slate-800 rounded-xl p-4 hover:border-purple-500/40 hover:bg-slate-800/40 transition-all duration-300 group"
                     >
-                      <div className="flex items-center gap-2 mb-2">
+                      <div className="flex items-center gap-2 mb-2 min-w-0">
                         <CategoryTag category={article.category} />
-                        <span className="font-medium text-slate-200 group-hover:text-purple-300 truncate transition-colors">
+                        <span className="font-medium text-slate-200 group-hover:text-purple-300 truncate transition-colors flex-1 min-w-0">
                           {article.title}
                         </span>
                       </div>

@@ -293,9 +293,17 @@ export default function PasswordGenerator() {
             <div className="space-y-3">
               {passwords.map((pwd, i) => (
                 <div key={i} className="group flex items-center gap-3 bg-slate-950 border border-slate-800 p-3 rounded-lg hover:border-cyan-500/50 transition-colors relative overflow-hidden">
-                  <div className="flex-1 font-mono text-slate-200 text-lg break-all">
-                    {pwd}
-                  </div>
+                  <input
+                    type="text"
+                    value={pwd}
+                    onChange={(e) => {
+                      const newPwds = [...passwords]
+                      newPwds[i] = e.target.value
+                      setPasswords(newPwds)
+                    }}
+                    className="flex-1 font-mono text-slate-200 text-lg bg-transparent border-none p-0 focus:ring-0 min-w-0"
+                    spellCheck="false"
+                  />
                   <button
                     onClick={() => copyToClipboard(pwd, i)}
                     className="shrink-0 p-2 text-slate-400 hover:text-cyan-400 bg-slate-900 hover:bg-slate-800 rounded-md transition-colors border border-slate-800"
