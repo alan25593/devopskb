@@ -162,15 +162,15 @@ export default function SearchPage({ articles }: SearchPageProps) {
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-cyan-500"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
                   Quick Access
                 </h2>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
                   {[
                     { name: 'DNS Toolkit', path: '/tools/dns', icon: <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path> },
                     { name: 'YAML Validator', path: '/tools/yaml', icon: <><polyline points="4 7 4 4 20 4 20 7"></polyline><line x1="9" y1="20" x2="15" y2="20"></line><line x1="12" y1="4" x2="12" y2="20"></line></> },
                     { name: 'JWT Decoder', path: '/tools/jwt', icon: <><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></> },
                     { name: 'K8s Analyzer', path: '/tools/k8s-analyzer', icon: <><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></> }
                   ].map(tool => (
-                    <Link key={tool.path} href={tool.path} className="group relative overflow-hidden bg-slate-900/40 backdrop-blur-sm border border-slate-800 rounded-xl p-4 hover:border-cyan-500/50 hover:bg-slate-800/50 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-cyan-900/20">
-                      <div className="text-cyan-400 mb-3 opacity-70 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300 transform origin-left">
+                    <Link key={tool.path} href={tool.path} className="group relative overflow-hidden bg-slate-900/40 backdrop-blur-sm border border-slate-800 rounded-xl p-4 hover:border-cyan-500/50 hover:bg-slate-800/50 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-cyan-900/20 flex items-center md:items-start md:flex-col gap-3 md:gap-0">
+                      <div className="text-cyan-400 md:mb-3 opacity-70 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300 transform origin-left shrink-0">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                           {tool.icon}
                         </svg>
@@ -182,14 +182,14 @@ export default function SearchPage({ articles }: SearchPageProps) {
               </section>
 
               <section>
-                <div className="flex items-center justify-between mb-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-2 sm:gap-0">
                   <h2 className="text-sm font-semibold text-slate-400 uppercase tracking-widest flex items-center gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-emerald-500"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
                     Explorar por Tecnología
                   </h2>
                   <span className="text-xs text-slate-500">{articles.length} artículos</span>
                 </div>
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
                   {CATEGORIES.map(cat => (
                     <button
                       key={cat.id}
