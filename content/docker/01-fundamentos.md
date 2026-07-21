@@ -8,19 +8,6 @@ description: "Conceptos base de Docker: diferencia entre imagen y contenedor, ci
 
 # Docker Fundamentos
 
-## Contenido
-
-- [Imagen vs Contenedor](#imagen-vs-contenedor)
-- [Ciclo de vida de un contenedor](#ciclo-de-vida-de-un-contenedor)
-- [Gestión de contenedores](#gestión-de-contenedores)
-- [Ejecutar comandos en un contenedor en ejecución](#ejecutar-comandos-en-un-contenedor-en-ejecución)
-- [Variables de entorno y configuración en runtime](#variables-de-entorno-y-configuración-en-runtime)
-- [Logs](#logs)
-- [Copiar archivos entre host y contenedor](#copiar-archivos-entre-host-y-contenedor)
-- [Gestión de imágenes](#gestión-de-imágenes)
-
----
-
 ## Imagen vs Contenedor
 
 | Concepto | Qué es | Analogía |

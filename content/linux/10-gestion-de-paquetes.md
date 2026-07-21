@@ -8,16 +8,6 @@ description: "Gestión de paquetes en las distribuciones más usadas en DevOps: 
 
 # Gestión de paquetes
 
-## Contenido
-
-- [apt: Debian, Ubuntu y derivados](#apt-debian-ubuntu-y-derivados)
-- [yum y dnf: RHEL, CentOS, Amazon Linux](#yum-y-dnf-rhel-centos-amazon-linux)
-- [rpm: inspección de paquetes sin gestor](#rpm-inspección-de-paquetes-sin-gestor)
-- [Agregar repositorios externos](#agregar-repositorios-externos)
-- [snap y otros gestores modernos](#snap-y-otros-gestores-modernos)
-
----
-
 ## apt: Debian, Ubuntu y derivados
 
 `apt` es el gestor de paquetes de alto nivel para Debian y Ubuntu. Reemplaza a `apt-get` y `apt-cache` en la mayoría de los casos de uso cotidiano.

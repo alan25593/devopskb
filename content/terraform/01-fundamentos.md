@@ -8,20 +8,6 @@ description: "Conceptos base de Terraform: sintaxis HCL, configuración de provi
 
 # Terraform Fundamentos
 
-## Contenido
-
-- [¿Qué es Terraform?](#qué-es-terraform)
-- [Sintaxis HCL](#sintaxis-hcl)
-- [Configuración del bloque terraform](#configuración-del-bloque-terraform)
-- [Providers](#providers)
-- [Ciclo de vida completo](#ciclo-de-vida-completo)
-- [Lifecycle rules](#lifecycle-rules)
-- [Dependencias](#dependencias)
-- [Targets — apply/destroy selectivo](#targets-—-apply/destroy-selectivo)
-- [terraform console — REPL para probar expresiones](#terraform-console-—-repl-para-probar-expresiones)
-
----
-
 ## ¿Qué es Terraform?
 
 Terraform es una herramienta de Infraestructura como Código (IaC) que permite definir, provisionar y gestionar infraestructura cloud en archivos de texto declarativos. Terraform calcula la diferencia entre el estado deseado (tu código) y el estado real (la nube) y aplica solo los cambios necesarios.

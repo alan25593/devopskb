@@ -8,22 +8,6 @@ description: "Referencia completa de kubectl: gestión de contexts y namespaces,
 
 # kubectl — Referencia Completa
 
-## Contenido
-
-- [Contexts — cambiar de cluster](#contexts-—-cambiar-de-cluster)
-- [Namespaces](#namespaces)
-- [Comandos de lectura](#comandos-de-lectura)
-- [Comandos de escritura](#comandos-de-escritura)
-- [Rollouts](#rollouts)
-- [Ejecutar comandos en Pods](#ejecutar-comandos-en-pods)
-- [Port-forward — acceder a un servicio sin exponerlo](#port-forward-—-acceder-a-un-servicio-sin-exponerlo)
-- [Formatos de output](#formatos-de-output)
-- [Comandos de recursos y nodos](#comandos-de-recursos-y-nodos)
-- [Aliases y productividad](#aliases-y-productividad)
-- [kubectl explain — documentación inline](#kubectl-explain-—-documentación-inline)
-
----
-
 ## Contexts — cambiar de cluster
 
 ```bash

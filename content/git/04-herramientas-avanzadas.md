@@ -8,18 +8,6 @@ description: "Comandos de emergencia para cuando rompés el repositorio: stash, 
 
 # Git Avanzado y Modo Bombero
 
-## Contenido
-
-- [Git Stash — guardado temporal](#git-stash-—-guardado-temporal)
-- [Deshacer cambios: Reset vs Revert](#deshacer-cambios-reset-vs-revert)
-- [Modificar el último commit](#modificar-el-último-commit)
-- [Git Cherry-Pick — traer un commit específico](#git-cherry-pick-—-traer-un-commit-específico)
-- [Git Reflog — el salvador definitivo](#git-reflog-—-el-salvador-definitivo)
-- [Git Bisect — encontrar qué commit rompió algo](#git-bisect-—-encontrar-qué-commit-rompió-algo)
-- [Git Log avanzado — buscar en la historia](#git-log-avanzado-—-buscar-en-la-historia)
-
----
-
 ## Git Stash — guardado temporal
 
 Ideal cuando estás en medio de un desarrollo sucio y necesitás cambiar de rama urgente (hotfix en prod) sin hacer un commit incompleto.

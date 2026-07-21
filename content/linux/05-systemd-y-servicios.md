@@ -8,16 +8,6 @@ description: "Gestión completa de servicios con systemd: ciclo de vida, trouble
 
 # Systemd y gestión de servicios
 
-## Contenido
-
-- [Gestión de servicios con systemctl](#gestión-de-servicios-con-systemctl)
-- [Troubleshooting con journalctl](#troubleshooting-con-journalctl)
-- [Crear un service unit personalizado](#crear-un-service-unit-personalizado)
-- [Systemd timers: alternativa a cron](#systemd-timers-alternativa-a-cron)
-- [Targets y dependencias](#targets-y-dependencias)
-
----
-
 ## Gestión de servicios con systemctl
 
 ```bash

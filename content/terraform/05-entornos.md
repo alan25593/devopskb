@@ -8,17 +8,6 @@ description: "Estrategias para gestionar múltiples entornos (dev/staging/prod) 
 
 # Gestión de Entornos en Terraform
 
-## Contenido
-
-- [Estrategia A — Directorios separados (recomendada)](#estrategia-a-—-directorios-separados-recomendada)
-- [Estrategia B — Workspaces](#estrategia-b-—-workspaces)
-- [tfvars por entorno](#tfvars-por-entorno)
-- [Cuentas AWS separadas por entorno](#cuentas-aws-separadas-por-entorno)
-- [Flujo de promoción entre entornos](#flujo-de-promoción-entre-entornos)
-- [Proteger recursos en producción](#proteger-recursos-en-producción)
-
----
-
 Hay dos estrategias principales. La elección depende de cuán diferentes son los entornos entre sí.
 
 ---

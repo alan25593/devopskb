@@ -8,17 +8,6 @@ description: "Meta-argumentos count y for_each, dynamic blocks, expresiones for,
 
 # Expresiones, Loops y Dynamic Blocks
 
-## Contenido
-
-- [count — crear N copias de un recurso](#count-—-crear-n-copias-de-un-recurso)
-- [for_each — crear recursos desde un mapa o set](#for_each-—-crear-recursos-desde-un-mapa-o-set)
-- [Expresiones for](#expresiones-for)
-- [Dynamic blocks](#dynamic-blocks)
-- [Operador ternario y condicionales](#operador-ternario-y-condicionales)
-- [Funciones HCL más útiles](#funciones-hcl-más-útiles)
-
----
-
 ## count — crear N copias de un recurso
 
 ```hcl

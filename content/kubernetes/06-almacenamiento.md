@@ -8,19 +8,6 @@ description: "Gestión de almacenamiento persistente en Kubernetes: PersistentVo
 
 # Almacenamiento en Kubernetes
 
-## Contenido
-
-- [Conceptos clave](#conceptos-clave)
-- [StorageClass](#storageclass)
-- [PersistentVolumeClaim](#persistentvolumeclaim)
-- [Usar un PVC en un Pod](#usar-un-pvc-en-un-pod)
-- [Expandir un PVC](#expandir-un-pvc)
-- [Tipos de volúmenes efímeros](#tipos-de-volúmenes-efímeros)
-- [EFS (NFS/ReadWriteMany) en AWS](#efs-nfs/readwritemany-en-aws)
-- [Snapshot de un volumen](#snapshot-de-un-volumen)
-
----
-
 ## Conceptos clave
 
 | Recurso | Qué es |

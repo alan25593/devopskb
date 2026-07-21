@@ -8,15 +8,6 @@ description: "Declaración y uso de variables de entrada, locals para evitar rep
 
 # Variables, Outputs y Locals
 
-## Contenido
-
-- [Variables de entrada](#variables-de-entrada)
-- [Formas de pasar valores a variables](#formas-de-pasar-valores-a-variables)
-- [Locals](#locals)
-- [Outputs](#outputs)
-
----
-
 ## Variables de entrada
 
 ```hcl

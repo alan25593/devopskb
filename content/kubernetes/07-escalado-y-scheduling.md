@@ -8,19 +8,6 @@ description: "Configuración de resources requests/limits, escalado automático 
 
 # Escalado y Scheduling en Kubernetes
 
-## Contenido
-
-- [Resources: Requests y Limits](#resources-requests-y-limits)
-- [HPA — Horizontal Pod Autoscaler](#hpa-—-horizontal-pod-autoscaler)
-- [VPA — Vertical Pod Autoscaler](#vpa-—-vertical-pod-autoscaler)
-- [Node Affinity — atraer Pods a ciertos nodos](#node-affinity-—-atraer-pods-a-ciertos-nodos)
-- [Pod Affinity y Anti-Affinity](#pod-affinity-y-anti-affinity)
-- [Taints y Tolerations](#taints-y-tolerations)
-- [PodDisruptionBudget — proteger la disponibilidad](#poddisruptionbudget-—-proteger-la-disponibilidad)
-- [PriorityClass — prioridad de scheduling](#priorityclass-—-prioridad-de-scheduling)
-
----
-
 ## Resources: Requests y Limits
 
 Los resources son la base del scheduler y del autoscaler. **Siempre definirlos en producción.**

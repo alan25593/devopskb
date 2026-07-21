@@ -8,17 +8,6 @@ description: "Uso de data sources para leer recursos existentes, consumir output
 
 # Terraform Data Sources
 
-## Contenido
-
-- [Data sources de AWS más usados](#data-sources-de-aws-más-usados)
-- [Secrets desde AWS SSM Parameter Store](#secrets-desde-aws-ssm-parameter-store)
-- [Secrets desde AWS Secrets Manager](#secrets-desde-aws-secrets-manager)
-- [terraform_remote_state — compartir outputs entre states](#terraform_remote_state-—-compartir-outputs-entre-states)
-- [Renderizar templates](#renderizar-templates)
-- [Esperar a que un recurso externo esté listo](#esperar-a-que-un-recurso-externo-esté-listo)
-
----
-
 Los data sources leen información de recursos **ya existentes** (creados manualmente, por otro módulo, o por otra herramienta) sin crear nada nuevo.
 
 ```hcl

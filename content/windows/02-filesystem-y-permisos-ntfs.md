@@ -237,4 +237,12 @@ robocopy C:\origen D:\destino /E /COPYALL /LOG:copia.log /TEE /R:3 /W:5
 # /TEE  → log y pantalla
 # /R:3  → 3 reintentos
 # /W:5  → 5 segundos entre reintentos
+
+# Transferencia rápida por red (Multihilo)
+robocopy "\\10.132.28.33\C$\examplePath" "\\10.133.28.33\C$\examplePath2" /E /MT:32 /Z /R:3 /W:1
+# /E     → Copia subdirectorios, incluyendo vacíos
+# /MT:32 → Copia multihilo con 32 threads (acelera red)
+# /Z     → Copia en modo reiniciable (ideal para conexiones inestables)
+# /R:3   → Reintenta 3 veces si falla
+# /W:1   → Espera 1 segundo entre reintentos
 ```

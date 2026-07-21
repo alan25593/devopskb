@@ -8,18 +8,6 @@ description: "Control de acceso basado en roles en Kubernetes: Roles, ClusterRol
 
 # RBAC y Seguridad en Kubernetes
 
-## Contenido
-
-- [Cómo funciona RBAC](#cómo-funciona-rbac)
-- [Role y ClusterRole](#role-y-clusterrole)
-- [RoleBinding y ClusterRoleBinding](#rolebinding-y-clusterrolebinding)
-- [ServiceAccount — identidad para Pods](#serviceaccount-—-identidad-para-pods)
-- [Security Context — hardening del Pod](#security-context-—-hardening-del-pod)
-- [Pod Security Admission (k8s 1.25+)](#pod-security-admission-k8s-125+)
-- [Auditar permisos existentes](#auditar-permisos-existentes)
-
----
-
 ## Cómo funciona RBAC
 
 ```

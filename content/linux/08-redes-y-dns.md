@@ -8,18 +8,6 @@ description: "Herramientas de red en Linux: comando ip moderno, diagnóstico DNS
 
 # Redes y diagnóstico de conectividad
 
-## Contenido
-
-- [Comando ip: interfaces, IPs y rutas](#comando-ip-interfaces-ips-y-rutas)
-- [Diagnóstico DNS con dig y nslookup](#diagnóstico-dns-con-dig-y-nslookup)
-- [Captura de tráfico con tcpdump](#captura-de-tráfico-con-tcpdump)
-- [curl avanzado para testing de APIs](#curl-avanzado-para-testing-de-apis)
-- [Trazado de ruta con mtr y traceroute](#trazado-de-ruta-con-mtr-y-traceroute)
-- [netstat: referencia para sistemas sin ss](#netstat-referencia-para-sistemas-sin-ss)
-- [Auditoría de puertos con nmap](#auditoría-de-puertos-con-nmap)
-
----
-
 ## Comando ip: interfaces, IPs y rutas
 
 `ip` es el reemplazo moderno de `ifconfig`, `route` y `arp`. Disponible en todas las distros actuales.

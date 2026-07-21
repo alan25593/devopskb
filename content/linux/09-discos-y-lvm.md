@@ -8,16 +8,6 @@ description: "Gestión de almacenamiento en Linux: exploración de discos con ls
 
 # Discos, particiones, LVM y compresión
 
-## Contenido
-
-- [Explorar discos y particiones con lsblk](#explorar-discos-y-particiones-con-lsblk)
-- [Montar y desmontar sistemas de archivos](#montar-y-desmontar-sistemas-de-archivos)
-- [Montaje persistente con /etc/fstab](#montaje-persistente-con-etcfstab)
-- [LVM: gestión de volúmenes lógicos](#lvm-gestión-de-volúmenes-lógicos)
-- [Archivado y compresión con tar y gzip](#archivado-y-compresión-con-tar-y-gzip)
-
----
-
 ## Explorar discos y particiones con lsblk
 
 ```bash

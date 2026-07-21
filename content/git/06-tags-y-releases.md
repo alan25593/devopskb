@@ -8,21 +8,6 @@ description: "Creación, gestión y publicación de tags en Git. Versionado sem�
 
 # Git Tags y Releases
 
-## Contenido
-
-- [Tipos de tag](#tipos-de-tag)
-- [Operaciones básicas](#operaciones-básicas)
-- [Push de tags al remoto](#push-de-tags-al-remoto)
-- [Borrar tags](#borrar-tags)
-- [Checkout de un tag (modo detached HEAD)](#checkout-de-un-tag-modo-detached-head)
-- [Versionado Semántico (SemVer)](#versionado-semántico-semver)
-- [Flujo completo de release](#flujo-completo-de-release)
-- [Ver el tag más reciente](#ver-el-tag-más-reciente)
-- [Tags en CI/CD](#tags-en-ci/cd)
-- [Listar releases ordenados (útil en scripts)](#listar-releases-ordenados-útil-en-scripts)
-
----
-
 Los tags son referencias estáticas a un punto específico del historial — no se mueven como las ramas. Se usan para marcar versiones de release (`v1.2.0`, `v2.0.0-beta`).
 
 ---

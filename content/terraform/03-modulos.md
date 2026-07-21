@@ -8,18 +8,6 @@ description: "Creación de módulos reutilizables, estructura recomendada, uso d
 
 # Módulos en Terraform
 
-## Contenido
-
-- [Estructura de un módulo](#estructura-de-un-módulo)
-- [Llamar un módulo](#llamar-un-módulo)
-- [Sources de módulos](#sources-de-módulos)
-- [Módulos públicos del Terraform Registry](#módulos-públicos-del-terraform-registry)
-- [Versionado de módulos propios](#versionado-de-módulos-propios)
-- [Estructura de proyecto completa](#estructura-de-proyecto-completa)
-- [Pasar providers a módulos](#pasar-providers-a-módulos)
-
----
-
 Un módulo es cualquier directorio con archivos `.tf`. El directorio raíz donde corrés `terraform apply` es el módulo raíz. Todo lo demás son módulos hijos.
 
 ---

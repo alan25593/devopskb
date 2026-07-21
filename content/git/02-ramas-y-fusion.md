@@ -8,15 +8,6 @@ description: "Estrategias de ramificación, diferencias críticas entre Merge y 
 
 # Gestión de Ramas y Fusión
 
-## Contenido
-
-- [Manipulación de ramas](#manipulación-de-ramas)
-- [Merge vs Rebase](#merge-vs-rebase)
-- [Resolución de conflictos](#resolución-de-conflictos)
-- [Estrategias de branching (resumen)](#estrategias-de-branching-resumen)
-
----
-
 ## Manipulación de ramas
 
 Las ramas en Git son punteros móviles a un commit — no pesan nada.

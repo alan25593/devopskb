@@ -8,16 +8,6 @@ description: "Gestión de configuración en Kubernetes: creación de ConfigMaps 
 
 # Configuración en Kubernetes
 
-## Contenido
-
-- [ConfigMap — configuración no sensible](#configmap-—-configuración-no-sensible)
-- [Secret — datos sensibles](#secret-—-datos-sensibles)
-- [Inyección como variables de entorno](#inyección-como-variables-de-entorno)
-- [Montaje como volúmenes](#montaje-como-volúmenes)
-- [Alternativas seguras para producción](#alternativas-seguras-para-producción)
-
----
-
 ## ConfigMap — configuración no sensible
 
 ```yaml

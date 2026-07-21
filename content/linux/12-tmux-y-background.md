@@ -8,17 +8,6 @@ description: "tmux para sesiones persistentes en servidores: crear y gestionar s
 
 # tmux, sesiones persistentes y procesos en background
 
-## Contenido
-
-- [Por qué tmux en servidores](#por-qué-tmux-en-servidores)
-- [Sesiones: crear, adjuntar y desconectar](#sesiones-crear-adjuntar-y-desconectar)
-- [Ventanas y paneles](#ventanas-y-paneles)
-- [Atajos esenciales de tmux](#atajos-esenciales-de-tmux)
-- [Configuración básica de tmux](#configuración-básica-de-tmux)
-- [Procesos en background: nohup, jobs y disown](#procesos-en-background-nohup-jobs-y-disown)
-
----
-
 ## Por qué tmux en servidores
 
 Cuando trabajás en un servidor remoto por SSH, si la conexión se corta — por timeout, red inestable o cierre accidental del terminal — todos los procesos que corrías mueren.

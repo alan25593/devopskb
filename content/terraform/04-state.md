@@ -8,19 +8,6 @@ description: "Gestión del state file: configuración de backend remoto con S3+D
 
 # Terraform State
 
-## Contenido
-
-- [Backend remoto — S3 + DynamoDB](#backend-remoto-—-s3-+-dynamodb)
-- [Otros backends](#otros-backends)
-- [Comandos de manipulación del state](#comandos-de-manipulación-del-state)
-- [Importar recursos existentes](#importar-recursos-existentes)
-- [Resolver locks](#resolver-locks)
-- [Refrescar el state contra la realidad](#refrescar-el-state-contra-la-realidad)
-- [Migrar backend](#migrar-backend)
-- [Workspaces](#workspaces)
-
----
-
 El state file (`terraform.tfstate`) es la fuente de verdad de Terraform — mapea los recursos del código con los recursos reales en el proveedor. **Nunca editarlo a mano.**
 
 ---

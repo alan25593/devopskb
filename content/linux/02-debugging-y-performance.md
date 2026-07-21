@@ -8,15 +8,6 @@ description: "Navaja suiza de comandos Linux para troubleshooting de infraestruc
 
 # Linux para DevOps: Diagnóstico de emergencia y performance
 
-## Contenido
-
-- [Sockets y redes: el salvador de puertos](#sockets-y-redes-el-salvador-de-puertos)
-- [Caza y muerte de procesos](#caza-y-muerte-de-procesos)
-- [Diagnóstico de memoria, CPU y carga](#diagnóstico-de-memoria-cpu-y-carga)
-- [Crisis de almacenamiento (discos al 100%)](#crisis-de-almacenamiento-discos-al-100)
-
----
-
 ## Sockets y redes: el salvador de puertos
 
 Problema clásico: *"El proceso no levanta porque el puerto ya está ocupado"*.

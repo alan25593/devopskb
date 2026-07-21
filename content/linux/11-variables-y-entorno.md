@@ -8,16 +8,6 @@ description: "Variables de entorno en Linux: diferencias entre .bashrc, .bash_pr
 
 # Variables de entorno y configuración del shell
 
-## Contenido
-
-- [Ver y manipular variables de entorno](#ver-y-manipular-variables-de-entorno)
-- [export y el scope de las variables](#export-y-el-scope-de-las-variables)
-- [.bashrc vs .bash_profile vs .profile](#bashrc-vs-bash_profile-vs-profile)
-- [Manipulación del PATH](#manipulación-del-path)
-- [Variables globales del sistema](#variables-globales-del-sistema)
-
----
-
 ## Ver y manipular variables de entorno
 
 ```bash

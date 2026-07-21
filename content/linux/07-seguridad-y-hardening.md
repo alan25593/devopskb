@@ -8,17 +8,6 @@ description: "Hardening de servidores Linux: configuración segura de sudo, fire
 
 # Seguridad y hardening de servidores Linux
 
-## Contenido
-
-- [sudo: configuración y buenas prácticas](#sudo-configuración-y-buenas-prácticas)
-- [Firewall con UFW](#firewall-con-ufw)
-- [Firewall con iptables](#firewall-con-iptables)
-- [Protección contra brute force con fail2ban](#protección-contra-brute-force-con-fail2ban)
-- [Hardening de SSH](#hardening-de-ssh)
-- [Auditoría de accesos y actividad](#auditoría-de-accesos-y-actividad)
-
----
-
 ## sudo: configuración y buenas prácticas
 
 `sudo` permite ejecutar comandos como otro usuario (generalmente root) sin conocer su contraseña.

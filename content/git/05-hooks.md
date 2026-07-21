@@ -8,19 +8,6 @@ description: "Hooks de cliente y servidor para automatizar validaciones, detecta
 
 # Git Hooks
 
-## Contenido
-
-- [Hooks de cliente más usados](#hooks-de-cliente-más-usados)
-- [pre-commit — guardia antes de commitear](#pre-commit-—-guardia-antes-de-commitear)
-- [commit-msg — validar el formato del mensaje](#commit-msg-—-validar-el-formato-del-mensaje)
-- [pre-push — tests antes de que el daño llegue al remoto](#pre-push-—-tests-antes-de-que-el-daño-llegue-al-remoto)
-- [post-merge — acciones después de un merge o pull](#post-merge-—-acciones-después-de-un-merge-o-pull)
-- [Detectar secrets con git-secrets](#detectar-secrets-con-git-secrets)
-- [Compartir hooks con el equipo (el problema)](#compartir-hooks-con-el-equipo-el-problema)
-- [Hooks de servidor (bare repos / GitLab / Gitea)](#hooks-de-servidor-bare-repos-/-gitlab-/-gitea)
-
----
-
 Los hooks son scripts que Git ejecuta automáticamente antes o después de eventos clave (commit, push, merge). Vivien en `.git/hooks/` y pueden estar escritos en bash, python, node — cualquier cosa ejecutable.
 
 ```bash

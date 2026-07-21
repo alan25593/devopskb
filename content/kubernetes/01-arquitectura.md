@@ -8,19 +8,6 @@ description: "Arquitectura interna de Kubernetes: componentes del control plane 
 
 # Arquitectura de Kubernetes
 
-## Contenido
-
-- [El problema que resuelve](#el-problema-que-resuelve)
-- [Componentes del Control Plane](#componentes-del-control-plane)
-- [Componentes de los Worker Nodes](#componentes-de-los-worker-nodes)
-- [Cómo funciona una operación (flujo de kubectl apply)](#cómo-funciona-una-operación-flujo-de-kubectl-apply)
-- [Jerarquía de objetos](#jerarquía-de-objetos)
-- [Namespaces del sistema](#namespaces-del-sistema)
-- [Inspeccionar el cluster](#inspeccionar-el-cluster)
-- [etcd — comandos de emergencia](#etcd-—-comandos-de-emergencia)
-
----
-
 ## El problema que resuelve
 
 Kubernetes (k8s) es un orquestador de contenedores: automatiza el despliegue, el escalado y la operación de aplicaciones en contenedores a través de un cluster de máquinas, abstrayendo la infraestructura subyacente.

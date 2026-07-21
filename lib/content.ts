@@ -6,6 +6,12 @@ const contentDir = path.join(process.cwd(), 'content')
 
 let _cache: Article[] | null = null
 
+export interface Heading {
+  level: number
+  text: string
+  id: string
+}
+
 export interface Article {
   slug: string
   category: string
@@ -14,6 +20,37 @@ export interface Article {
   keywords: string[]
   tags: string[]
   content: string
+  readingTime: number
+  headings: Heading[]
+}
+
+export function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[()[\]{}.,;:!?¿¡'"]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .trim()
+}
+
+function extractHeadings(content: string): Heading[] {
+  const headings: Heading[] = []
+  // Matches ## or ### at the start of a line
+  const regex = /^(#{2,3})\s+(.+)$/gm
+  let match
+  while ((match = regex.exec(content)) !== null) {
+    headings.push({
+      level: match[1].length,
+      text: match[2].trim(),
+      id: slugify(match[2].trim())
+    })
+  }
+  return headings
+}
+
+function calculateReadingTime(content: string): number {
+  const wordCount = content.split(/\s+/).length
+  return Math.max(1, Math.ceil(wordCount / 200))
 }
 
 export function getAllArticles(): Article[] {
@@ -45,6 +82,8 @@ export function getAllArticles(): Article[] {
         keywords: Array.isArray(data.keywords) ? data.keywords : [],
         tags: Array.isArray(data.tags) ? data.tags : [],
         content,
+        readingTime: calculateReadingTime(content),
+        headings: extractHeadings(content)
       })
     }
   }
@@ -68,13 +107,15 @@ export function getArticle(category: string, slug: string): Article | null {
     keywords: Array.isArray(data.keywords) ? data.keywords : [],
     tags: Array.isArray(data.tags) ? data.tags : [],
     content,
+    readingTime: calculateReadingTime(content),
+    headings: extractHeadings(content)
   }
 }
 
-export type SearchArticle = Omit<Article, 'content'>
+export type SearchArticle = Omit<Article, 'content' | 'headings'>
 
 export function getArticlesForSearch(): SearchArticle[] {
-  return getAllArticles().map(({ content: _content, ...rest }) => rest)
+  return getAllArticles().map(({ content: _content, headings: _headings, ...rest }) => rest)
 }
 
 export function getAllStaticParams() {

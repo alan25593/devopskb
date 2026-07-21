@@ -8,18 +8,6 @@ description: "Tipos de workloads en Kubernetes: Pod, Deployment, StatefulSet, Da
 
 # Kubernetes Workloads
 
-## Contenido
-
-- [Pod — la unidad mínima](#pod-—-la-unidad-mínima)
-- [Deployment — workload stateless](#deployment-—-workload-stateless)
-- [StatefulSet — workload stateful](#statefulset-—-workload-stateful)
-- [DaemonSet — un Pod por nodo](#daemonset-—-un-pod-por-nodo)
-- [Job — tarea puntual](#job-—-tarea-puntual)
-- [CronJob — tarea programada](#cronjob-—-tarea-programada)
-- [Probes — health checks](#probes-—-health-checks)
-
----
-
 ## Pod — la unidad mínima
 
 Un Pod es uno o más contenedores que comparten red (misma IP) y almacenamiento. En producción nunca se crea un Pod directamente — siempre a través de un controller (Deployment, StatefulSet, etc.).

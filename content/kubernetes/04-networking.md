@@ -8,17 +8,6 @@ description: "Tipos de Services en Kubernetes, routing HTTP con Ingress, DNS int
 
 # Kubernetes Networking
 
-## Contenido
-
-- [Cómo funciona la red en Kubernetes](#cómo-funciona-la-red-en-kubernetes)
-- [Services](#services)
-- [DNS interno del cluster](#dns-interno-del-cluster)
-- [Ingress — routing HTTP externo](#ingress-—-routing-http-externo)
-- [NetworkPolicy — firewall entre Pods](#networkpolicy-—-firewall-entre-pods)
-- [Comandos útiles de networking](#comandos-útiles-de-networking)
-
----
-
 ## Cómo funciona la red en Kubernetes
 
 Cada Pod recibe su propia IP. Los Pods pueden comunicarse entre sí directamente, pero esas IPs son efímeras — cuando un Pod muere y se recrea, cambia de IP. Los **Services** resuelven esto: proveen una IP virtual estable y DNS que enruta hacia los Pods que matchean sus labels.

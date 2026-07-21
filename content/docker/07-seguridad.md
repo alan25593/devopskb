@@ -8,18 +8,6 @@ description: "Hardening de contenedores Docker: usuario no-root, secrets, capabi
 
 # Docker Seguridad
 
-## Contenido
-
-- [El problema de correr como root](#el-problema-de-correr-como-root)
-- [Filesystem read-only](#filesystem-read-only)
-- [Limitar capabilities de Linux](#limitar-capabilities-de-linux)
-- [Secrets — no hardcodees credenciales](#secrets-—-no-hardcodees-credenciales)
-- [Escaneo de vulnerabilidades](#escaneo-de-vulnerabilidades)
-- [No-new-privileges y seccomp](#no-new-privileges-y-seccomp)
-- [Checklist de seguridad para producción](#checklist-de-seguridad-para-producción)
-
----
-
 ## El problema de correr como root
 
 Por defecto, los procesos dentro de un contenedor corren como `root` (UID 0). Si hay una vulnerabilidad en tu app y el atacante escapa el contenedor, tiene acceso root al host.

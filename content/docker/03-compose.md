@@ -8,20 +8,6 @@ description: "Orquestación de múltiples contenedores con Docker Compose: defin
 
 # Docker Compose
 
-## Contenido
-
-- [Estructura básica de compose.yml](#estructura-básica-de-composeyml)
-- [Comandos esenciales](#comandos-esenciales)
-- [Override files por entorno](#override-files-por-entorno)
-- [Profiles — servicios opcionales](#profiles-—-servicios-opcionales)
-- [Healthchecks y dependencias](#healthchecks-y-dependencias)
-- [Volúmenes](#volúmenes)
-- [Escalar servicios](#escalar-servicios)
-- [Compose Watch (hot reload en desarrollo)](#compose-watch-hot-reload-en-desarrollo)
-- [Variables de entorno y precedencia](#variables-de-entorno-y-precedencia)
-
----
-
 ## Estructura básica de compose.yml
 
 ```yaml

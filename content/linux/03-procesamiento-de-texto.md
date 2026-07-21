@@ -8,17 +8,6 @@ description: "Herramientas de procesamiento de texto para analizar logs en produ
 
 # Procesamiento de texto y filtrado de logs
 
-## Contenido
-
-- [grep: buscar patrones en archivos y logs](#grep-buscar-patrones-en-archivos-y-logs)
-- [sed: transformar y reemplazar texto](#sed-transformar-y-reemplazar-texto)
-- [awk: procesar columnas y campos](#awk-procesar-columnas-y-campos)
-- [Pipelines: cut, sort, uniq y wc](#pipelines-cut-sort-uniq-y-wc)
-- [xargs: construir comandos desde la salida](#xargs-construir-comandos-desde-la-salida)
-- [Recetas para logs de producción](#recetas-para-logs-de-producción)
-
----
-
 ## grep: buscar patrones en archivos y logs
 
 ```bash

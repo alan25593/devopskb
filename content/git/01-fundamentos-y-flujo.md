@@ -8,15 +8,6 @@ description: "Configuración inicial, estados de los archivos en Git, creación 
 
 # Git Fundamentos y Ciclo de Vida
 
-## Contenido
-
-- [Configuración inicial](#configuración-inicial)
-- [El ciclo de vida de los archivos (Three States)](#el-ciclo-de-vida-de-los-archivos-three-states)
-- [Crear commits efectivos](#crear-commits-efectivos)
-- [.gitignore](#gitignore)
-
----
-
 ## Configuración inicial
 
 Antes de empezar a trackear, configurá tu identidad:

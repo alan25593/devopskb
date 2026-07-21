@@ -8,19 +8,6 @@ description: "Instrucciones clave del Dockerfile, estrategias de multi-stage bui
 
 # Dockerfile
 
-## Contenido
-
-- [Instrucciones esenciales](#instrucciones-esenciales)
-- [ENTRYPOINT vs CMD](#entrypoint-vs-cmd)
-- [Orden de instrucciones y caché de capas](#orden-de-instrucciones-y-caché-de-capas)
-- [Multi-Stage Build](#multi-stage-build)
-- [.dockerignore](#dockerignore)
-- [Optimización de imágenes](#optimización-de-imágenes)
-- [Build arguments y targets](#build-arguments-y-targets)
-- [Buenas prácticas de seguridad](#buenas-prácticas-de-seguridad)
-
----
-
 ## Instrucciones esenciales
 
 ```dockerfile

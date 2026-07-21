@@ -8,18 +8,6 @@ description: "Automatización del ciclo plan/apply en CI/CD, validación estáti
 
 # Terraform en CI/CD
 
-## Contenido
-
-- [Workflow manual seguro (base)](#workflow-manual-seguro-base)
-- [tflint — linter de buenas prácticas](#tflint-—-linter-de-buenas-prácticas)
-- [checkov — análisis de seguridad y compliance](#checkov-—-análisis-de-seguridad-y-compliance)
-- [tfsec — análisis de seguridad (alternativa a checkov)](#tfsec-—-análisis-de-seguridad-alternativa-a-checkov)
-- [GitHub Actions — pipeline completo](#github-actions-—-pipeline-completo)
-- [Atlantis — GitOps para Terraform](#atlantis-—-gitops-para-terraform)
-- [Permisos IAM para el rol de CI](#permisos-iam-para-el-rol-de-ci)
-
----
-
 ## Workflow manual seguro (base)
 
 ```bash

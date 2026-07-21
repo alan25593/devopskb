@@ -8,18 +8,6 @@ description: "Login, push y pull de imágenes en Docker Hub, Amazon ECR, Google 
 
 # Docker Registry
 
-## Contenido
-
-- [Docker Hub](#docker-hub)
-- [Amazon ECR (Elastic Container Registry)](#amazon-ecr-elastic-container-registry)
-- [Google Container Registry / Artifact Registry](#google-container-registry-/-artifact-registry)
-- [Registry privado local (para desarrollo o on-premise)](#registry-privado-local-para-desarrollo-o-on-premise)
-- [Estrategia de tagging](#estrategia-de-tagging)
-- [Inspeccionar imágenes remotas sin bajarlas](#inspeccionar-imágenes-remotas-sin-bajarlas)
-- [Política de lifecycle en ECR (limpiar imágenes viejas)](#política-de-lifecycle-en-ecr-limpiar-imágenes-viejas)
-
----
-
 ## Docker Hub
 
 ```bash

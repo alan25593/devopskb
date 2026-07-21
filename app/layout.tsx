@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import './globals.css'
+import CommandPalette from '@/components/CommandPalette'
 
 const BASE_URL = 'https://kb.wiresops.com'
 
@@ -38,6 +39,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="es">
       <body className="bg-gray-950 text-gray-100 antialiased">
         {children}
+        <CommandPalette />
       </body>
     </html>
   )

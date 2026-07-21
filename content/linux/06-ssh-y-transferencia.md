@@ -8,17 +8,6 @@ description: "Configuración completa de SSH: generación de claves, archivo con
 
 # SSH, transferencia de archivos y tunnels
 
-## Contenido
-
-- [Conexión básica y opciones](#conexión-básica-y-opciones)
-- [Gestión de claves SSH](#gestión-de-claves-ssh)
-- [Archivo ~/.ssh/config para múltiples hosts](#archivo-sshconfig-para-múltiples-hosts)
-- [Transferencia de archivos con scp y rsync](#transferencia-de-archivos-con-scp-y-rsync)
-- [Tunnels y port forwarding](#tunnels-y-port-forwarding)
-- [ssh-agent y forwarding de agente](#ssh-agent-y-forwarding-de-agente)
-
----
-
 ## Conexión básica y opciones
 
 ```bash

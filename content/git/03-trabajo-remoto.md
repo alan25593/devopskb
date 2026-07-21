@@ -8,17 +8,6 @@ description: "Interacción con servidores remotos, manejo de tracking branches y
 
 # Trabajo Remoto y Colaboración
 
-## Contenido
-
-- [Configuración de remotos](#configuración-de-remotos)
-- [Fetch vs Pull](#fetch-vs-pull)
-- [Enviar cambios (Push)](#enviar-cambios-push)
-- [Sincronizar un fork con el repositorio original](#sincronizar-un-fork-con-el-repositorio-original)
-- [Push rechazado (diverged branches)](#push-rechazado-diverged-branches)
-- [Tracking branches y referencias remotas](#tracking-branches-y-referencias-remotas)
-
----
-
 ## Configuración de remotos
 
 ```bash

@@ -8,18 +8,6 @@ description: "Estructura del filesystem Linux, sistema de permisos rwx y octal, 
 
 # Filesystem, permisos, usuarios y grupos
 
-## Contenido
-
-- [Estructura del filesystem](#estructura-del-filesystem)
-- [Navegación y búsqueda de archivos](#navegación-y-búsqueda-de-archivos)
-- [Permisos: lectura, escritura y ejecución](#permisos-lectura-escritura-y-ejecución)
-- [Cambiar permisos y propietarios](#cambiar-permisos-y-propietarios)
-- [Permisos especiales: SUID, SGID y sticky bit](#permisos-especiales-suid-sgid-y-sticky-bit)
-- [Usuarios y grupos](#usuarios-y-grupos)
-- [Links simbólicos y duros](#links-simbólicos-y-duros)
-
----
-
 ## Estructura del filesystem
 
 Linux sigue el estándar FHS (Filesystem Hierarchy Standard). Todo cuelga de `/`.

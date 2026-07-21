@@ -8,17 +8,6 @@ description: "Herramientas que potencian Terraform: Terragrunt para eliminar rep
 
 # Complementos de Terraform
 
-## Contenido
-
-- [tfenv — gestión de versiones de Terraform](#tfenv-—-gestión-de-versiones-de-terraform)
-- [Terragrunt — DRY para Terraform](#terragrunt-—-dry-para-terraform)
-- [Infracost — estimación de costos antes del apply](#infracost-—-estimación-de-costos-antes-del-apply)
-- [OpenTofu — el fork open-source de Terraform](#opentofu-—-el-fork-open-source-de-terraform)
-- [Terratest — tests de infraestructura](#terratest-—-tests-de-infraestructura)
-- [Resumen: cuándo usar cada herramienta](#resumen-cuándo-usar-cada-herramienta)
-
----
-
 ## tfenv — gestión de versiones de Terraform
 
 Como nvm para Node o pyenv para Python. Permite tener múltiples versiones de Terraform instaladas y cambiar entre ellas por proyecto.

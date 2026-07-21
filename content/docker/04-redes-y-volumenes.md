@@ -8,19 +8,6 @@ description: "Tipos de redes en Docker, comunicación entre contenedores, DNS in
 
 # Docker Redes y Volúmenes
 
-## Contenido
-
-- [Tipos de red](#tipos-de-red)
-- [Red Bridge (la más usada)](#red-bridge-la-más-usada)
-- [Red por defecto vs red custom](#red-por-defecto-vs-red-custom)
-- [Red Host](#red-host)
-- [Mapeo de puertos](#mapeo-de-puertos)
-- [Volúmenes](#volúmenes)
-- [Backup y restore de volúmenes](#backup-y-restore-de-volúmenes)
-- [Limpieza de redes y volúmenes](#limpieza-de-redes-y-volúmenes)
-
----
-
 ## Tipos de red
 
 | Driver | Cuándo usarlo |

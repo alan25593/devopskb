@@ -8,18 +8,6 @@ description: "Herramientas esenciales para operar Kubernetes: Helm para gestiona
 
 # Herramientas para Kubernetes
 
-## Contenido
-
-- [Helm — gestor de paquetes de Kubernetes](#helm-—-gestor-de-paquetes-de-kubernetes)
-- [kubectx y kubens — cambio rápido de cluster y namespace](#kubectx-y-kubens-—-cambio-rápido-de-cluster-y-namespace)
-- [k9s — TUI para Kubernetes](#k9s-—-tui-para-kubernetes)
-- [Kustomize — gestión de manifiestos sin templates](#kustomize-—-gestión-de-manifiestos-sin-templates)
-- [Stern — logs multi-Pod en tiempo real](#stern-—-logs-multi-pod-en-tiempo-real)
-- [Krew — plugin manager para kubectl](#krew-—-plugin-manager-para-kubectl)
-- [Velero — backup y restore del cluster](#velero-—-backup-y-restore-del-cluster)
-
----
-
 ## Helm — gestor de paquetes de Kubernetes
 
 Helm empaqueta manifiestos de Kubernetes en **Charts** reutilizables y versionados. Un `helm install` despliega un conjunto completo de recursos configurables.

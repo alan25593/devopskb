@@ -8,19 +8,6 @@ description: "Bash scripting para automatización DevOps: variables, argumentos,
 
 # Shell scripting con Bash
 
-## Contenido
-
-- [Estructura básica y permisos de ejecución](#estructura-básica-y-permisos-de-ejecución)
-- [Variables y tipos de datos](#variables-y-tipos-de-datos)
-- [Argumentos y parámetros especiales](#argumentos-y-parámetros-especiales)
-- [Condicionales](#condicionales)
-- [Loops](#loops)
-- [Funciones](#funciones)
-- [Manejo de errores](#manejo-de-errores)
-- [Patrones de scripting para DevOps](#patrones-de-scripting-para-devops)
-
----
-
 ## Estructura básica y permisos de ejecución
 
 ```bash

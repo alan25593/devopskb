@@ -8,22 +8,6 @@ description: "Diagnóstico sistemático de los problemas más comunes en Kuberne
 
 # Kubernetes Troubleshooting
 
-## Contenido
-
-- [Flujo de diagnóstico general](#flujo-de-diagnóstico-general)
-- [CrashLoopBackOff](#crashloopbackoff)
-- [OOMKilled (exit code 137)](#oomkilled-exit-code-137)
-- [ImagePullBackOff / ErrImagePull](#imagepullbackoff-/-errimagepull)
-- [Pod en estado Pending](#pod-en-estado-pending)
-- [Pod stuck en Terminating](#pod-stuck-en-terminating)
-- [Nodo NotReady](#nodo-notready)
-- [Servicio sin respuesta / Endpoints vacíos](#servicio-sin-respuesta-/-endpoints-vacíos)
-- [Pods evicted](#pods-evicted)
-- [Contenedor de debug temporal](#contenedor-de-debug-temporal)
-- [Checklist de troubleshooting](#checklist-de-troubleshooting)
-
----
-
 ## Flujo de diagnóstico general
 
 ```bash

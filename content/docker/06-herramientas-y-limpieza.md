@@ -8,18 +8,6 @@ description: "Comandos de inspección, monitoreo de recursos, troubleshooting de
 
 # Docker Herramientas, Inspección y Limpieza
 
-## Contenido
-
-- [Inspección y metadata](#inspección-y-metadata)
-- [Monitoreo de recursos](#monitoreo-de-recursos)
-- [Troubleshooting de contenedores](#troubleshooting-de-contenedores)
-- [Limpieza del sistema (prune)](#limpieza-del-sistema-prune)
-- [Limitar recursos de contenedores](#limitar-recursos-de-contenedores)
-- [Copiar y exportar](#copiar-y-exportar)
-- [Construir para múltiples plataformas (buildx)](#construir-para-múltiples-plataformas-buildx)
-
----
-
 ## Inspección y metadata
 
 ```bash
