@@ -131,7 +131,7 @@ export default function SearchPage({ articles }: SearchPageProps) {
           {!isFiltering && (
             <header className="mb-10 text-center animate-in fade-in slide-in-from-bottom-4 duration-700">
               <h1 className="text-4xl md:text-5xl font-bold text-slate-50 mb-4 tracking-tight">
-                DevOps <span className="text-cyan-400">Portal</span>
+                DevOps <span className="text-cyan-400">KB</span>
               </h1>
               <p className="text-slate-400 text-base md:text-lg max-w-2xl mx-auto">
                 Herramientas esenciales, comandos y guías para SREs y DevOps.
