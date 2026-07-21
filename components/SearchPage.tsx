@@ -164,10 +164,10 @@ export default function SearchPage({ articles }: SearchPageProps) {
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
                   {[
-                    { name: 'DNS Toolkit', path: '/tools/dns', icon: <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path> },
-                    { name: 'YAML Validator', path: '/tools/yaml', icon: <><polyline points="4 7 4 4 20 4 20 7"></polyline><line x1="9" y1="20" x2="15" y2="20"></line><line x1="12" y1="4" x2="12" y2="20"></line></> },
-                    { name: 'JWT Decoder', path: '/tools/jwt', icon: <><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></> },
-                    { name: 'K8s Analyzer', path: '/tools/k8s-analyzer', icon: <><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></> }
+                    { name: 'Password Generator', path: '/tools/password', icon: <><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></> },
+                    { name: 'JWT Decoder', path: '/tools/jwt', icon: <><path d="M15 7a2 2 0 0 1 2 2m4 0a6 6 0 0 1-7.743 5.743L11 17H9v2H7v2H4a1 1 0 0 1-1-1v-2.586a1 1 0 0 1 .293-.707l5.964-5.964A6 6 0 1 1 21 9z"></path></> },
+                    { name: 'Subnet Calculator', path: '/tools/subnet', icon: <><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18"></path></> },
+                    { name: 'JSON Formatter', path: '/tools/json', icon: <><path d="M4 6h16M4 12h16M4 18h7"></path></> }
                   ].map(tool => (
                     <Link key={tool.path} href={tool.path} className="group relative overflow-hidden bg-slate-900/40 backdrop-blur-sm border border-slate-800 rounded-xl p-4 hover:border-cyan-500/50 hover:bg-slate-800/50 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-cyan-900/20 flex items-center md:items-start md:flex-col gap-3 md:gap-0">
                       <div className="text-cyan-400 md:mb-3 opacity-70 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300 transform origin-left shrink-0">
