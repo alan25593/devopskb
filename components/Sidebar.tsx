@@ -100,8 +100,8 @@ export default function Sidebar({ activeCategory, activeSlug, activeToolSlug, on
           title="Todos"
           className={`w-full text-left px-3 py-2 rounded-md text-sm mb-1 transition-colors ${
             !activeCategory
-              ? 'bg-green-900/50 text-green-300 font-medium'
-              : 'text-gray-400 hover:bg-gray-800 hover:text-gray-200'
+              ? 'bg-cyan-900/50 text-cyan-300 font-medium'
+              : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200'
           } ${isCollapsed ? 'text-center flex justify-center' : ''}`}
         >
           {isCollapsed ? <span className="font-bold">ALL</span> : 'Todos'}
@@ -112,8 +112,8 @@ export default function Sidebar({ activeCategory, activeSlug, activeToolSlug, on
         const isActive = activeCategory === cat.id
         const commonClass = `flex items-center gap-2.5 px-3 py-2 rounded-md text-sm mb-1 transition-colors ${
           isActive
-            ? 'bg-green-900/50 text-green-300 font-medium'
-            : 'text-gray-400 hover:bg-gray-800 hover:text-gray-200'
+            ? 'bg-cyan-900/50 text-cyan-300 font-medium'
+            : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200'
         } ${isCollapsed ? 'justify-center px-0' : ''}`
 
         if (mode === 'link') {
@@ -124,7 +124,7 @@ export default function Sidebar({ activeCategory, activeSlug, activeToolSlug, on
                 {!isCollapsed && <span>{cat.label}</span>}
               </Link>
               {isActive && !isCollapsed && categoryArticles && categoryArticles.length > 0 && (
-                <div className="ml-5 mt-0.5 mb-2 border-l border-gray-800 pl-3 space-y-0.5">
+                <div className="ml-5 mt-0.5 mb-2 border-l border-slate-800 pl-3 space-y-0.5">
                   {categoryArticles.map(a => {
                     const isCurrentArticle = a.slug === activeSlug
                     const shortTitle = a.title.replace(SHORT_TITLE_RE, '')
@@ -136,8 +136,8 @@ export default function Sidebar({ activeCategory, activeSlug, activeToolSlug, on
                         title={a.title}
                         className={`block text-xs py-1 px-2 rounded truncate transition-colors ${
                           isCurrentArticle
-                            ? 'text-green-400 bg-green-900/20 font-medium'
-                            : 'text-gray-600 hover:text-gray-200 hover:bg-gray-800/60'
+                            ? 'text-cyan-400 bg-cyan-900/20 font-medium'
+                            : 'text-slate-600 hover:text-slate-200 hover:bg-slate-800/60'
                         }`}
                       >
                         {shortTitle}
@@ -169,7 +169,7 @@ export default function Sidebar({ activeCategory, activeSlug, activeToolSlug, on
     <>
       {/* Mobile hamburger button */}
       <button
-        className="md:hidden fixed top-3 left-3 z-50 p-2 rounded-md bg-gray-900 border border-gray-800 text-gray-400 hover:text-white transition-colors shadow-sm"
+        className="md:hidden fixed top-3 left-3 z-50 p-2 rounded-md bg-slate-900 border border-slate-800 text-slate-400 hover:text-white transition-colors shadow-sm"
         onClick={() => setOpen(true)}
         aria-label="Abrir menú"
       >
@@ -187,26 +187,26 @@ export default function Sidebar({ activeCategory, activeSlug, activeToolSlug, on
       {/* Sidebar panel */}
       <aside className={[
         'fixed md:static inset-y-0 left-0 z-50',
-        'shrink-0 bg-gray-950 md:bg-gray-900 border-r border-gray-800 flex flex-col h-dvh',
+        'shrink-0 bg-slate-950 md:bg-slate-900 border-r border-slate-800 flex flex-col h-dvh',
         'transition-all duration-300 ease-in-out md:translate-x-0',
         open ? 'translate-x-0 w-64' : '-translate-x-full md:w-56',
         !open && isCollapsed ? 'md:w-[68px]' : 'md:w-56'
       ].join(' ')}>
 
-        <div className={`p-4 border-b border-gray-800 flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'}`}>
+        <div className={`p-4 border-b border-slate-800 flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'}`}>
           {!isCollapsed ? (
             <Link href="/" className="flex items-center gap-2" onClick={close}>
-              <span className="text-green-400 font-bold text-lg">DevOps</span>
-              <span className="text-gray-400 font-bold text-lg">KB</span>
+              <span className="text-cyan-400 font-bold text-lg">DevOps</span>
+              <span className="text-slate-400 font-bold text-lg">KB</span>
             </Link>
           ) : (
-             <Link href="/" className="flex items-center justify-center font-bold text-green-400 text-lg" onClick={close}>
+             <Link href="/" className="flex items-center justify-center font-bold text-cyan-400 text-lg" onClick={close}>
                D
              </Link>
           )}
 
           <button
-            className="hidden md:flex text-gray-500 hover:text-gray-300 p-1 transition-colors rounded hover:bg-gray-800"
+            className="hidden md:flex text-slate-500 hover:text-slate-300 p-1 transition-colors rounded hover:bg-slate-800"
             onClick={toggleCollapse}
             aria-label="Toggle Sidebar"
           >
@@ -214,7 +214,7 @@ export default function Sidebar({ activeCategory, activeSlug, activeToolSlug, on
           </button>
 
           <button
-            className="md:hidden text-gray-500 hover:text-white p-1 transition-colors"
+            className="md:hidden text-slate-500 hover:text-white p-1 transition-colors"
             onClick={close}
             aria-label="Cerrar menú"
           >
@@ -223,13 +223,13 @@ export default function Sidebar({ activeCategory, activeSlug, activeToolSlug, on
         </div>
 
         <nav className="p-3 flex-1 overflow-y-auto overflow-x-hidden">
-          {!isCollapsed && <p className="text-xs text-gray-600 uppercase tracking-wider mb-2 px-2">Tecnologías</p>}
+          {!isCollapsed && <p className="text-xs text-slate-600 uppercase tracking-wider mb-2 px-2">Tecnologías</p>}
           {navContent}
 
           {!isCollapsed ? (
-            <p className="text-xs text-gray-600 uppercase tracking-wider mt-5 mb-2 px-2">Herramientas</p>
+            <p className="text-xs text-slate-600 uppercase tracking-wider mt-5 mb-2 px-2">Herramientas</p>
           ) : (
-            <div className="border-t border-gray-800 my-3 mx-2"></div>
+            <div className="border-t border-slate-800 my-3 mx-2"></div>
           )}
           
           <Link
@@ -238,8 +238,8 @@ export default function Sidebar({ activeCategory, activeSlug, activeToolSlug, on
             title="Herramientas"
             className={`flex items-center gap-2.5 px-3 py-2 rounded-md text-sm mb-1 transition-colors ${
               activeToolSlug === 'tools' || (typeof window !== 'undefined' && window.location.pathname === '/tools')
-                ? 'bg-green-900/50 text-green-300 font-medium'
-                : 'text-gray-400 hover:bg-gray-800 hover:text-gray-200'
+                ? 'bg-cyan-900/50 text-cyan-300 font-medium'
+                : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200'
             } ${isCollapsed ? 'justify-center px-0' : ''}`}
           >
             <svg
@@ -263,26 +263,26 @@ export default function Sidebar({ activeCategory, activeSlug, activeToolSlug, on
         </nav>
 
         {isCollapsed ? (
-           <div className="p-4 border-t border-gray-800 flex justify-center pb-[max(1rem,env(safe-area-inset-bottom))]">
-             <button title="Info de WiresOps" className="text-gray-500 hover:text-green-400 transition-colors">
+           <div className="p-4 border-t border-slate-800 flex justify-center pb-[max(1rem,env(safe-area-inset-bottom))]">
+             <button title="Info de WiresOps" className="text-slate-500 hover:text-cyan-400 transition-colors">
                <InfoIcon />
              </button>
            </div>
         ) : (
-          <div className="p-4 border-t border-gray-800 space-y-2 pb-[max(1rem,env(safe-area-inset-bottom))]">
-            <p className="text-xs text-gray-600">Tu wiki DevOps</p>
+          <div className="p-4 border-t border-slate-800 space-y-2 pb-[max(1rem,env(safe-area-inset-bottom))]">
+            <p className="text-xs text-slate-600">Tu wiki DevOps</p>
             <a
               href="https://github.com/alan25593/devopskb"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-xs text-gray-700 hover:text-green-400 transition-colors"
+              className="text-xs text-slate-700 hover:text-cyan-400 transition-colors"
             >100% local · sin internet ↗</a>
-            <p className="text-xs text-gray-600">
+            <p className="text-xs text-slate-600">
               Creado por <a
                 href="https://www.linkedin.com/in/alan-lampert/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-gray-500 hover:text-green-400 transition-colors"
+                className="text-slate-500 hover:text-cyan-400 transition-colors"
               >Alan Lampert ↗</a>
             </p>
             <a href="https://cafecito.app/tudevopsjr" rel="noopener" target="_blank" className="block mt-3">
@@ -294,8 +294,8 @@ export default function Sidebar({ activeCategory, activeSlug, activeToolSlug, on
                 className="h-8 w-auto max-w-full"
               />
             </a>
-            <p className="text-xs text-gray-600 pt-3">
-              © 2026 <a href="https://wiresops.com" target="_blank" rel="noopener noreferrer" className="hover:text-green-400 transition-colors">WiresOps LLC</a>.<br />Todos los derechos reservados.
+            <p className="text-xs text-slate-600 pt-3">
+              © 2026 <a href="https://wiresops.com" target="_blank" rel="noopener noreferrer" className="hover:text-cyan-400 transition-colors">WiresOps LLC</a>.<br />Todos los derechos reservados.
             </p>
           </div>
         )}

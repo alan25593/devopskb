@@ -58,7 +58,7 @@ function CopyButton({ text, variant }: { text: string; variant: 'block' | 'inlin
         onClick={handleClick}
         title="Copiar"
         className="absolute top-2 right-2 opacity-100 md:opacity-0 md:group-hover/code-block:opacity-100 transition-opacity
-          flex items-center gap-1 bg-gray-800 border border-gray-700 hover:border-green-600 hover:bg-gray-700 text-gray-300 hover:text-white
+          flex items-center gap-1 bg-slate-800 border border-slate-700 hover:border-cyan-600 hover:bg-slate-700 text-slate-300 hover:text-white
           rounded px-2 py-1 text-xs font-mono select-none shadow-sm"
       >
         {copied ? <><CheckIcon /> copiado</> : <><ClipboardIcon /> copiar</>}
@@ -71,7 +71,7 @@ function CopyButton({ text, variant }: { text: string; variant: 'block' | 'inlin
       onClick={handleClick}
       title="Copiar"
       className="opacity-0 group-hover/code:opacity-100 transition-opacity
-        inline-flex items-center align-middle ml-1 text-gray-500 hover:text-green-400 shrink-0"
+        inline-flex items-center align-middle ml-1 text-slate-500 hover:text-cyan-400 shrink-0"
     >
       {copied ? <CheckIcon /> : <ClipboardIcon />}
     </button>
@@ -95,7 +95,7 @@ function Heading({ level, children }: { level: number; children: React.ReactNode
     <Tag id={id} className="group/heading relative scroll-mt-20">
       <a
         href={`#${id}`}
-        className="absolute -left-5 top-0 bottom-0 flex items-center opacity-0 group-hover/heading:opacity-100 transition-opacity text-gray-600 hover:text-green-400 no-underline"
+        className="absolute -left-5 top-0 bottom-0 flex items-center opacity-0 group-hover/heading:opacity-100 transition-opacity text-slate-600 hover:text-cyan-400 no-underline"
         aria-hidden="true"
       >
         #
@@ -122,8 +122,8 @@ function ScrollToTop({ targetRef }: { targetRef: React.RefObject<HTMLElement | n
     <button
       onClick={scrollUp}
       title="Volver arriba"
-      className={`fixed bottom-6 right-6 z-50 bg-gray-800 border border-gray-700 hover:border-green-500
-        text-gray-500 hover:text-green-400 rounded-full p-3 shadow-lg
+      className={`fixed bottom-6 right-6 z-50 bg-slate-800 border border-slate-700 hover:border-cyan-500
+        text-slate-500 hover:text-cyan-400 rounded-full p-3 shadow-lg
         transition-all duration-200
         ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3 pointer-events-none'}`}
     >
@@ -140,11 +140,11 @@ function TableOfContents({ headings, className = "hidden xl:block w-64 shrink-0 
   
   const content = (
     <>
-      <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4 border-b border-gray-800 pb-2">En esta página</h3>
+      <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-4 border-b border-slate-800 pb-2">En esta página</h3>
       <ul className="space-y-2.5 text-sm">
         {headings.map(h => (
           <li key={h.id} style={{ paddingLeft: `${(h.level - 2) * 1}rem` }}>
-            <a href={`#${h.id}`} className="text-gray-500 hover:text-green-400 transition-colors line-clamp-2 block leading-snug">
+            <a href={`#${h.id}`} className="text-slate-500 hover:text-cyan-400 transition-colors line-clamp-2 block leading-snug">
               {h.text}
             </a>
           </li>
@@ -206,51 +206,51 @@ export default function ArticleView({ article, prev, next, categoryArticles }: P
           
           <div className="flex-1 max-w-3xl xl:w-full">
             <nav aria-label="Ruta de navegación" className="mb-6">
-              <ol className="flex items-center gap-1.5 text-sm text-gray-600 flex-wrap">
-                <li><Link href="/" className="hover:text-green-400 transition-colors">Inicio</Link></li>
+              <ol className="flex items-center gap-1.5 text-sm text-slate-600 flex-wrap">
+                <li><Link href="/" className="hover:text-cyan-400 transition-colors">Inicio</Link></li>
                 <li aria-hidden="true">/</li>
-                <li><Link href={`/?cat=${article.category}`} className="hover:text-green-400 transition-colors">{categoryLabel}</Link></li>
+                <li><Link href={`/?cat=${article.category}`} className="hover:text-cyan-400 transition-colors">{categoryLabel}</Link></li>
                 <li aria-hidden="true">/</li>
-                <li className="text-gray-400 truncate max-w-[200px]" aria-current="page">{article.title}</li>
+                <li className="text-slate-400 truncate max-w-[200px]" aria-current="page">{article.title}</li>
               </ol>
             </nav>
 
             <article>
-              <header className="mb-10 pb-6 border-b border-gray-800/60">
+              <header className="mb-10 pb-6 border-b border-slate-800/60">
                 <div className="flex flex-wrap items-center gap-2 mb-4">
                   <CategoryTag category={article.category} />
                   {article.tags.map(tag => (
-                    <span key={tag} className="text-xs font-medium text-gray-400 bg-gray-800/80 border border-gray-700 px-2 py-0.5 rounded shrink-0">
+                    <span key={tag} className="text-xs font-medium text-slate-400 bg-slate-800/80 border border-slate-700 px-2 py-0.5 rounded shrink-0">
                       {tag}
                     </span>
                   ))}
-                  <span className="ml-auto text-xs text-gray-500 font-medium flex items-center gap-1.5 bg-gray-900 px-2.5 py-1 rounded border border-gray-800">
+                  <span className="ml-auto text-xs text-slate-500 font-medium flex items-center gap-1.5 bg-slate-900 px-2.5 py-1 rounded border border-slate-800">
                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
                     {article.readingTime} min de lectura
                   </span>
                 </div>
-                <h1 className="text-3xl md:text-4xl font-bold text-gray-100 mb-4">{article.title}</h1>
+                <h1 className="text-3xl md:text-4xl font-bold text-slate-100 mb-4">{article.title}</h1>
                 {article.description && (
-                  <p className="text-lg text-gray-400 leading-relaxed">{article.description}</p>
+                  <p className="text-lg text-slate-400 leading-relaxed">{article.description}</p>
                 )}
               </header>
 
               <TableOfContents 
                 headings={article.headings} 
-                className="block xl:hidden mb-10 bg-gray-900/50 border border-gray-800 rounded-lg p-5" 
+                className="block xl:hidden mb-10 bg-slate-900/50 border border-slate-800 rounded-lg p-5" 
                 isMobile={true} 
               />
 
-              <div className="prose prose-invert prose-green prose-sm max-w-none
-                prose-headings:text-gray-100 prose-headings:font-semibold
-                prose-p:text-gray-300 prose-p:leading-relaxed
-                prose-strong:text-gray-200
-                prose-code:text-green-300
-                prose-a:text-green-400 hover:prose-a:text-green-300 transition-colors
-                prose-li:text-gray-300
-                prose-blockquote:border-green-700 prose-blockquote:bg-green-900/10 prose-blockquote:px-4 prose-blockquote:py-2 prose-blockquote:rounded-r-lg prose-blockquote:not-italic prose-blockquote:text-gray-300
-                prose-hr:border-gray-800/60
-                prose-table:text-gray-300 prose-thead:text-gray-200
+              <div className="prose prose-invert prose-cyan prose-sm max-w-none
+                prose-headings:text-slate-100 prose-headings:font-semibold
+                prose-p:text-slate-300 prose-p:leading-relaxed
+                prose-strong:text-slate-200
+                prose-code:text-cyan-300
+                prose-a:text-cyan-400 hover:prose-a:text-cyan-300 transition-colors
+                prose-li:text-slate-300
+                prose-blockquote:border-green-700 prose-blockquote:bg-cyan-900/10 prose-blockquote:px-4 prose-blockquote:py-2 prose-blockquote:rounded-r-lg prose-blockquote:not-italic prose-blockquote:text-slate-300
+                prose-hr:border-slate-800/60
+                prose-table:text-slate-300 prose-thead:text-slate-200
               ">
                 <ReactMarkdown
                   remarkPlugins={[remarkGfm]}
@@ -259,7 +259,7 @@ export default function ArticleView({ article, prev, next, categoryArticles }: P
                     h2: ({ children }) => <Heading level={2}>{children}</Heading>,
                     h3: ({ children }) => <Heading level={3}>{children}</Heading>,
                     h4: ({ children }) => <Heading level={4}>{children}</Heading>,
-                    table: ({ children }) => <div className="overflow-x-auto my-6 border border-gray-800 rounded-lg"><table className="w-full text-left m-0">{children}</table></div>,
+                    table: ({ children }) => <div className="overflow-x-auto my-6 border border-slate-800 rounded-lg"><table className="w-full text-left m-0">{children}</table></div>,
                     code(props) {
                       const { children, className, node, ...rest } = props
                       const match = /language-(\w+)/.exec(className || '')
@@ -267,8 +267,8 @@ export default function ArticleView({ article, prev, next, categoryArticles }: P
                       if (!match) {
                         const text = extractText(children)
                         return (
-                          <span className="inline-flex items-center group/code bg-gray-800/60 border border-gray-700/50 rounded px-1.5 py-0.5">
-                            <code className="text-green-400 font-mono text-[0.85em] before:content-none after:content-none" {...rest}>{children}</code>
+                          <span className="inline-flex items-center group/code bg-slate-800/60 border border-slate-700/50 rounded px-1.5 py-0.5">
+                            <code className="text-cyan-400 font-mono text-[0.85em] before:content-none after:content-none" {...rest}>{children}</code>
                             <CopyButton text={text} variant="inline" />
                           </span>
                         )
@@ -282,9 +282,9 @@ export default function ArticleView({ article, prev, next, categoryArticles }: P
                       }
                       
                       return (
-                        <div className="relative group/code-block my-6 rounded-lg overflow-hidden border border-gray-800 shadow-sm">
-                          <div className="flex items-center justify-between px-4 py-2 bg-gray-900 border-b border-gray-800">
-                            <span className="text-[10px] font-mono text-gray-500 uppercase tracking-wider">{language}</span>
+                        <div className="relative group/code-block my-6 rounded-lg overflow-hidden border border-slate-800 shadow-sm">
+                          <div className="flex items-center justify-between px-4 py-2 bg-slate-900 border-b border-slate-800">
+                            <span className="text-[10px] font-mono text-slate-500 uppercase tracking-wider">{language}</span>
                           </div>
                           <SyntaxHighlighter
                             children={content}
@@ -306,23 +306,23 @@ export default function ArticleView({ article, prev, next, categoryArticles }: P
               </div>
 
               {(prev || next) && (
-                <nav aria-label="Navegación entre artículos" className="mt-16 pt-8 border-t border-gray-800/60 grid grid-cols-2 gap-4">
+                <nav aria-label="Navegación entre artículos" className="mt-16 pt-8 border-t border-slate-800/60 grid grid-cols-2 gap-4">
                   {prev ? (
                     <Link
                       href={`/article/${prev.category}/${prev.slug}/`}
-                      className="group flex flex-col gap-1.5 p-4 rounded-xl bg-gray-900/50 border border-gray-800 hover:border-green-700 hover:bg-gray-800/50 transition-all shadow-sm hover:shadow-md"
+                      className="group flex flex-col gap-1.5 p-4 rounded-xl bg-slate-900/50 border border-slate-800 hover:border-cyan-700 hover:bg-slate-800/50 transition-all shadow-sm hover:shadow-md"
                     >
-                      <span className="text-xs font-semibold text-gray-500 tracking-wider uppercase">← Anterior</span>
-                      <span className="text-sm font-medium text-gray-300 group-hover:text-green-400 transition-colors line-clamp-2">{prev.title}</span>
+                      <span className="text-xs font-semibold text-slate-500 tracking-wider uppercase">← Anterior</span>
+                      <span className="text-sm font-medium text-slate-300 group-hover:text-cyan-400 transition-colors line-clamp-2">{prev.title}</span>
                     </Link>
                   ) : <div />}
                   {next ? (
                     <Link
                       href={`/article/${next.category}/${next.slug}/`}
-                      className="group flex flex-col gap-1.5 p-4 rounded-xl bg-gray-900/50 border border-gray-800 hover:border-green-700 hover:bg-gray-800/50 transition-all shadow-sm hover:shadow-md text-right"
+                      className="group flex flex-col gap-1.5 p-4 rounded-xl bg-slate-900/50 border border-slate-800 hover:border-cyan-700 hover:bg-slate-800/50 transition-all shadow-sm hover:shadow-md text-right"
                     >
-                      <span className="text-xs font-semibold text-gray-500 tracking-wider uppercase">Siguiente →</span>
-                      <span className="text-sm font-medium text-gray-300 group-hover:text-green-400 transition-colors line-clamp-2">{next.title}</span>
+                      <span className="text-xs font-semibold text-slate-500 tracking-wider uppercase">Siguiente →</span>
+                      <span className="text-sm font-medium text-slate-300 group-hover:text-cyan-400 transition-colors line-clamp-2">{next.title}</span>
                     </Link>
                   ) : <div />}
                 </nav>
