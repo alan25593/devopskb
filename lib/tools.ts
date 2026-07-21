@@ -169,5 +169,15 @@ export const TOOLS: Tool[] = [
     group: 'Utilidades',
     badges: ['Offline', 'Instantáneo', 'Browser Only'],
     status: 'Stable'
+  },
+  {
+    id: 'password',
+    label: 'Password Generator',
+    description: 'Generá contraseñas seguras o passphrases con alto nivel de entropía. Soporte para generación múltiple y reglas personalizadas.',
+    href: '/tools/password',
+    iconPath: 'M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z',
+    group: 'Seguridad & Crypto',
+    badges: ['Offline', 'Browser Only', 'Instantáneo'],
+    status: 'Nuevo'
   }
 ]
