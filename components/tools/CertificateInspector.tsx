@@ -47,14 +47,7 @@ export default function CertificateInspector() {
 
         setResult({ source: 'PEM Local', chain })
       } else {
-        const domain = trimmed.replace(/^https?:\/\//, '').split('/')[0]
-        const res = await fetch(`/api/tls?host=${encodeURIComponent(domain)}`)
-        const data = await res.json()
-        if (!res.ok) throw new Error(data.error || 'Error de conexión TLS')
-        setResult({
-          source: `Conexión a ${domain}:443`,
-          chain: data.chain
-        })
+        throw new Error('Solo se soporta la inspección de certificados PEM en el cliente. Por favor, pega el contenido -----BEGIN CERTIFICATE----- completo.')
       }
     } catch (e: any) {
       setError(e.message || 'Error al procesar el certificado')

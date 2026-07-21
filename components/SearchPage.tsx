@@ -118,136 +118,215 @@ export default function SearchPage({ articles }: SearchPageProps) {
   const isFiltering = query.length > 0 || activeCategory !== null
 
   return (
-    <div className="flex h-dvh overflow-hidden">
+    <div className="flex h-dvh overflow-hidden bg-slate-950">
       <Sidebar
         activeCategory={activeCategory}
         onCategoryChange={setActiveCategory}
         mode="filter"
       />
 
-      <main className="flex-1 overflow-auto">
-        <div className="pt-14 px-4 pb-6 md:p-6 max-w-3xl mx-auto">
+      <main className="flex-1 overflow-auto relative">
+        <div className={`mx-auto transition-all duration-300 ${isFiltering ? 'pt-14 px-4 pb-6 md:p-6 max-w-3xl' : 'pt-16 md:pt-24 px-4 pb-12 max-w-5xl'}`}>
 
           {!isFiltering && (
-            <header className="mb-8 text-center">
-              <h1 className="text-3xl font-bold text-gray-100 mb-2">
-                DevOps <span className="text-green-400">KB</span>
+            <header className="mb-10 text-center animate-in fade-in slide-in-from-bottom-4 duration-700">
+              <h1 className="text-4xl md:text-5xl font-bold text-slate-50 mb-4 tracking-tight">
+                DevOps <span className="text-cyan-400">Portal</span>
               </h1>
-              <p className="text-gray-400 text-sm leading-relaxed">
-                Comandos, snippets y guías para Docker, Kubernetes, Terraform, Linux, Git y Windows.
-              </p>
-              <p className="text-xs text-gray-600 mt-2">
-                {articles.length} artículos · {CATEGORIES.length} tecnologías · snippets listos para copiar
+              <p className="text-slate-400 text-base md:text-lg max-w-2xl mx-auto">
+                Herramientas esenciales, comandos y guías para SREs y DevOps.
               </p>
             </header>
           )}
 
-          <div className="mb-4">
-            <div className="relative mb-3">
-              <input
-                ref={inputRef}
-                type="text"
-                placeholder='Buscar... (ej: "forzar git push", "borrar contenedores y volumen")'
-                value={query}
-                onChange={e => setQuery(e.target.value)}
-                className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 pr-20 text-gray-100 placeholder-gray-600 focus:outline-none focus:border-green-500 focus:ring-1 focus:ring-green-500 font-mono text-sm"
-                autoFocus
-              />
-              <kbd className="hidden md:flex absolute right-3 top-1/2 -translate-y-1/2 items-center gap-1 text-xs text-gray-600 bg-gray-800 border border-gray-700 rounded px-1.5 py-0.5 font-mono pointer-events-none select-none">
-                Ctrl K
-              </kbd>
-            </div>
-
-            <div className="flex flex-wrap gap-2">
-              {CATEGORIES.map(cat => {
-                const isActive = activeCategory === cat.id
-                return (
-                  <button
-                    key={cat.id}
-                    onClick={() => setActiveCategory(isActive ? null : cat.id)}
-                    className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border transition-colors ${
-                      isActive
-                        ? 'bg-green-900/50 border-green-700 text-green-300'
-                        : 'bg-gray-900 border-gray-800 text-gray-500 hover:border-gray-600 hover:text-gray-300'
-                    }`}
-                  >
-                    <svg role="img" viewBox="0 0 24 24" width="11" height="11" fill={`#${cat.hex}`} aria-hidden="true">
-                      <path d={cat.svgPath} />
-                    </svg>
-                    {cat.label}
-                  </button>
-                )
-              })}
-              {activeCategory && (
-                <button
-                  onClick={() => setActiveCategory(null)}
-                  className="px-3 py-1 rounded-full text-xs border border-gray-800 text-gray-600 hover:text-gray-400 transition-colors"
-                >
-                  × limpiar
-                </button>
-              )}
-            </div>
-
-            {query && (
-              <p className="text-xs text-gray-600 mt-2 flex items-center gap-2">
-                <span>
-                  {results.length} resultado{results.length !== 1 ? 's' : ''}
-                  {activeCategory ? ` en ${activeCategory}` : ''}
-                </span>
-                {isFuzzy && results.length > 0 && (
-                  <span className="text-yellow-600/70 border border-yellow-700/40 rounded px-1.5 py-0.5 text-xs">
-                    búsqueda aproximada
-                  </span>
-                )}
-              </p>
-            )}
+          <div className={`relative transition-all duration-500 z-20 ${isFiltering ? 'mb-4' : 'max-w-2xl mx-auto mb-16'}`}>
+            <input
+              ref={inputRef}
+              type="text"
+              placeholder='Buscar comandos, artículos o herramientas...'
+              value={query}
+              onChange={e => setQuery(e.target.value)}
+              className={`w-full bg-slate-900/50 backdrop-blur-md border border-slate-800 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500/50 font-mono transition-all shadow-xl shadow-black/20 ${isFiltering ? 'rounded-lg px-4 py-3 pr-20 text-sm' : 'rounded-2xl px-6 py-4 md:py-5 pr-24 text-base md:text-lg hover:bg-slate-900/80'}`}
+              autoFocus
+            />
+            <kbd className={`hidden md:flex absolute right-4 top-1/2 -translate-y-1/2 items-center gap-1 text-xs text-slate-500 bg-slate-800 border border-slate-700 rounded px-2 py-1 font-mono pointer-events-none select-none transition-opacity ${isFiltering ? 'opacity-100' : 'opacity-70'}`}>
+              Ctrl K
+            </kbd>
           </div>
 
-          <div className="space-y-2">
-            {results.length === 0 && query && (
-              <div className="text-center py-16">
-                <p className="text-gray-600 text-sm">Sin resultados para <span className="text-gray-400">"{query}"</span></p>
-                <p className="text-gray-700 text-xs mt-2">
-                  {query.trim().split(/\s+/).some(w => w.length < 2)
-                    ? 'Usá palabras de al menos 2 caracteres'
-                    : 'Probá con otras palabras clave'}
-                </p>
-              </div>
-            )}
-
-            {results.length === 0 && !query && activeCategory && (
-              <div className="text-center py-16">
-                <p className="text-gray-700 text-sm">No hay artículos en esta categoría.</p>
-              </div>
-            )}
-
-            {results.map(article => (
-              <Link
-                key={`${article.category}/${article.slug}`}
-                href={`/article/${article.category}/${article.slug}/`}
-                className="block bg-gray-900 border border-gray-800 rounded-lg p-4 hover:border-green-700 hover:bg-gray-800/50 transition-colors group"
-              >
-                <div className="flex items-center gap-2 mb-1.5">
-                  <CategoryTag category={article.category} />
-                  <span className="font-medium text-gray-100 group-hover:text-white truncate">
-                    {article.title}
-                  </span>
+          {!isFiltering && (
+            <div className="space-y-16 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-150 fill-mode-both">
+              
+              <section>
+                <h2 className="text-sm font-semibold text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-cyan-500"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                  Quick Access
+                </h2>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {[
+                    { name: 'DNS Toolkit', path: '/tools/dns', icon: <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path> },
+                    { name: 'YAML Validator', path: '/tools/yaml', icon: <><polyline points="4 7 4 4 20 4 20 7"></polyline><line x1="9" y1="20" x2="15" y2="20"></line><line x1="12" y1="4" x2="12" y2="20"></line></> },
+                    { name: 'JWT Decoder', path: '/tools/jwt', icon: <><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></> },
+                    { name: 'K8s Analyzer', path: '/tools/k8s-analyzer', icon: <><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></> }
+                  ].map(tool => (
+                    <Link key={tool.path} href={tool.path} className="group relative overflow-hidden bg-slate-900/40 backdrop-blur-sm border border-slate-800 rounded-xl p-4 hover:border-cyan-500/50 hover:bg-slate-800/50 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-cyan-900/20">
+                      <div className="text-cyan-400 mb-3 opacity-70 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300 transform origin-left">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          {tool.icon}
+                        </svg>
+                      </div>
+                      <h3 className="text-sm font-medium text-slate-200 group-hover:text-cyan-300 transition-colors">{tool.name}</h3>
+                    </Link>
+                  ))}
                 </div>
-                <p className="text-gray-500 text-sm leading-relaxed line-clamp-2">
-                  {article.description}
+              </section>
+
+              <section>
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-sm font-semibold text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-emerald-500"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                    Explorar por Tecnología
+                  </h2>
+                  <span className="text-xs text-slate-500">{articles.length} artículos</span>
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                  {CATEGORIES.map(cat => (
+                    <button
+                      key={cat.id}
+                      onClick={() => setActiveCategory(cat.id)}
+                      className="group flex flex-col items-center justify-center gap-3 bg-slate-900/30 backdrop-blur-sm border border-slate-800 rounded-2xl p-5 hover:border-emerald-500/50 hover:bg-slate-800/40 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-emerald-900/10"
+                    >
+                      <svg role="img" viewBox="0 0 24 24" width="28" height="28" fill={`#${cat.hex}`} className="opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300">
+                        <path d={cat.svgPath} />
+                      </svg>
+                      <span className="text-xs font-medium text-slate-300 group-hover:text-emerald-300 transition-colors">{cat.label}</span>
+                    </button>
+                  ))}
+                </div>
+              </section>
+
+              <section>
+                <h2 className="text-sm font-semibold text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-purple-500"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                  Últimos Artículos
+                </h2>
+                <div className="grid md:grid-cols-2 gap-4">
+                  {articles.slice(0, 4).map(article => (
+                    <Link
+                      key={`${article.category}/${article.slug}`}
+                      href={`/article/${article.category}/${article.slug}/`}
+                      className="block bg-slate-900/30 backdrop-blur-sm border border-slate-800 rounded-xl p-4 hover:border-purple-500/40 hover:bg-slate-800/40 transition-all duration-300 group"
+                    >
+                      <div className="flex items-center gap-2 mb-2">
+                        <CategoryTag category={article.category} />
+                        <span className="font-medium text-slate-200 group-hover:text-purple-300 truncate transition-colors">
+                          {article.title}
+                        </span>
+                      </div>
+                      <p className="text-slate-500 text-sm leading-relaxed line-clamp-2">
+                        {article.description}
+                      </p>
+                    </Link>
+                  ))}
+                </div>
+              </section>
+
+            </div>
+          )}
+
+          {isFiltering && (
+            <div className="animate-in fade-in duration-300">
+              <div className="flex flex-wrap gap-2 mb-4">
+                {CATEGORIES.map(cat => {
+                  const isActive = activeCategory === cat.id
+                  return (
+                    <button
+                      key={cat.id}
+                      onClick={() => setActiveCategory(isActive ? null : cat.id)}
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${
+                        isActive
+                          ? 'bg-cyan-900/30 border-cyan-700/50 text-cyan-300'
+                          : 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-600 hover:text-slate-200'
+                      }`}
+                    >
+                      <svg role="img" viewBox="0 0 24 24" width="12" height="12" fill={`#${cat.hex}`} aria-hidden="true" className={isActive ? '' : 'opacity-70'}>
+                        <path d={cat.svgPath} />
+                      </svg>
+                      {cat.label}
+                    </button>
+                  )
+                })}
+                {activeCategory && (
+                  <button
+                    onClick={() => setActiveCategory(null)}
+                    className="px-3 py-1.5 rounded-full text-xs border border-slate-800 text-slate-500 hover:text-slate-300 hover:border-slate-700 transition-colors"
+                  >
+                    × limpiar
+                  </button>
+                )}
+              </div>
+
+              {query && (
+                <p className="text-xs text-slate-500 mb-4 flex items-center gap-2">
+                  <span>
+                    {results.length} resultado{results.length !== 1 ? 's' : ''}
+                    {activeCategory ? ` en ${activeCategory}` : ''}
+                  </span>
+                  {isFuzzy && results.length > 0 && (
+                    <span className="text-amber-500/70 bg-amber-950/30 border border-amber-900/50 rounded px-1.5 py-0.5 text-[10px] uppercase tracking-wider">
+                      búsqueda aproximada
+                    </span>
+                  )}
                 </p>
-                {article.keywords.length > 0 && (
-                  <div className="flex flex-wrap gap-1 mt-2">
-                    {article.keywords.slice(0, 3).map(kw => (
-                      <span key={kw} className="text-xs text-gray-400 bg-gray-800 border border-gray-700 px-1.5 py-0.5 rounded">
-                        {kw}
-                      </span>
-                    ))}
+              )}
+
+              <div className="space-y-3">
+                {results.length === 0 && query && (
+                  <div className="text-center py-16 bg-slate-900/20 rounded-xl border border-slate-800/50 border-dashed">
+                    <p className="text-slate-400 text-sm">Sin resultados para <span className="text-slate-300 font-medium">"{query}"</span></p>
+                    <p className="text-slate-600 text-xs mt-2">
+                      {query.trim().split(/\s+/).some(w => w.length < 2)
+                        ? 'Usá palabras de al menos 2 caracteres'
+                        : 'Probá con otras palabras clave'}
+                    </p>
                   </div>
                 )}
-              </Link>
-            ))}
-          </div>
+
+                {results.length === 0 && !query && activeCategory && (
+                  <div className="text-center py-16 bg-slate-900/20 rounded-xl border border-slate-800/50 border-dashed">
+                    <p className="text-slate-500 text-sm">No hay artículos en esta categoría.</p>
+                  </div>
+                )}
+
+                {results.map(article => (
+                  <Link
+                    key={`${article.category}/${article.slug}`}
+                    href={`/article/${article.category}/${article.slug}/`}
+                    className="block bg-slate-900/40 backdrop-blur-sm border border-slate-800 rounded-xl p-4 hover:border-cyan-700/50 hover:bg-slate-800/60 transition-all duration-300 group"
+                  >
+                    <div className="flex items-center gap-2 mb-2">
+                      <CategoryTag category={article.category} />
+                      <span className="font-medium text-slate-200 group-hover:text-cyan-300 truncate transition-colors">
+                        {article.title}
+                      </span>
+                    </div>
+                    <p className="text-slate-400 text-sm leading-relaxed line-clamp-2 mb-3">
+                      {article.description}
+                    </p>
+                    {article.keywords.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5">
+                        {article.keywords.slice(0, 3).map(kw => (
+                          <span key={kw} className="text-[10px] text-slate-500 bg-slate-950/50 border border-slate-800/80 px-2 py-0.5 rounded-full uppercase tracking-wider">
+                            {kw}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </main>
     </div>

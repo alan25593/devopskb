@@ -28,12 +28,42 @@ export default function DnsToolkit() {
     setResult(null)
 
     try {
-      const res = await fetch(`/api/dns?domain=${encodeURIComponent(d.trim())}&type=${encodeURIComponent(t)}`)
-      const data = await res.json()
+      const fetchDns = async (queryType: string) => {
+        const res = await fetch(`https://cloudflare-dns.com/dns-query?name=${encodeURIComponent(d.trim())}&type=${queryType}`, {
+          headers: { 'Accept': 'application/dns-json' }
+        })
+        const data = await res.json()
+        if (!res.ok) throw new Error('Error de conexión con Cloudflare DoH')
+        return data.Answer ? data.Answer.map((a: any) => a.data) : []
+      }
+
+      let data: any = null
+
+      if (t === 'ALL') {
+        const types = ['A', 'AAAA', 'MX', 'TXT', 'NS']
+        data = {}
+        await Promise.all(types.map(async (queryType) => {
+          try {
+            data[queryType] = await fetchDns(queryType)
+          } catch {
+            data[queryType] = []
+          }
+        }))
+      } else if (t === 'REVERSE') {
+        // Reverse DNS no es tan simple con DoH estándar si se usa IP directa, 
+        // pero podemos probar con PTR (arpa) o mostrar un aviso.
+        // Simplificamos mapeando a PTR si es IP, o dando error:
+        if (/^\\d+\\.\\d+\\.\\d+\\.\\d+$/.test(d.trim())) {
+          const arpa = d.trim().split('.').reverse().join('.') + '.in-addr.arpa'
+          data = await fetchDns('PTR')
+        } else {
+          throw new Error('Para REVERSE ingrese una IP IPv4')
+        }
+      } else {
+        data = await fetchDns(t)
+      }
       
-      if (!res.ok) throw new Error(data.error || 'Unknown error')
-      
-      setResult(data.result)
+      setResult(data)
     } catch (e: any) {
       setError(e.message)
     } finally {
