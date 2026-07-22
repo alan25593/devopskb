@@ -215,7 +215,7 @@ export default function SearchPage({ articles }: SearchPageProps) {
                     <Link
                       key={`${article.category}/${article.slug}`}
                       href={`/article/${article.category}/${article.slug}/`}
-                      className="block bg-slate-900/30 backdrop-blur-sm border border-slate-800 rounded-xl p-4 hover:border-purple-500/40 hover:bg-slate-800/40 transition-all duration-300 group"
+                      className="block overflow-hidden bg-slate-900/30 backdrop-blur-sm border border-slate-800 rounded-xl p-4 hover:border-purple-500/40 hover:bg-slate-800/40 transition-all duration-300 group"
                     >
                       <div className="flex items-center gap-2 mb-2 min-w-0">
                         <CategoryTag category={article.category} />
@@ -302,11 +302,11 @@ export default function SearchPage({ articles }: SearchPageProps) {
                   <Link
                     key={`${article.category}/${article.slug}`}
                     href={`/article/${article.category}/${article.slug}/`}
-                    className="block bg-slate-900/40 backdrop-blur-sm border border-slate-800 rounded-xl p-4 hover:border-cyan-700/50 hover:bg-slate-800/60 transition-all duration-300 group"
+                    className="block overflow-hidden bg-slate-900/40 backdrop-blur-sm border border-slate-800 rounded-xl p-4 hover:border-cyan-700/50 hover:bg-slate-800/60 transition-all duration-300 group"
                   >
-                    <div className="flex items-center gap-2 mb-2">
+                    <div className="flex items-center gap-2 mb-2 min-w-0">
                       <CategoryTag category={article.category} />
-                      <span className="font-medium text-slate-200 group-hover:text-cyan-300 truncate transition-colors">
+                      <span className="font-medium text-slate-200 group-hover:text-cyan-300 truncate transition-colors flex-1 min-w-0">
                         {article.title}
                       </span>
                     </div>
