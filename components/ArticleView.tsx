@@ -6,6 +6,7 @@ import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism'
+import { slugify } from '@/lib/content'
 import type { Article, Heading as HeadingType } from '@/lib/content'
 import Sidebar from './Sidebar'
 import CategoryTag from './CategoryTag'
@@ -78,14 +79,6 @@ function CopyButton({ text, variant }: { text: string; variant: 'block' | 'inlin
   )
 }
 
-function slugify(text: string): string {
-  return text
-    .toLowerCase()
-    .replace(/[()[\]{}.,;:!?¿¡'"]/g, '')
-    .replace(/\s+/g, '-')
-    .replace(/-+/g, '-')
-    .trim()
-}
 
 function Heading({ level, children }: { level: number; children: React.ReactNode }) {
   const text = extractText(children)
