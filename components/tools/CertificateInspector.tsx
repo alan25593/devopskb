@@ -59,7 +59,7 @@ export default function CertificateInspector() {
         }
         
         const data = await res.json()
-        if (data.success === false) {
+        if (data.success === false || !data.data || !Array.isArray(data.data.chain)) {
           throw new Error(data.error || 'No se pudo obtener el certificado para este dominio.')
         }
 
@@ -68,7 +68,7 @@ export default function CertificateInspector() {
           return acc
         }, {} as Record<string, string>)
 
-        const chain = data.chain.map((item: any) => {
+        const chain = data.data.chain.map((item: any) => {
           const cert = forge.pki.certificateFromPem(item.certificate)
           return {
             subject: getAttrs(cert.subject.attributes),
