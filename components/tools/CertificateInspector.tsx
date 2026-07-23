@@ -47,7 +47,41 @@ export default function CertificateInspector() {
 
         setResult({ source: 'PEM Local', chain })
       } else {
-        throw new Error('Solo se soporta la inspección de certificados PEM en el cliente. Por favor, pega el contenido -----BEGIN CERTIFICATE----- completo.')
+        const domain = trimmed.replace(/^https?:\/\//, '').split('/')[0]
+        const res = await fetch('https://tools.trustico.com/api/chain/analyze-url', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url: `https://${domain}` })
+        })
+        
+        if (!res.ok) {
+          throw new Error(`Error en la consulta: ${res.statusText}`)
+        }
+        
+        const data = await res.json()
+        if (data.success === false) {
+          throw new Error(data.error || 'No se pudo obtener el certificado para este dominio.')
+        }
+
+        const getAttrs = (attrs: any[]) => attrs.reduce((acc, curr) => {
+          acc[curr.shortName || curr.name || 'Unknown'] = curr.value
+          return acc
+        }, {} as Record<string, string>)
+
+        const chain = data.chain.map((item: any) => {
+          const cert = forge.pki.certificateFromPem(item.certificate)
+          return {
+            subject: getAttrs(cert.subject.attributes),
+            issuer: getAttrs(cert.issuer.attributes),
+            valid_from: cert.validity.notBefore.toISOString(),
+            valid_to: cert.validity.notAfter.toISOString(),
+            fingerprint: forge.md.sha1.create().update(forge.asn1.toDer(forge.pki.certificateToAsn1(cert)).getBytes()).digest().toHex().match(/.{1,2}/g)?.join(':').toUpperCase(),
+            fingerprint256: forge.md.sha256.create().update(forge.asn1.toDer(forge.pki.certificateToAsn1(cert)).getBytes()).digest().toHex().match(/.{1,2}/g)?.join(':').toUpperCase(),
+            serialNumber: cert.serialNumber
+          }
+        })
+
+        setResult({ source: `Conexión a ${domain}:443`, chain })
       }
     } catch (e: any) {
       setError(e.message || 'Error al procesar el certificado')

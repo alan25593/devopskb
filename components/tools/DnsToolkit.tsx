@@ -28,8 +28,9 @@ export default function DnsToolkit() {
     setResult(null)
 
     try {
-      const fetchDns = async (queryType: string) => {
-        const res = await fetch(`https://cloudflare-dns.com/dns-query?name=${encodeURIComponent(d.trim())}&type=${queryType}`, {
+      const fetchDns = async (queryType: string, overrideName?: string) => {
+        const nameToQuery = overrideName || d.trim()
+        const res = await fetch(`https://cloudflare-dns.com/dns-query?name=${encodeURIComponent(nameToQuery)}&type=${queryType}`, {
           headers: { 'Accept': 'application/dns-json' }
         })
         const data = await res.json()
@@ -52,7 +53,7 @@ export default function DnsToolkit() {
       } else if (t === 'REVERSE') {
         if (/^\d+\.\d+\.\d+\.\d+$/.test(d.trim())) {
           const arpa = d.trim().split('.').reverse().join('.') + '.in-addr.arpa'
-          data = await fetchDns('PTR')
+          data = await fetchDns('PTR', arpa)
         } else {
           throw new Error('Para REVERSE ingrese una IP IPv4 válida')
         }

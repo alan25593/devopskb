@@ -19,11 +19,29 @@ interface SearchPageProps {
 
 export default function SearchPage({ articles }: SearchPageProps) {
   const [query, setQuery] = useState('')
-  const [activeCategory, setActiveCategory] = useState<string | null>(() => {
-    if (typeof window === 'undefined') return null
-    return new URLSearchParams(window.location.search).get('cat')
-  })
+  const [activeCategory, setActiveCategory] = useState<string | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+
+  // Sync category from URL query param on mount
+  useEffect(() => {
+    const cat = new URLSearchParams(window.location.search).get('cat')
+    if (cat) {
+      setActiveCategory(cat)
+    }
+  }, [])
+
+  const handleCategoryChange = (cat: string | null) => {
+    setActiveCategory(cat)
+    if (typeof window !== 'undefined') {
+      const url = new URL(window.location.href)
+      if (cat) {
+        url.searchParams.set('cat', cat)
+      } else {
+        url.searchParams.delete('cat')
+      }
+      window.history.replaceState({}, '', url.pathname + url.search)
+    }
+  }
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -121,7 +139,7 @@ export default function SearchPage({ articles }: SearchPageProps) {
     <div className="flex h-dvh overflow-hidden bg-slate-950">
       <Sidebar
         activeCategory={activeCategory}
-        onCategoryChange={setActiveCategory}
+        onCategoryChange={handleCategoryChange}
         mode="filter"
       />
 
