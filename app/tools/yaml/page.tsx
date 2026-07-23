@@ -1,17 +1,41 @@
 import Link from 'next/link'
 import Sidebar from '@/components/Sidebar'
 import YamlValidator from '@/components/tools/YamlValidator'
+import ToolSchema from '@/components/ToolSchema'
+import LearnMore from '@/components/LearnMore'
+import { getArticle } from '@/lib/content'
 import type { Metadata } from 'next'
 
+const TITLE = 'YAML Validator | WiresOps'
+const DESCRIPTION = 'Validador y formateador de YAML para Kubernetes, Docker Compose y GitHub Actions. Detecta errores de indentación con línea y columna exactas.'
+const PATH = '/tools/yaml/'
+
 export const metadata: Metadata = {
-  title: 'YAML Validator',
-  description: 'Validador y formateador de YAML para Kubernetes, Docker Compose y GitHub Actions. Detecta errores de indentación con línea y columna exactas.',
+  title: TITLE,
+  description: DESCRIPTION,
+  openGraph: {
+    title: TITLE,
+    description: DESCRIPTION,
+    url: PATH,
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary',
+    title: TITLE,
+    description: DESCRIPTION,
+  }
 }
 
 export default function YamlPage() {
+  const relatedArticles = [
+    getArticle('docker', '03-compose'),
+    getArticle('kubernetes', '05-configuracion'),
+  ].filter(Boolean) as any[]
+
   return (
     <div className="flex h-dvh overflow-hidden">
       <Sidebar mode="link" activeCategory={null} activeToolSlug="yaml" />
+      <ToolSchema name="YAML Validator" description={DESCRIPTION} url={PATH} />
 
       <main className="flex-1 overflow-auto">
         <div className="pt-14 px-4 pb-6 md:p-6 max-w-3xl mx-auto">
@@ -34,6 +58,7 @@ export default function YamlPage() {
           </header>
 
           <YamlValidator />
+          <LearnMore articles={relatedArticles} />
         </div>
       </main>
     </div>

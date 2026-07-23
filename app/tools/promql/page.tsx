@@ -1,17 +1,41 @@
 import Link from 'next/link'
 import Sidebar from '@/components/Sidebar'
 import PromqlBuilder from '@/components/tools/PromqlBuilder'
+import ToolSchema from '@/components/ToolSchema'
+import LearnMore from '@/components/LearnMore'
+import { getArticle } from '@/lib/content'
 import type { Metadata } from 'next'
 
+const TITLE = 'PromQL Builder | WiresOps'
+const DESCRIPTION = 'Construí consultas PromQL complejas de forma visual paso a paso sin pelear con la sintaxis.'
+const PATH = '/tools/promql/'
+
 export const metadata: Metadata = {
-  title: 'PromQL Builder | WiresOps',
-  description: 'Construí consultas PromQL complejas de forma visual paso a paso.',
+  title: TITLE,
+  description: DESCRIPTION,
+  openGraph: {
+    title: TITLE,
+    description: DESCRIPTION,
+    url: PATH,
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary',
+    title: TITLE,
+    description: DESCRIPTION,
+  }
 }
 
 export default function PromqlPage() {
+  const relatedArticles = [
+    getArticle('kubernetes', '07-escalado-y-scheduling'),
+    getArticle('kubernetes', '09-troubleshooting'),
+  ].filter(Boolean) as any[]
+
   return (
     <div className="flex h-dvh overflow-hidden">
       <Sidebar mode="link" activeCategory={null} activeToolSlug="promql" />
+      <ToolSchema name="PromQL Builder" description={DESCRIPTION} url={PATH} />
 
       <main className="flex-1 overflow-auto">
         <div className="pt-14 px-4 pb-6 md:p-6 max-w-5xl mx-auto">
@@ -33,6 +57,7 @@ export default function PromqlPage() {
           </header>
 
           <PromqlBuilder />
+          <LearnMore articles={relatedArticles} />
         </div>
       </main>
     </div>

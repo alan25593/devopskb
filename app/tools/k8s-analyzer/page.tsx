@@ -1,17 +1,42 @@
 import Link from 'next/link'
 import Sidebar from '@/components/Sidebar'
 import K8sAnalyzer from '@/components/tools/K8sAnalyzer'
+import ToolSchema from '@/components/ToolSchema'
+import LearnMore from '@/components/LearnMore'
+import { getArticle } from '@/lib/content'
 import type { Metadata } from 'next'
 
+const TITLE = 'Kubernetes Manifest Analyzer | WiresOps'
+const DESCRIPTION = 'Linter de seguridad y buenas prácticas para manifiestos de Kubernetes.'
+const PATH = '/tools/k8s-analyzer/'
+
 export const metadata: Metadata = {
-  title: 'K8s Manifest Analyzer | WiresOps',
-  description: 'Linter de seguridad y buenas prácticas para manifiestos de Kubernetes.',
+  title: TITLE,
+  description: DESCRIPTION,
+  openGraph: {
+    title: TITLE,
+    description: DESCRIPTION,
+    url: PATH,
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary',
+    title: TITLE,
+    description: DESCRIPTION,
+  }
 }
 
 export default function K8sAnalyzerPage() {
+  const relatedArticles = [
+    getArticle('kubernetes', '03-workloads'),
+    getArticle('kubernetes', '08-rbac-y-seguridad'),
+    getArticle('kubernetes', '09-troubleshooting'),
+  ].filter(Boolean) as any[]
+
   return (
     <div className="flex h-dvh overflow-hidden">
       <Sidebar mode="link" activeCategory={null} activeToolSlug="k8s-analyzer" />
+      <ToolSchema name="Kubernetes Manifest Analyzer" description={DESCRIPTION} url={PATH} />
 
       <main className="flex-1 overflow-auto">
         <div className="pt-14 px-4 pb-6 md:p-6 max-w-6xl mx-auto">
@@ -33,6 +58,7 @@ export default function K8sAnalyzerPage() {
           </header>
 
           <K8sAnalyzer />
+          <LearnMore articles={relatedArticles} />
         </div>
       </main>
     </div>

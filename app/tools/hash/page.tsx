@@ -1,17 +1,41 @@
 import Link from 'next/link'
 import Sidebar from '@/components/Sidebar'
 import HashToolkit from '@/components/tools/HashToolkit'
+import ToolSchema from '@/components/ToolSchema'
+import LearnMore from '@/components/LearnMore'
+import { getArticle } from '@/lib/content'
 import type { Metadata } from 'next'
 
+const TITLE = 'Hash & Base64 Toolkit | WiresOps'
+const DESCRIPTION = 'Generá Hashes locales y codificá en Base64/URL. Todo ocurre en el navegador sin enviar datos a servidores.'
+const PATH = '/tools/hash/'
+
 export const metadata: Metadata = {
-  title: 'Hash & Base64 Toolkit | WiresOps',
-  description: 'Generá Hashes locales y codificá en Base64/URL. Todo ocurre en el navegador sin enviar datos a servidores.',
+  title: TITLE,
+  description: DESCRIPTION,
+  openGraph: {
+    title: TITLE,
+    description: DESCRIPTION,
+    url: PATH,
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary',
+    title: TITLE,
+    description: DESCRIPTION,
+  }
 }
 
 export default function HashPage() {
+  const relatedArticles = [
+    getArticle('git', '01-fundamentos-y-flujo'),
+    getArticle('linux', '07-seguridad-y-hardening'),
+  ].filter(Boolean) as any[]
+
   return (
     <div className="flex h-dvh overflow-hidden">
       <Sidebar mode="link" activeCategory={null} activeToolSlug="hash" />
+      <ToolSchema name="Hash & Base64 Toolkit" description={DESCRIPTION} url={PATH} />
 
       <main className="flex-1 overflow-auto">
         <div className="pt-14 px-4 pb-6 md:p-6 max-w-3xl mx-auto">
@@ -33,6 +57,7 @@ export default function HashPage() {
           </header>
 
           <HashToolkit />
+          <LearnMore articles={relatedArticles} />
         </div>
       </main>
     </div>

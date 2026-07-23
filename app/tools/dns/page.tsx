@@ -1,17 +1,41 @@
 import Link from 'next/link'
 import Sidebar from '@/components/Sidebar'
 import DnsToolkit from '@/components/tools/DnsToolkit'
+import ToolSchema from '@/components/ToolSchema'
+import LearnMore from '@/components/LearnMore'
+import { getArticle } from '@/lib/content'
 import type { Metadata } from 'next'
 
+const TITLE = 'DNS Toolkit | WiresOps'
+const DESCRIPTION = 'Lookup DNS y Reverse IP. Consulta registros A, AAAA, MX, TXT, CNAME y más en vivo.'
+const PATH = '/tools/dns/'
+
 export const metadata: Metadata = {
-  title: 'DNS Toolkit | WiresOps',
-  description: 'Lookup DNS y Reverse IP. Consulta registros A, AAAA, MX, TXT, CNAME y más en vivo.',
+  title: TITLE,
+  description: DESCRIPTION,
+  openGraph: {
+    title: TITLE,
+    description: DESCRIPTION,
+    url: PATH,
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary',
+    title: TITLE,
+    description: DESCRIPTION,
+  }
 }
 
 export default function DnsPage() {
+  const relatedArticles = [
+    getArticle('linux', '08-redes-y-dns'),
+    getArticle('windows', '04-redes-y-firewall'),
+  ].filter(Boolean) as any[]
+
   return (
     <div className="flex h-dvh overflow-hidden">
       <Sidebar mode="link" activeCategory={null} activeToolSlug="dns" />
+      <ToolSchema name="DNS Toolkit" description={DESCRIPTION} url={PATH} />
 
       <main className="flex-1 overflow-auto">
         <div className="pt-14 px-4 pb-6 md:p-6 max-w-3xl mx-auto">
@@ -33,6 +57,7 @@ export default function DnsPage() {
           </header>
 
           <DnsToolkit />
+          <LearnMore articles={relatedArticles} />
         </div>
       </main>
     </div>

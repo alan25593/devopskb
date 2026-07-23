@@ -1,17 +1,41 @@
 import Link from 'next/link'
 import Sidebar from '@/components/Sidebar'
 import RbacViewer from '@/components/tools/RbacViewer'
+import ToolSchema from '@/components/ToolSchema'
+import LearnMore from '@/components/LearnMore'
+import { getArticle } from '@/lib/content'
 import type { Metadata } from 'next'
 
+const TITLE = 'RBAC Viewer | WiresOps'
+const DESCRIPTION = 'Inspeccioná RoleBindings y Roles para generar una matriz visual de permisos en Kubernetes.'
+const PATH = '/tools/rbac/'
+
 export const metadata: Metadata = {
-  title: 'RBAC Viewer | WiresOps',
-  description: 'Inspeccioná RoleBindings y Roles para generar una matriz visual de permisos en Kubernetes.',
+  title: TITLE,
+  description: DESCRIPTION,
+  openGraph: {
+    title: TITLE,
+    description: DESCRIPTION,
+    url: PATH,
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary',
+    title: TITLE,
+    description: DESCRIPTION,
+  }
 }
 
 export default function RbacPage() {
+  const relatedArticles = [
+    getArticle('kubernetes', '02-kubectl'),
+    getArticle('kubernetes', '08-rbac-y-seguridad'),
+  ].filter(Boolean) as any[]
+
   return (
     <div className="flex h-dvh overflow-hidden">
       <Sidebar mode="link" activeCategory={null} activeToolSlug="rbac" />
+      <ToolSchema name="RBAC Viewer" description={DESCRIPTION} url={PATH} />
 
       <main className="flex-1 overflow-auto">
         <div className="pt-14 px-4 pb-6 md:p-6 max-w-7xl mx-auto">
@@ -33,6 +57,7 @@ export default function RbacPage() {
           </header>
 
           <RbacViewer />
+          <LearnMore articles={relatedArticles} />
         </div>
       </main>
     </div>

@@ -1,17 +1,41 @@
 import Link from 'next/link'
 import Sidebar from '@/components/Sidebar'
 import TimestampConverter from '@/components/tools/TimestampConverter'
+import ToolSchema from '@/components/ToolSchema'
+import LearnMore from '@/components/LearnMore'
+import { getArticle } from '@/lib/content'
 import type { Metadata } from 'next'
 
+const TITLE = 'Unix Timestamp Converter | WiresOps'
+const DESCRIPTION = 'Convertí timestamps (Epoch, ISO8601, RFC3339) entre UTC y Local. Herramienta para DevOps.'
+const PATH = '/tools/timestamp/'
+
 export const metadata: Metadata = {
-  title: 'Unix Timestamp Converter | WiresOps',
-  description: 'Convertí timestamps (Epoch, ISO8601, RFC3339) entre UTC y Local. Herramienta para DevOps.',
+  title: TITLE,
+  description: DESCRIPTION,
+  openGraph: {
+    title: TITLE,
+    description: DESCRIPTION,
+    url: PATH,
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary',
+    title: TITLE,
+    description: DESCRIPTION,
+  }
 }
 
 export default function TimestampPage() {
+  const relatedArticles = [
+    getArticle('linux', '02-debugging-y-performance'),
+    getArticle('windows', '07-event-logs-y-monitoreo'),
+  ].filter(Boolean) as any[]
+
   return (
     <div className="flex h-dvh overflow-hidden">
       <Sidebar mode="link" activeCategory={null} activeToolSlug="timestamp" />
+      <ToolSchema name="Unix Timestamp Converter" description={DESCRIPTION} url={PATH} />
 
       <main className="flex-1 overflow-auto">
         <div className="pt-14 px-4 pb-6 md:p-6 max-w-3xl mx-auto">
@@ -33,6 +57,7 @@ export default function TimestampPage() {
           </header>
 
           <TimestampConverter />
+          <LearnMore articles={relatedArticles} />
         </div>
       </main>
     </div>

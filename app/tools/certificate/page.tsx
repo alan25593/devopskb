@@ -1,17 +1,41 @@
 import Link from 'next/link'
 import Sidebar from '@/components/Sidebar'
 import CertificateInspector from '@/components/tools/CertificateInspector'
+import ToolSchema from '@/components/ToolSchema'
+import LearnMore from '@/components/LearnMore'
+import { getArticle } from '@/lib/content'
 import type { Metadata } from 'next'
 
+const TITLE = 'Certificate Inspector | WiresOps'
+const DESCRIPTION = 'Analizá certificados SSL/TLS desde una URL o pegando el texto PEM. Chequeá SANs, issuer y expiración.'
+const PATH = '/tools/certificate/'
+
 export const metadata: Metadata = {
-  title: 'Certificate Inspector | WiresOps',
-  description: 'Analizá certificados SSL/TLS desde una URL o pegando el texto PEM. Chequeá SANs, issuer y expiración.',
+  title: TITLE,
+  description: DESCRIPTION,
+  openGraph: {
+    title: TITLE,
+    description: DESCRIPTION,
+    url: PATH,
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary',
+    title: TITLE,
+    description: DESCRIPTION,
+  }
 }
 
 export default function CertificatePage() {
+  const relatedArticles = [
+    getArticle('linux', '07-seguridad-y-hardening'),
+    getArticle('windows', '06-iis'),
+  ].filter(Boolean) as any[]
+
   return (
     <div className="flex h-dvh overflow-hidden">
       <Sidebar mode="link" activeCategory={null} activeToolSlug="certificate" />
+      <ToolSchema name="Certificate Inspector" description={DESCRIPTION} url={PATH} />
 
       <main className="flex-1 overflow-auto">
         <div className="pt-14 px-4 pb-6 md:p-6 max-w-3xl mx-auto">
@@ -33,6 +57,7 @@ export default function CertificatePage() {
           </header>
 
           <CertificateInspector />
+          <LearnMore articles={relatedArticles} />
         </div>
       </main>
     </div>

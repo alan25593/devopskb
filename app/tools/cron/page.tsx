@@ -1,17 +1,41 @@
 import Link from 'next/link'
 import Sidebar from '@/components/Sidebar'
 import CronExplainer from '@/components/tools/CronExplainer'
+import ToolSchema from '@/components/ToolSchema'
+import LearnMore from '@/components/LearnMore'
+import { getArticle } from '@/lib/content'
 import type { Metadata } from 'next'
 
+const TITLE = 'Cron Explainer | WiresOps'
+const DESCRIPTION = 'Explicador de expresiones cron. Pegá una expresión cron y obtené una descripción en español campo por campo y las próximas ejecuciones.'
+const PATH = '/tools/cron/'
+
 export const metadata: Metadata = {
-  title: 'Cron Explainer',
-  description: 'Explicador de expresiones cron. Pegá una expresión cron y obtené una descripción en español campo por campo y las próximas ejecuciones.',
+  title: TITLE,
+  description: DESCRIPTION,
+  openGraph: {
+    title: TITLE,
+    description: DESCRIPTION,
+    url: PATH,
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary',
+    title: TITLE,
+    description: DESCRIPTION,
+  }
 }
 
 export default function CronPage() {
+  const relatedArticles = [
+    getArticle('linux', '05-systemd-y-servicios'),
+    getArticle('kubernetes', '03-workloads'),
+  ].filter(Boolean) as any[]
+
   return (
     <div className="flex h-dvh overflow-hidden">
       <Sidebar mode="link" activeCategory={null} activeToolSlug="cron" />
+      <ToolSchema name="Cron Explainer" description={DESCRIPTION} url={PATH} />
 
       <main className="flex-1 overflow-auto">
         <div className="pt-14 px-4 pb-6 md:p-6 max-w-3xl mx-auto">
@@ -34,6 +58,7 @@ export default function CronPage() {
           </header>
 
           <CronExplainer />
+          <LearnMore articles={relatedArticles} />
         </div>
       </main>
     </div>

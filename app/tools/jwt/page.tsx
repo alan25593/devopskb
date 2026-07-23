@@ -1,17 +1,41 @@
 import Link from 'next/link'
 import Sidebar from '@/components/Sidebar'
 import JwtDecoder from '@/components/tools/JwtDecoder'
+import ToolSchema from '@/components/ToolSchema'
+import LearnMore from '@/components/LearnMore'
+import { getArticle } from '@/lib/content'
 import type { Metadata } from 'next'
 
+const TITLE = 'JWT Decoder | WiresOps'
+const DESCRIPTION = 'Decodificador de tokens JWT. Visualizá header, payload y estado de expiración sin enviar el token a ningún servidor.'
+const PATH = '/tools/jwt/'
+
 export const metadata: Metadata = {
-  title: 'JWT Decoder',
-  description: 'Decodificador de tokens JWT. Visualizá header, payload y estado de expiración sin enviar el token a ningún servidor.',
+  title: TITLE,
+  description: DESCRIPTION,
+  openGraph: {
+    title: TITLE,
+    description: DESCRIPTION,
+    url: PATH,
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary',
+    title: TITLE,
+    description: DESCRIPTION,
+  }
 }
 
 export default function JwtPage() {
+  const relatedArticles = [
+    getArticle('docker', '07-seguridad'),
+    getArticle('linux', '07-seguridad-y-hardening'),
+  ].filter(Boolean) as any[]
+
   return (
     <div className="flex h-dvh overflow-hidden">
       <Sidebar mode="link" activeCategory={null} activeToolSlug="jwt" />
+      <ToolSchema name="JWT Decoder" description={DESCRIPTION} url={PATH} />
 
       <main className="flex-1 overflow-auto">
         <div className="pt-14 px-4 pb-6 md:p-6 max-w-3xl mx-auto">
@@ -34,6 +58,7 @@ export default function JwtPage() {
           </header>
 
           <JwtDecoder />
+          <LearnMore articles={relatedArticles} />
         </div>
       </main>
     </div>

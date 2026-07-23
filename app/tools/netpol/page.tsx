@@ -1,17 +1,41 @@
 import Link from 'next/link'
 import Sidebar from '@/components/Sidebar'
 import NetpolVisualizer from '@/components/tools/NetpolVisualizer'
+import ToolSchema from '@/components/ToolSchema'
+import LearnMore from '@/components/LearnMore'
+import { getArticle } from '@/lib/content'
 import type { Metadata } from 'next'
 
+const TITLE = 'NetworkPolicy Visualizer | WiresOps'
+const DESCRIPTION = 'Convertí NetworkPolicies de Kubernetes en diagramas visuales interactivos para entender los flujos de tráfico.'
+const PATH = '/tools/netpol/'
+
 export const metadata: Metadata = {
-  title: 'NetworkPolicy Visualizer | WiresOps',
-  description: 'Convertí NetworkPolicies de Kubernetes en diagramas visuales interactivos para entender los flujos de tráfico.',
+  title: TITLE,
+  description: DESCRIPTION,
+  openGraph: {
+    title: TITLE,
+    description: DESCRIPTION,
+    url: PATH,
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary',
+    title: TITLE,
+    description: DESCRIPTION,
+  }
 }
 
 export default function NetpolPage() {
+  const relatedArticles = [
+    getArticle('kubernetes', '04-networking'),
+    getArticle('kubernetes', '08-rbac-y-seguridad'),
+  ].filter(Boolean) as any[]
+
   return (
     <div className="flex h-dvh overflow-hidden">
       <Sidebar mode="link" activeCategory={null} activeToolSlug="netpol" />
+      <ToolSchema name="NetworkPolicy Visualizer" description={DESCRIPTION} url={PATH} />
 
       <main className="flex-1 overflow-auto">
         <div className="pt-14 px-4 pb-6 md:p-6 max-w-7xl mx-auto">
@@ -33,6 +57,7 @@ export default function NetpolPage() {
           </header>
 
           <NetpolVisualizer />
+          <LearnMore articles={relatedArticles} />
         </div>
       </main>
     </div>

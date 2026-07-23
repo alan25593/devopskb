@@ -1,17 +1,41 @@
 import Link from 'next/link'
 import Sidebar from '@/components/Sidebar'
 import JsonFormatter from '@/components/tools/JsonFormatter'
+import ToolSchema from '@/components/ToolSchema'
+import LearnMore from '@/components/LearnMore'
+import { getArticle } from '@/lib/content'
 import type { Metadata } from 'next'
 
+const TITLE = 'JSON Formatter | WiresOps'
+const DESCRIPTION = 'Formateador y minificador de JSON. Pegá JSON minificado y expandilo al instante con indentación limpia. Detecta errores con línea y columna exactas.'
+const PATH = '/tools/json/'
+
 export const metadata: Metadata = {
-  title: 'JSON Formatter',
-  description: 'Formateador y minificador de JSON. Pegá JSON minificado y expandilo al instante con indentación limpia. Detecta errores con línea y columna exactas.',
+  title: TITLE,
+  description: DESCRIPTION,
+  openGraph: {
+    title: TITLE,
+    description: DESCRIPTION,
+    url: PATH,
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary',
+    title: TITLE,
+    description: DESCRIPTION,
+  }
 }
 
 export default function JsonPage() {
+  const relatedArticles = [
+    getArticle('linux', '03-procesamiento-de-texto'),
+    getArticle('kubernetes', '02-kubectl'),
+  ].filter(Boolean) as any[]
+
   return (
     <div className="flex h-dvh overflow-hidden">
       <Sidebar mode="link" activeCategory={null} activeToolSlug="json" />
+      <ToolSchema name="JSON Formatter" description={DESCRIPTION} url={PATH} />
 
       <main className="flex-1 overflow-auto">
         <div className="pt-14 px-4 pb-6 md:p-6 max-w-3xl mx-auto">
@@ -34,6 +58,7 @@ export default function JsonPage() {
           </header>
 
           <JsonFormatter />
+          <LearnMore articles={relatedArticles} />
         </div>
       </main>
     </div>

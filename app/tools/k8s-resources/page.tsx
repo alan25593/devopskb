@@ -1,17 +1,41 @@
 import Link from 'next/link'
 import Sidebar from '@/components/Sidebar'
 import K8sResourceCalculator from '@/components/tools/K8sResourceCalculator'
+import ToolSchema from '@/components/ToolSchema'
+import LearnMore from '@/components/LearnMore'
+import { getArticle } from '@/lib/content'
 import type { Metadata } from 'next'
 
+const TITLE = 'Kubernetes Resource Calculator | WiresOps'
+const DESCRIPTION = 'Calculá el total de CPU y RAM requeridos para tus Deployments multiplicados por sus réplicas.'
+const PATH = '/tools/k8s-resources/'
+
 export const metadata: Metadata = {
-  title: 'K8s Resource Calculator | WiresOps',
-  description: 'Calculá el total de CPU y RAM requeridos para tus Deployments multiplicados por sus réplicas.',
+  title: TITLE,
+  description: DESCRIPTION,
+  openGraph: {
+    title: TITLE,
+    description: DESCRIPTION,
+    url: PATH,
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary',
+    title: TITLE,
+    description: DESCRIPTION,
+  }
 }
 
 export default function K8sResourcesPage() {
+  const relatedArticles = [
+    getArticle('kubernetes', '03-workloads'),
+    getArticle('kubernetes', '07-escalado-y-scheduling'),
+  ].filter(Boolean) as any[]
+
   return (
     <div className="flex h-dvh overflow-hidden">
       <Sidebar mode="link" activeCategory={null} activeToolSlug="k8s-resources" />
+      <ToolSchema name="Kubernetes Resource Calculator" description={DESCRIPTION} url={PATH} />
 
       <main className="flex-1 overflow-auto">
         <div className="pt-14 px-4 pb-6 md:p-6 max-w-6xl mx-auto">
@@ -33,6 +57,7 @@ export default function K8sResourcesPage() {
           </header>
 
           <K8sResourceCalculator />
+          <LearnMore articles={relatedArticles} />
         </div>
       </main>
     </div>
