@@ -1,14 +1,25 @@
 ---
 title: "Windows: Gestión de Usuarios y Grupos"
 category: "windows"
-tags: ["usuarios", "grupos", "cmd", "powershell", "seguridad"]
-keywords: ["crear usuario windows", "cambiar contraseña windows cmd", "escalar permisos windows", "net user", "net localgroup", "new-localuser", "add-localgroupmember"]
+tags: ["usuarios", "grupos", "cmd", "powershell", "seguridad", "lusrmgr"]
+keywords: ["crear usuario windows", "cambiar contraseña windows cmd", "escalar permisos windows", "net user", "net localgroup", "new-localuser", "add-localgroupmember", "lusrmgr.msc"]
 description: "Guía básica para la gestión de usuarios locales y grupos en Windows mediante CMD y PowerShell."
 ---
 
 # Gestión de Usuarios y Grupos
 
-Manejar usuarios y grupos locales es una tarea súper recurrente. Acá te dejo los comandos más útiles para hacerlo rápido tanto por CMD como por PowerShell.
+Manejar usuarios y grupos locales es una tarea súper recurrente. Acá te dejo las formas más útiles de hacerlo, tanto desde la interfaz gráfica como por consola.
+
+## Interfaz Gráfica (lusrmgr.msc)
+
+Si preferís usar la interfaz visual, podés usar la consola de "Usuarios y grupos locales".
+
+1. Apretá `Win + R` para abrir la ventana de Ejecutar.
+2. Escribí `lusrmgr.msc` y dale a Enter.
+
+Desde ahí vas a ver dos carpetas principales: **Usuarios** y **Grupos**. Con clic derecho podés hacer prácticamente todo: crear cuentas nuevas, blanquear contraseñas (sin saber la anterior), deshabilitar usuarios o agregar a alguien al grupo de Administradores. Viene genial cuando estás por RDP y preferís hacer un par de clics rápidos.
+
+---
 
 ## CMD (Línea de Comandos)
 
