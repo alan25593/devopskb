@@ -1,0 +1,14 @@
+{
+  "name": "DevOps KB",
+  "short_name": "DevOpsKB",
+  "icons": [
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#020617",
+  "background_color": "#020617",
+  "display": "standalone"
+}
