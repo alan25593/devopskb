@@ -178,17 +178,17 @@ export const TOOLS: Tool[] = [
     href: '/tools/password',
     iconPath: 'M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z',
     group: 'Seguridad & Crypto',
-    badges: ['Offline', 'Browser Only', 'Instant·neo'],
+    badges: ['Offline', 'Browser Only', 'Instant√°neo'],
     status: 'Nuevo'
   },
   {
     id: 'qr',
     label: 'QR Generator',
-    description: 'Gener· cÛdigos QR vectoriales al instante, sin enviar datos. Personaliz· colores, sac· el fondo y descargalos como PNG o SVG.',
+    description: 'Gener√° c√≥digos QR vectoriales al instante, sin enviar datos. Personaliz√° colores, sac√° el fondo y descargalos como PNG o SVG.',
     href: '/tools/qr',
     iconPath: 'M3 3h6v6H3zM15 3h6v6h-6zM3 15h6v6H3zM15 15h1.5v1.5H15zM18.5 15H21v1.5h-2.5zM15 18.5h1.5V21H15zM18.5 18.5H21V21h-2.5z',
     group: 'Utilidades',
-    badges: ['Offline', 'Browser Only', 'Instant·neo'],
+    badges: ['Offline', 'Browser Only', 'Instant√°neo'],
     status: 'Nuevo'
   }
 ]
