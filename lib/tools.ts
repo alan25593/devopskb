@@ -141,7 +141,7 @@ export const TOOLS: Tool[] = [
     status: 'Stable'
   },
   {
-<<<<<<< HEAD
+
     id: 'promql',
     label: 'PromQL Builder',
     description: 'Construí consultas PromQL complejas de forma visual paso a paso sin pelear con la sintaxis.',
