@@ -141,6 +141,7 @@ export const TOOLS: Tool[] = [
     status: 'Stable'
   },
   {
+<<<<<<< HEAD
     id: 'promql',
     label: 'PromQL Builder',
     description: 'Construí consultas PromQL complejas de forma visual paso a paso sin pelear con la sintaxis.',
@@ -179,5 +180,12 @@ export const TOOLS: Tool[] = [
     group: 'Seguridad & Crypto',
     badges: ['Offline', 'Browser Only', 'Instantáneo'],
     status: 'Nuevo'
+  },
+  {
+    id: 'qr',
+    label: 'QR Generator',
+    description: 'Generá códigos QR vectoriales al instante, sin enviar datos. Personalizá colores, sacá el fondo y descargalos como PNG o SVG.',
+    href: '/tools/qr',
+    iconPath: 'M3 3h6v6H3zM15 3h6v6h-6zM3 15h6v6H3zM15 15h1.5v1.5H15zM18.5 15H21v1.5h-2.5zM15 18.5h1.5V21H15zM18.5 18.5H21V21h-2.5z',
   }
 ]
