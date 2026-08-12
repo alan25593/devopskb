@@ -1,7 +1,9 @@
 ---
-title: "Administración y Operaciones"
+title: "Administración y Operaciones Generales"
 category: "clarive"
 tags: ["clarive", "operaciones", "servicios", "migraciones"]
+keywords: ["reiniciar clarive", "cla web-stop", "cla ps", "mongod", "exportar reglas", "importar reglas clarive"]
+description: "Guía de administración: cómo iniciar y detener servicios, reiniciar MongoDB y migrar perfiles o reglas entre entornos."
 ---
 
 # Administración y operaciones

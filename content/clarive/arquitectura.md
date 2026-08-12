@@ -2,6 +2,8 @@
 title: "Arquitectura y Conceptos Base"
 category: "clarive"
 tags: ["clarive", "arquitectura", "alm", "devops"]
+keywords: ["arquitectura clarive", "dispatcher", "daemon", "automation server", "mongodb clarive"]
+description: "Visión general de la arquitectura ALM/DevOps de Clarive: Web Server, Automation Server, Agentes y base de datos."
 ---
 
 # Arquitectura de Clarive

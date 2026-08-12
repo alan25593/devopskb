@@ -2,6 +2,8 @@
 title: "MongoDB: Referencia Rápida"
 category: "clarive"
 tags: ["clarive", "mongo", "database", "cli"]
+keywords: ["consultar mongo clarive", "mongodb clarive", "db.role", "db.rule", "buscar grupos clarive"]
+description: "Referencia rápida de comandos CLI en MongoDB para navegar bases de datos y hacer consultas ágiles sobre la configuración de Clarive."
 ---
 
 # Consultas Directas a MongoDB

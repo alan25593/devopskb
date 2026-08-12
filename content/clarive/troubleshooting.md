@@ -1,7 +1,9 @@
 ---
-title: "Troubleshooting y Mantenimiento"
+title: "Troubleshooting de Servicios Clarive"
 category: "clarive"
 tags: ["clarive", "troubleshooting", "logs", "locks"]
+keywords: ["destrabar cola clarive", "dispatcher colgado", "reserve_objects", "logs clarive", "event daemon colgado"]
+description: "Resolución de problemas críticos: ubicación de logs, cómo destrabar el semáforo del dispatcher, reiniciar el daemon y liberar objetos bloqueados."
 ---
 
 # Troubleshooting de servicios

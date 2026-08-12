@@ -2,6 +2,8 @@
 title: "Creación de CIs Custom"
 category: "clarive"
 tags: ["clarive", "ci", "perl"]
+keywords: ["custom ci clarive", "crear ci clarive", "instanciar ci", "actualizar ci perl"]
+description: "Paso a paso para crear Configuration Items custom, instanciarlos y persistirlos utilizando la API de Perl."
 ---
 
 # Creación de CIs custom

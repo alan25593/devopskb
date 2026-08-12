@@ -2,6 +2,8 @@
 title: "Desarrollo de Scripts (Perl / REPL)"
 category: "clarive"
 tags: ["clarive", "perl", "repl", "scripts"]
+keywords: ["perl clarive", "repl clarive", "scripts clarive", "actualizar topico", "busqueda masiva clarive"]
+description: "Guía de desarrollo con la API Perl: búsquedas masivas de tópicos y usuarios, modificaciones directas e interacciones con el entorno REPL."
 ---
 
 # Automatización con Perl / REPL
