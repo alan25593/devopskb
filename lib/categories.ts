@@ -17,6 +17,7 @@ export const CATEGORIES: Category[] = [
   { id: 'linux',      label: 'Linux',      hex: siLinux.hex,      svgPath: siLinux.path      },
   { id: 'terraform',  label: 'Terraform',  hex: siTerraform.hex,  svgPath: siTerraform.path  },
   { id: 'windows',    label: 'Windows',    hex: siWindowsHex,     svgPath: siWindowsPath     },
+  { id: 'clarive',    label: 'Clarive',    hex: 'FFFFFF',         svgPath: 'M 4 2 h 16 a 2 2 0 0 1 2 2 v 16 a 2 2 0 0 1 -2 2 H 4 a 2 2 0 0 1 -2 -2 V 4 a 2 2 0 0 1 2 -2 z M 12 4 a 8 8 0 1 0 0 16 a 8 8 0 1 0 0 -16 z M 15 16.33 A 5 5 0 1 1 15 7.67 V 10.35 A 3 3 0 1 0 15 13.65 Z' },
 ]
 
 export function getCategoryHex(id: string): string {
