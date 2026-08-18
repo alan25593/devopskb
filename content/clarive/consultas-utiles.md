@@ -17,7 +17,7 @@ Permite validar si un listado de correos electrónicos existe en el sistema y de
 
 ```perl
 my @emails = (
-    'gabriel.martinez@bancoformosa.com.ar', 'Yolanda.Gonzalez@bancoformosa.com.ar', 'YesicaCarolina.Espinoza@bancoformosa.com.ar'
+    'gabriel.martinez@example.com.ar', 'Yolanda.Gonzalez@example.com.ar', 'YesicaCarolina.Espinoza@example.com.ar'
 );
 
 print "--- Inicio de búsqueda ---\n";

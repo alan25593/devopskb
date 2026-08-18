@@ -13,7 +13,7 @@ Los CIs custom de Clarive pueden implementarse como módulos Perl dentro del bac
 Una ubicación utilizada para este tipo de módulos es:
 
 ```text
-/opt/clarive/features/bancoformosa/lib/BaselinerX/CI/
+/opt/clarive/features/example/lib/BaselinerX/CI/
 ```
 
 Por ejemplo:
@@ -35,9 +35,9 @@ use Baseliner::Sugar;
 has mi_campo_prueba => qw(is rw isa Str);
 has otro_campo      => qw(is rw isa Int);
 
-with 'Baseliner::Role::CI::BFormosa';
+with 'Baseliner::Role::CI::Example';
 
-sub icon { '/BFormosa/logo.png' }
+sub icon { '/Example/logo.png' }
 
 sub has_bl { 0 }
 ```
@@ -63,7 +63,7 @@ La definición concreta de los tipos y roles disponibles debe verificarse contra
 Guardar el módulo en:
 
 ```text
-/opt/clarive/features/bancoformosa/lib/BaselinerX/CI/BFAlanTEST.pm
+/opt/clarive/features/example/lib/BaselinerX/CI/BFAlanTEST.pm
 ```
 
 Luego se debe reiniciar el servidor web de Clarive para que el módulo Perl sea cargado en memoria:
@@ -91,7 +91,7 @@ Esto permite trabajar con el nuevo tipo de CI desde las funcionalidades que util
    ```
 2. Posicionarse en el directorio base de CIs:
    ```bash
-   cd ./features/bancoformosa/lib/BaselinerX/CI/
+   cd ./features/example/lib/BaselinerX/CI/
    ```
 3. Editar o crear el archivo (`nano BFCelula.pm`) y utilizar este código base:
 
@@ -108,7 +108,7 @@ sub rel_type {
         responsable      => [from_mid    => 'bfcelula_responsable']
     },
 }
-with 'Baseliner::Role::CI::BFormosa';
+with 'Baseliner::Role::CI::Example';
 with 'Baseliner::Role::CI::BFEquipo';
 
 sub icon { '/static/images/icons/users.svg' }

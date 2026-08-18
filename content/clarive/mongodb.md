@@ -16,7 +16,7 @@ Comandos para ubicar las colecciones del sistema:
 
 ```javascript
 show dbs
-use bancoformosa
+use example
 show collections
 ```
 
