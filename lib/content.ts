@@ -68,7 +68,7 @@ export function getAllArticles(): Article[] {
     const categoryPath = path.join(contentDir, category)
     if (!fs.statSync(categoryPath).isDirectory()) continue
 
-    const files = fs.readdirSync(categoryPath).filter(f => f.endsWith('.md'))
+    const files = fs.readdirSync(categoryPath).filter(f => f.endsWith('.md') && f.toLowerCase() !== 'readme.md')
 
     for (const file of files) {
       const slug = file.replace('.md', '')
