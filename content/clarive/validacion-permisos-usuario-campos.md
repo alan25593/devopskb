@@ -13,7 +13,7 @@ En Clarive, la seguridad granular sobre los campos de un tópico (`topicsfield`)
 2. **Grupos de Usuarios (`UserGroup`)**: Colección de documentos donde se asignan roles de seguridad (`project_security.id_role`).
 3. **Pertenencia de Usuarios**: Integración de los usuarios dentro de uno o varios grupos (`ci->new($grupo->{mid})->users`).
 
-Este script en Perl permite verificar de forma rápida e iterativa si un usuario posee permisos de escritura sobre un campo específico en un estado y categoría determinados, devolviendo el desglose detallado de los **grupos y roles** mediante los cuales obtiene la autorización.
+Este script en Perl permite verificar de forma rápida e iterativa si un usuario posee permisos de escritura sobre un campo específico en un estado y categoría determinados, devolviendo el desglose detallado de los **grupos y roles** (incluyendo sus identificadores MIDs / IDs) mediante los cuales obtiene la autorización.
 
 ---
 
@@ -29,9 +29,8 @@ my $name_status   = 'Pendiente Sistemas';
 my $id_status   = ci->status->find_one({ name => $name_status })->{mid};
 my $id_category = mdb->category->find_one({ name => $name_category })->{id};
 
-# 1. Guardamos ID y Nombre de los roles permitidos en un hash
-my %roles_permitidos;
-map { $roles_permitidos{$_->{id}} = $_->{role} } mdb->role->find({ 
+# 1. Guardamos ID y Nombre de los roles permitidos
+my %roles_permitidos = map { $_->{id} => $_->{role} } mdb->role->find({ 
     actions => { '$elemMatch' => { 
         action => 'action.topicsfield.write', 
         bounds => { '$elemMatch' => { id_status => $id_status, id_category => $id_category, id_field => $id_field } }
@@ -55,24 +54,29 @@ foreach my $grupo (@grupos) {
     if (grep { $_ eq $username } @users_en_grupo) {
         my %roles_del_grupo;
         
-        # Nos aseguramos de iterar bien por project_security (por si es array o hash suelto)
         my $ps = $grupo->{project_security} || [];
         my @seguridades = ref($ps) eq 'ARRAY' ? @$ps : ($ps);
         
         foreach my $sec (@seguridades) {
-            # Si el rol de esta regla de seguridad está en nuestros roles permitidos, lo sumamos
-            if (exists $roles_permitidos{$sec->{id_role}}) {
-                $roles_del_grupo{ $roles_permitidos{$sec->{id_role}} } = 1;
+            my $id_rol = $sec->{id_role};
+            if (exists $roles_permitidos{$id_rol}) {
+                my $nombre_rol = $roles_permitidos{$id_rol};
+                # Usamos Nombre - ID como clave para evitar duplicados en pantalla
+                $roles_del_grupo{"$nombre_rol - $id_rol"} = 1;
             }
         }
         
-        my $roles_str = join(', ', keys %roles_del_grupo);
-        push @detalles, "$grupo->{name} (Rol: $roles_str)";
+        if (%roles_del_grupo) {
+            # Armamos el string del grupo y abajo la lista de roles
+            my $texto_grupo = "$grupo->{name} - $grupo->{mid} :\n" . 
+                              join("\n", map { "       - Role: $_" } sort keys %roles_del_grupo);
+            push @detalles, $texto_grupo;
+        }
     }
 }
 
 # 4. Imprimimos el resultado
-@detalles ? "$username TIENE permisos por:\n • " . join("\n • ", @detalles) : "$username NO tiene permisos.\n";
+print @detalles ? "$username TIENE permisos por:\n • " . join("\n • ", @detalles) . "\n" : "$username NO tiene permisos.\n";
 ```
 
 ---
@@ -91,7 +95,7 @@ Utiliza el operador `$elemMatch` de MongoDB para asegurar la coincidencia exacta
 * `id_category`: La categoría del tópico.
 * `id_field`: El identificador del campo personalizado o estándar (ej. *'valoracion_de_tipificacion'*).
 
-Los IDs de los roles coincidentes se almacenan en el hash `%roles_permitidos` mapeando cada ID a su nombre de rol correspondiente.
+Los pares `id => role` se mapean directamente en el hash `%roles_permitidos`.
 
 ### 3. Búsqueda de Grupos de Usuarios (`UserGroup`)
 A continuación, consulta la colección `master_doc` filtrando por la colección `'UserGroup'`.
@@ -101,15 +105,27 @@ Busca aquellos grupos que posean asignado en `project_security.id_role` al menos
 Para cada grupo devuelto por la consulta:
 1. Obtiene la lista de nombres de usuario integrantes utilizando la API de Clarive (`ci->new($grupo->{mid})->users`).
 2. Verifica si el usuario especificado (`$username`) forma parte del grupo (`grep`).
-3. Si el usuario pertenece al grupo, itera la estructura `project_security` del grupo para determinar qué rol(es) específicos le conceden la autorización.
-4. Acumula el nombre del grupo junto con sus roles correspondientes en la lista `@detalles`.
+3. Si el usuario pertenece al grupo, itera la estructura `project_security` del grupo asociando el nombre del rol con su ID (`Nombre - ID`) para evitar duplicados en la visualización.
+4. Concatena el nombre del grupo con su `mid` y lista subordinada de roles en `@detalles`.
 
 ### 5. Salida del Script
-* **Si el usuario posee permisos**: Muestra un resumen formateado con viñetas indicando cada grupo y sus roles:
+* **Si el usuario posee permisos**: Muestra un resumen formateado con el detalle de cada grupo y sus roles asociados:
   ```text
   franky TIENE permisos por:
-   • Grupo Soporte N2 (Rol: Editor de Tipificación)
-   • Administradores Sistemas (Rol: Admin Campos)
+   • SCyA Canales - UserGroup-159 :
+         - Role: CM_Soporte - 190
+   • SCyA Rec y Pagos - UserGroup-165 :
+         - Role: CM_Soporte - 190
+   • CM_Líder Colaborativo - UserGroup-197 :
+         - Role: CM_Líder Colaborativo - 189
+   • CM_Soporte - UserGroup-198 :
+         - Role: CM_Soporte - 190
+   • SCyA Contabilidad y Clientes - cla-default-UserGroup-221 :
+         - Role: CM_Soporte - 190
+   • SCyA Productos - cla-default-UserGroup-222 :
+         - Role: CM_Soporte - 190
+   • SCyA Contabilidad y Clientes - Evolutivo - cla-default-UserGroup-233 :
+         - Role: CM_Soporte - 190
   ```
 * **Si no posee permisos**:
   ```text
@@ -120,7 +136,7 @@ Para cada grupo devuelto por la consulta:
 
 ## Casos de Uso y Aplicaciones
 
-* **Auditoría de Accesos**: Diagnosticar y auditorar permisos de edición sobre campos sensibles en flujos de trabajo de Clarive.
+* **Auditoría de Accesos**: Diagnosticar y auditar permisos de edición sobre campos sensibles en flujos de trabajo de Clarive.
 * **Resolución de Incidencias (Troubleshooting)**: Identificar la causa cuando un usuario no puede modificar un campo determinado en la interfaz.
 * **Verificación Previa a Modificaciones**: Validar el impacto de añadir o remover roles en grupos de usuarios de proyecto.
 
