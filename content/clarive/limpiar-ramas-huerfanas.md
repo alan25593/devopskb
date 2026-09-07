@@ -68,6 +68,17 @@ if ($topico) {
 print "--- Proceso completado exitosamente para el tópico $mid_topico ---\n";
 ```
 
+### Ejemplo de Salida Real
+
+```text
+--- Iniciando limpieza de ramas para el tópico 271503 ---
+Se encontraron 3 rama(s) a eliminar: GitRevision-15721, GitRevision-15722, GitRevision-15723
+ [OK] Eliminado: GitRevision-15721
+ [OK] Eliminado: GitRevision-15722
+ [OK] Eliminado: GitRevision-15723
+--- Proceso completado exitosamente para el tópico 271503 ---
+```
+
 ---
 
 ## ¿Qué realiza este script automáticamente?
