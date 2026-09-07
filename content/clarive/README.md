@@ -18,6 +18,7 @@ Esta documentación está organizada en las siguientes secciones:
 - [Perl y REPL](./perl-repl.md)
 - [CIs Custom](./ci-custom.md)
 - [Validación de Permisos sobre Campos](./validacion-permisos-usuario-campos.md)
+- [Gestión de Objetos iSeries](./gestion-objetos-iseries.md)
 - [Troubleshooting](./troubleshooting.md)
 
 Además, en el directorio `ejemplos/` se encuentran scripts listos para ser utilizados.
