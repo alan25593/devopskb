@@ -69,31 +69,35 @@ if ($obj_duplicado) {
 
 ---
 
-## 3. Script Unificado (Buscar e Identificar Duplicados)
+## 3. Script Unificado (Borrado y Verificación en 1 sola ejecución)
 
-Para listar todas las instancias de un objeto y eliminar únicamente una versión específica por su `mid`:
+Para borrar un objeto duplicado (si se especifica `$mid_a_borrar`) y **mostrar inmediatamente la lista actualizada** sin necesidad de volver a ejecutar el script:
 
 ```perl
 my $nombre_busqueda = 'PSIP300';
-my $mid_a_borrar    = ''; # Opcional: Especificar MID si se desea borrar directamente
+my $mid_a_borrar    = 'iseries_object-590083'; # Opcional: Dejar en '' si solo se desea consultar
 
 print "--- Gestión de Objetos iSeries: $nombre_busqueda ---\n";
 
-my @encontrados = ci->iseries_object->find({ name => $nombre_busqueda })->all;
-
-foreach my $item (@encontrados) {
-    print " - MID: $item->{mid} | Librería: " . ($item->{library} || '-') . " | BL: " . ($item->{bl} || '-') . "\n";
-}
-
-# Si se especificó un MID a eliminar:
+# 1. Si se especificó un MID a eliminar, lo borramos primero
 if ($mid_a_borrar) {
     my $target = ci->new($mid_a_borrar);
     if ($target) {
         $target->delete();
-        print " [OK] Objeto $mid_a_borrar eliminado exitosamente.\n";
+        print " [OK] Objeto $mid_a_borrar eliminado exitosamente.\n\n";
+    } else {
+        print " [WARN] No se pudo instanciar o encontrar el objeto: $mid_a_borrar\n\n";
     }
+}
+
+# 2. Consultamos y mostramos el listado actualizado de objetos vigentes
+my @encontrados = ci->iseries_object->find({ name => $nombre_busqueda })->all;
+
+print "Objetos vigentes en Clarive (" . scalar(@encontrados) . "):\n";
+foreach my $item (@encontrados) {
+    print " - MID: $item->{mid} | Librería: " . ($item->{library} || '-') . " | BL: " . ($item->{bl} || '-') . "\n";
 }
 ```
 
 > [!WARNING]
-> La eliminación a través de `$obj->delete()` es irreversible y remueve los vínculos asociados en Clarive. Se recomienda verificar previamente los MIDs con la consulta de búsqueda.
+> La eliminación a través de `$obj->delete()` es irreversible y remueve los vínculos asociados en Clarive.
