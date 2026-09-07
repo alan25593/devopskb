@@ -3,7 +3,7 @@ title: "Limpiar Ramas Huérfanas de un Tópico"
 category: "clarive"
 tags: ["clarive", "git", "troubleshooting", "perl", "mongodb", "branches"]
 keywords: ["limpiar ramas clarive", "ramas huerfanas", "GitRevision", "borrar ramas topico", "branches clarive"]
-description: "Guía paso a paso para eliminar referencias a ramas Git (GitRevision) asociadas a una Historia de Usuario o tópico en Clarive."
+description: "Guía paso a paso para obtener y eliminar referencias a ramas Git (GitRevision) asociadas a una Historia de Usuario o tópico en Clarive."
 ---
 
 # Limpiar Ramas Huérfanas de un Tópico
@@ -15,30 +15,42 @@ Ejecutar los siguientes pasos **en orden** desde el entorno REPL de Clarive.
 > [!WARNING]
 > Operación destructiva. Verificar los IDs antes de ejecutar. Una vez borrados los `GitRevision`, la acción no se puede deshacer fácilmente.
 
-## 1. Limpiar el array `branches` del tópico y refrescarlo
+---
 
-Vaciar el campo `branches` directamente en MongoDB y forzar un `touch` para que Clarive recalcule el estado del tópico:
+## 1. Obtener los IDs de `GitRevision` y limpiar el array `branches` del tópico
+
+Obtener la lista de IDs de `GitRevision` vinculados al tópico **antes de vaciar el campo**, limpiar el array `branches` directamente en MongoDB y forzar un `touch` para que Clarive recalcule el estado del tópico:
 
 ```perl
 # Reemplazar '326615' con el MID real del tópico
+my $mid_topico = '326615';
+
+# 1. Obtener el tópico y respaldar los IDs de las ramas antes de vaciar
+my $stash = mdb->topic->find_one({ mid => $mid_topico });
+my @ids = @{ $stash->{branches} || [] };
+
+print "GitRevision a eliminar: ", join(', ', @ids), "\n";
+
+# 2. Vaciar el array 'branches' en MongoDB
 mdb->topic->update(
-    { mid => '326615' },
+    { mid => $mid_topico },
     { '$set' => { branches => [] } }
 );
 
-my $stash = mdb->topic->find_one({ mid => '326615' });
-
+# 3. Forzar touch para que Clarive recalcule el estado
 Baseliner::Model::Topic->touch( $stash->{topic_mid}, 'clarive' );
 Baseliner::Model::Topic->touch( $stash->{topic_mid}, $stash->{username} );
 ```
 
+---
+
 ## 2. Borrar los objetos `GitRevision` huérfanos
 
-Instanciar cada `GitRevision` con el ORM y eliminarlo. Los IDs se obtienen previamente consultando el tópico o la colección `master_rel`:
+Instanciar cada `GitRevision` (utilizando la variable `@ids` obtenida en el Paso 1 o indicando los IDs de forma manual) con el ORM de Clarive y eliminarlo:
 
 ```perl
-# Reemplazar con los IDs reales de los GitRevision a eliminar
-my @ids = ('GitRevision-16092', 'GitRevision-16093', 'GitRevision-16094');
+# Utiliza el arreglo @ids capturado en el Paso 1
+# (O definir manualmente: my @ids = ('GitRevision-16092', 'GitRevision-16093');)
 
 foreach my $id (@ids) {
     my $obj = ci->new($id);
@@ -49,11 +61,13 @@ foreach my $id (@ids) {
 ```
 
 > [!TIP]
-> Para obtener los IDs de los `GitRevision` vinculados a un tópico, buscar en `master_rel` con `from_mid` igual al MID del tópico y `rel_field` igual a `branches`.
+> En caso de requerir consultar los vínculos externamente, también se puede buscar en `master_rel` donde `from_mid` sea igual al MID del tópico y `rel_field` sea igual a `branches`.
+
+---
 
 ## 3. Forzar guardado del tópico padre
 
-Para evitar el error *"Master row not found"* en la UI, guardar el tópico padre y refrescar el navegador (F5):
+Para evitar el error *"Master row not found"* en la interfaz de Clarive, guardar el tópico padre y refrescar la página en el navegador (F5):
 
 ```perl
 # Reemplazar '326615' con el MID real del tópico
