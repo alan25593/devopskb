@@ -32,16 +32,17 @@ my $repo = mdb->collection('master_doc')->find_one({
 
 die "No encontré el repositorio padre del artefacto\n" unless $repo;
 
-# 4. Armamos la ruta física exacta
+# 4. Definimos el directorio base del repo y el nombre del artefacto
 my $base_path = '/opt/clarive/artifacts';
-my $full_path = "$base_path/" . $repo->{name} . "/" . $artifact->{name};
+my $repo_dir  = "$base_path/" . $repo->{name};
+my $art_name  = $artifact->{name};
 
-print "Ruta armada: $full_path\n";
+print "Buscando en: $repo_dir\n";
 print "--------------------------------------------------------\n";
 
-# 5. Listamos los archivos directo del SO
-if (-d $full_path) {
-    my $files = `find "$full_path" -type f`;
+# 5. Listamos metiéndonos primero al repo para que la ruta sea relativa
+if (-d "$repo_dir/$art_name") {
+    my $files = `cd "$repo_dir" && find "$art_name" -type f`;
     print $files ? $files : "La carpeta está vacía.\n";
 } else {
     print "Ojo: El directorio físico no existe en el servidor.\n";
@@ -51,15 +52,15 @@ if (-d $full_path) {
 ## Resultado Esperado
 
 ```text
-Ruta armada: /opt/clarive/artifacts/Backend-Canales/HIS#220681
+Buscando en: /opt/clarive/artifacts/Backend-Canales
 --------------------------------------------------------
-/opt/clarive/artifacts/Backend-Canales/HIS#220681/canales/WEB-INF/classes/com/btcanales/apigateway.class
-/opt/clarive/artifacts/Backend-Canales/HIS#220681/canales/WEB-INF/classes/com/btcanales/apigateway_RESTInterfaceIN.class
-/opt/clarive/artifacts/Backend-Canales/HIS#220681/canales/WEB-INF/classes/com/btcanales/apigateway_RESTInterfaceOUT.class
-/opt/clarive/artifacts/Backend-Canales/HIS#220681/canales/WEB-INF/classes/com/btcanales/apigateway_services_rest.class
+HIS#220681/canales/WEB-INF/classes/com/btcanales/apigateway.class
+HIS#220681/canales/WEB-INF/classes/com/btcanales/apigateway_RESTInterfaceIN.class
+HIS#220681/canales/WEB-INF/classes/com/btcanales/apigateway_RESTInterfaceOUT.class
+HIS#220681/canales/WEB-INF/classes/com/btcanales/apigateway_services_rest.class
 ...
-/opt/clarive/artifacts/Backend-Canales/HIS#220681/sqlserver/script20260901113000.sql
-/opt/clarive/artifacts/Backend-Canales/HIS#220681/sqlserver/Script_202604092026133000.sql
-/opt/clarive/artifacts/Backend-Canales/HIS#220681/sqlserver/script20260904145000.sql
+HIS#220681/sqlserver/script20260901113000.sql
+HIS#220681/sqlserver/Script_202604092026133000.sql
+HIS#220681/sqlserver/script20260904145000.sql
 --- 1
 ```
