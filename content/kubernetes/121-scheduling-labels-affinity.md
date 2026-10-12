@@ -1,0 +1,185 @@
+---
+title: "Scheduling Avanzado en Kubernetes - NodeSelector, Affinity y Anti-Affinity"
+category: "kubernetes"
+description: "Aprende scheduling avanzado en Kubernetes con NodeSelector, Node Affinity, Pod Affinity y Anti-Affinity. Controla la ubicación de pods con labels y selectores."
+tags:
+  - "kubernetes"
+  - "- scheduling"
+  - "- affinity"
+  - "- labels"
+  - "- CKA"
+keywords:
+  - "kubernetes scheduling"
+  - "- node affinity kubernetes"
+  - "- pod affinity kubernetes"
+  - "- nodeSelector kubernetes"
+  - "- anti-affinity kubernetes"
+  - "- scheduling constraints kubernetes"
+  - "- kubernetes labels"
+  - "- topology spread constraints"
+  - "- required vs preferred affinity"
+  - "- cómo asignar pods a nodos kubernetes"
+  - "- labels selectors kubernetes"
+---
+
+# Scheduling en Kubernetes
+
+El scheduler es el componente que decide en qué nodo se ejecuta cada pod. Por defecto lo hace en base a los recursos disponibles, pero podemos influir en su decisión con varios mecanismos:
+* **Labels y nodeSelector**: la forma más simple de fijar pods a nodos.
+* **Affinity y anti-affinity**: reglas más expresivas y flexibles.
+* **Taints y tolerations**: restricciones desde el punto de vista del nodo (las veremos en el [siguiente capítulo](./122.Taints_tolerations.md)).
+
+## Labels en nodos
+Los labels son una forma de identificar y agrupar nodos por un criterio: por ejemplo, por zona geográfica, por tipo de hardware (`disktype=ssd`, `gpu=true`) o por entorno.
+
+Para ver la información de un nodo, podemos usar los siguientes comandos:
+``` shell
+kubectl get nodes --show-labels # Listar nodos con sus labels
+kubectl describe node <nombre_nodo> # Ver el detalle de un nodo
+```
+
+Veremos que los nodos ya traen labels de serie, como `kubernetes.io/hostname`, `kubernetes.io/os` o `kubernetes.io/arch`, que también podemos usar en los selectores.
+
+### Añadir un label a un nodo
+Para añadir un label a un nodo, podemos usar el siguiente comando:
+``` shell
+kubectl label nodes <nombre_nodo> <nombre_label>=<valor_label>
+```
+
+### Eliminar un label de un nodo
+Para eliminar un label de un nodo, usamos el mismo comando con un guion al final del nombre del label:
+``` shell
+kubectl label nodes <nombre_nodo> <nombre_label>-
+```
+
+## nodeSelector
+Podemos indicar en qué nodos puede ejecutarse un pod con el parámetro `nodeSelector`, que exige que el nodo tenga todos los labels indicados:
+``` yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-pod
+spec:
+  containers:
+  - name: my-container
+    image: busybox
+    command:
+    - sleep
+    - "3600"
+  nodeSelector:
+    disktype: ssd # El pod solo se programará en nodos con este label
+```
+
+Si quisiéramos fijarlo a un nodo concreto, podríamos usar su hostname:
+``` yaml
+  nodeSelector:
+    kubernetes.io/hostname: my-node
+```
+
+> También existe el campo `nodeName`, que asigna el pod a un nodo directamente **saltándose el scheduler**. Solo tiene sentido en casos muy concretos (o en preguntas de examen).
+
+El `nodeSelector` es simple pero rígido: o el nodo cumple todos los labels, o el pod se queda en `Pending`. Para reglas más expresivas tenemos la affinity.
+
+## Node Affinity
+La node affinity es la evolución del `nodeSelector`. Permite operadores (`In`, `NotIn`, `Exists`...) y, sobre todo, distinguir entre reglas **obligatorias** y **preferentes**:
+
+- `requiredDuringSchedulingIgnoredDuringExecution`: el pod **solo** se programa en nodos que cumplan la regla (como nodeSelector, pero más expresivo).
+- `preferredDuringSchedulingIgnoredDuringExecution`: el scheduler **intenta** cumplir la regla, pero si no puede, programa el pod donde haya sitio.
+
+El sufijo `IgnoredDuringExecution` significa que, si el label del nodo cambia después, los pods ya en ejecución no se ven afectados.
+
+``` yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-con-affinity
+spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: disktype
+            operator: In
+            values:
+            - ssd
+            - nvme
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 1
+        preference:
+          matchExpressions:
+          - key: zona
+            operator: In
+            values:
+            - eu-west-1
+  containers:
+  - name: nginx
+    image: nginx
+```
+
+Este pod **exige** un nodo con disco `ssd` o `nvme` y, entre los que cumplan, **prefiere** los de la zona `eu-west-1`.
+
+## Pod Affinity y Anti-Affinity
+Mientras que la node affinity relaciona pods con nodos, la pod affinity relaciona **pods con otros pods**: "ejecútame cerca de estos pods" (affinity) o "lejos de estos pods" (anti-affinity).
+
+El caso de uso estrella es la anti-affinity para alta disponibilidad: evitar que todas las réplicas de una aplicación acaben en el mismo nodo.
+
+``` yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                app: web
+            topologyKey: kubernetes.io/hostname
+      containers:
+      - name: nginx
+        image: nginx
+```
+
+El campo `topologyKey` define el "dominio" de separación: con `kubernetes.io/hostname`, ningún nodo tendrá dos réplicas; con un label de zona, se repartirían entre zonas.
+
+Un ejemplo de pod affinity sería colocar una caché junto a la aplicación que la consume, usando `podAffinity` con la misma estructura.
+
+## Topology Spread Constraints
+Para repartir réplicas de forma **equilibrada** entre zonas o nodos (no solo "juntas o separadas"), Kubernetes ofrece las `topologySpreadConstraints`:
+
+``` yaml
+spec:
+  topologySpreadConstraints:
+  - maxSkew: 1
+    topologyKey: topology.kubernetes.io/zone
+    whenUnsatisfiable: DoNotSchedule
+    labelSelector:
+      matchLabels:
+        app: web
+```
+
+Esto garantiza que la diferencia de réplicas entre zonas nunca supere 1. Es el mecanismo recomendado hoy en día para distribuir cargas de trabajo en clusters multi-zona.
+
+## Resumen
+- Los **labels** de nodos permiten agruparlos por criterios y son la base de todo el scheduling dirigido.
+- **nodeSelector** es la forma simple y rígida; **node affinity** añade operadores y reglas preferentes.
+- **Pod affinity/anti-affinity** posiciona pods en relación a otros pods (clave para alta disponibilidad).
+- **Topology spread constraints** reparte réplicas de forma equilibrada entre dominios de fallo.
+
+En el siguiente capítulo veremos la otra cara de la moneda: los [taints y tolerations](./122.Taints_tolerations.md), donde es el nodo quien repele a los pods.
+
+---
+* Lista de vídeos en Youtube: [Curso Kubernetes](https://www.youtube.com/playlist?list=PLQhxXeq1oc2k9MFcKxqXy5GV4yy7wqSma)
+
+[Volver al índice](README.md#índice)

@@ -1,0 +1,164 @@
+---
+title: "Logging en Kubernetes - Gestión de Logs y Troubleshooting"
+category: "kubernetes"
+description: "Aprende gestión completa de logs en Kubernetes - kubectl logs, agregación con ELK Stack, Fluentd, troubleshooting y debugging de aplicaciones en producción."
+tags:
+  - "kubernetes"
+  - "- logs"
+  - "- troubleshooting"
+  - "- monitoring"
+  - "- CKA"
+keywords:
+  - "kubernetes logs"
+  - "- kubectl logs"
+  - "- logging kubernetes"
+  - "- ELK stack kubernetes"
+  - "- fluentd kubernetes"
+  - "- troubleshooting kubernetes"
+  - "- debugging pods kubernetes"
+  - "- loki kubernetes"
+  - "- centralized logging kubernetes"
+  - "- kubectl describe pod"
+  - "- kubernetes events"
+  - "- errores pods kubernetes"
+---
+
+# Logs en Kubernetes
+
+Los logs son una de las herramientas más importantes para entender el comportamiento de una aplicación. Esta información nos permite saber qué está pasando en el sistema y nos ayuda a depurar errores. En este apartado vamos a ver cómo consumir los logs de los contenedores que se ejecutan en Kubernetes y cómo integrarlos con otras herramientas de monitorización.
+
+## Logs de los pods - kubectl logs
+El comando del día a día. Podemos acceder a los logs de un pod usando `kubectl logs`:
+```bash
+kubectl -n <namespace> logs <pod> # El parámetro de namespace es opcional; si no se especifica, se usa el namespace actual
+```
+
+Algunas variantes que conviene dominar (caen seguro en los exámenes):
+```bash
+kubectl logs <pod> -f                  # Seguir los logs en tiempo real (como tail -f)
+kubectl logs <pod> -c <contenedor>     # Pod con varios contenedores: elegir uno
+kubectl logs <pod> --all-containers    # Todos los contenedores del pod
+kubectl logs <pod> --previous          # Logs del contenedor anterior (clave en CrashLoopBackOff)
+kubectl logs <pod> --since=1h          # Solo la última hora
+kubectl logs -l app=web                # Logs de todos los pods con un label
+```
+
+Y cuando los logs no bastan, los **eventos** del cluster suelen tener la respuesta (por qué no arranca un pod, por qué no se programa, etc.):
+```bash
+kubectl get events --sort-by=.metadata.creationTimestamp
+kubectl describe pod <pod>   # Incluye los eventos del pod al final
+```
+
+## Localización de los ficheros de logs
+Para los clusters de Kubernetes basados en `systemd` podemos ver los logs del kubelet de cada nodo usando el comando `journalctl`:
+```bash
+journalctl -u kubelet | less
+```
+
+La mayoría de los componentes del control plane se ejecutan como contenedores. Para encontrar los ficheros de logs del `kube-apiserver` podemos usar el siguiente comando:
+```bash
+sudo find / -name "*apiserver*log"
+```
+
+Luego podemos usar el comando `less` para ver el contenido del fichero:
+```bash
+sudo less /var/log/containers/kube-apiserver-k8s-master-1_kube-system_kube-apiserver-1.log # Usa las rutas obtenidas en el comando anterior
+```
+
+Otras rutas donde podemos encontrar logs en función del tipo de nodo son:
+```bash
+/var/log/containers/ # Logs de los contenedores (enlaces simbólicos)
+/var/log/pods/       # Logs de los pods
+/var/log/kube-apiserver.log         # Api server (si no corre como pod)
+/var/log/kube-scheduler.log         # Scheduler
+/var/log/kube-controller-manager.log # Controller manager
+/var/log/kubelet.log                # Kubelet
+/var/log/kube-proxy.log             # Kube-proxy
+```
+
+Documentación oficial de Kubernetes:
+* [Depurar servicios](https://kubernetes.io/docs/tasks/debug/debug-application/debug-service/)
+* [Entender errores de un pod](https://kubernetes.io/docs/tasks/debug/debug-application/determine-reason-pod-failure/)
+
+## Logging centralizado
+Los logs de un pod desaparecen con él, así que en producción es imprescindible agregarlos en un sistema centralizado. El patrón habitual es un agente desplegado como DaemonSet (como vimos en el [capítulo de DaemonSets](./108.DSySS.md)) que recolecta los logs de cada nodo y los envía a un backend:
+- **Grafana Loki** + Promtail/Alloy: ligero y muy popular en la comunidad.
+- **Stack EFK**: Elasticsearch + Fluentd/Fluent Bit + Kibana, el clásico para grandes volúmenes.
+
+No entran en los exámenes más allá del concepto, pero en el mundo real son el estándar.
+
+## Añadiendo herramientas de monitorización y métricas
+
+### Metrics Server - Métricas (kubectl top)
+Lo primero será instalar `metrics-server` en nuestro cluster, el componente que recolecta las métricas de uso de recursos:
+```bash
+kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+```
+
+Para entornos de prueba o desarrollo podemos permitir TLS inseguro, ya que el certificado del kubelet es autofirmado y no será válido. Para ello, editamos el deployment y añadimos la flag `--kubelet-insecure-tls`. NO RECOMENDADO PARA ENTORNOS DE PRODUCCIÓN.
+```bash
+kubectl -n kube-system edit deployment metrics-server
+```
+
+Añadimos la siguiente línea en la sección `args` del contenedor:
+```yaml
+spec:
+  containers:
+  - args:
+    - --cert-dir=/tmp
+    - --secure-port=10250
+    - --kubelet-insecure-tls # Añadimos esta línea
+    - --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname
+    - --kubelet-use-node-status-port
+    image: registry.k8s.io/metrics-server/metrics-server:v0.7.2
+```
+
+A partir de aquí, ya podríamos consultar las métricas de nuestros pods usando el comando `kubectl top`:
+```bash
+kubectl top pod --all-namespaces # Muestra las métricas de todos los pods
+kubectl top pod -n <namespace> # Muestra las métricas de los pods de un namespace
+kubectl top node # Muestra las métricas de los nodos
+```
+
+### Dashboard
+Para instalar el dashboard de Kubernetes, podemos usar el siguiente comando (si no tenemos instalado helm, recomendamos [visitar su web para instalarlo](https://helm.sh/docs/intro/install/)):
+```bash
+helm repo add k8s-dashboard https://kubernetes.github.io/dashboard # Añadimos el repositorio a helm
+helm install <nombre que le quieras dar al despliegue> k8s-dashboard/kubernetes-dashboard
+```
+
+La salida de helm nos dará las instrucciones para acceder al dashboard. Ejecutemos los comandos indicados, que deberían ser similares a los siguientes:
+```text
+Get the Kubernetes Dashboard URL by running:
+  export POD_NAME=$(kubectl get pods -n default -l "app.kubernetes.io/name=kubernetes-dashboard,app.kubernetes.io/instance=kube-dashboard" -o jsonpath="{.items[0].metadata.name}")
+  echo https://127.0.0.1:8443/
+  kubectl -n default port-forward $POD_NAME 8443:8443
+```
+
+Si quisiéramos acceder al dashboard desde fuera del cluster, podríamos usar el parámetro `--address` añadido al comando anterior para indicar la dirección de escucha:
+```bash
+kubectl -n default port-forward --address 0.0.0.0 $POD_NAME 8443:8443 # Así cualquier usuario de la red podrá acceder al dashboard, ojo si no es lo que queremos
+```
+
+Durante la instalación se crea una cuenta de servicio para el dashboard. Esta no tiene privilegios, por lo que no podremos realizar ciertas acciones. Podemos asignarle privilegios de administrador usando el siguiente comando (solo recomendable en laboratorios):
+```bash
+kubectl create clusterrolebinding dashaccess --clusterrole=cluster-admin --serviceaccount=default:<nombre de la service account>
+```
+
+¡OJO! El nombre de la cuenta depende del nombre que le hayamos dado al despliegue del dashboard. Ante la duda, podemos consultarlo con:
+```bash
+kubectl get serviceaccounts
+```
+Debería ser algo similar a `<nombre del despliegue>-kubernetes-dashboard`.
+
+Para autenticarnos en el dashboard, generamos un token de esa cuenta de servicio (recordemos del [capítulo de usuarios](./119.Usuarios.md) que los tokens ahora son efímeros y se crean bajo demanda):
+```bash
+kubectl create token <nombre de la service account>
+```
+
+Copiamos el token que devuelve el comando y lo pegamos en la pantalla de login del dashboard.
+
+---
+* Lista de vídeos en Youtube: [Curso Kubernetes](https://www.youtube.com/playlist?list=PLQhxXeq1oc2k9MFcKxqXy5GV4yy7wqSma)
+
+[Volver al índice](README.md#índice)

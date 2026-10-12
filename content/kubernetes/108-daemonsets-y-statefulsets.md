@@ -1,0 +1,154 @@
+---
+title: "DaemonSet y StatefulSet en Kubernetes - Guía Completa"
+category: "kubernetes"
+description: "Aprende a gestionar DaemonSets y StatefulSets en Kubernetes para crear aplicaciones persistentes y distribuidas. Guía completa con ejemplos prácticos."
+tags:
+  - "kubernetes"
+  - "- daemonset"
+  - "- statefulset"
+keywords:
+  - "kubernetes daemonset"
+  - "- kubernetes statefulset"
+  - "- diferencia daemonset statefulset"
+  - "- aplicaciones persistentes kubernetes"
+  - "- bases de datos kubernetes"
+  - "- statefulset yaml"
+  - "- daemonset yaml"
+  - "- headless service kubernetes"
+  - "- volumenes statefulset"
+  - "- pods con identidad estable"
+  - "- escalado stateful kubernetes"
+---
+
+# DaemonSets y StatefulSets en Kubernetes
+Ya hemos visto los deployments, pero existen otros objetos similares que nos permiten gestionar múltiples pods de forma automática. En este capítulo vamos a verlos: los DaemonSets y los StatefulSets.
+
+🎥 Vídeo completo, utilicemos los capítulos de youtube para saltar a la sección que nos interese:
+[https://youtu.be/zNEKiAy1F6Q](https://youtu.be/zNEKiAy1F6Q)
+
+[![DaemonSets y StatefulSets](https://img.youtube.com/vi/zNEKiAy1F6Q/maxresdefault.jpg)](https://www.youtube.com/watch?v=zNEKiAy1F6Q)
+
+
+Al igual que los deployments, permiten gestionar pods de forma automática, pero tienen unas características diferentes que los hacen más adecuados para ciertos casos de uso.
+
+Comparemos primero los Deployments con los DaemonSets y StatefulSets:
+| Característica                  | Deployments                          | DaemonSets                          | StatefulSets                        |
+|---------------------------------|--------------------------------------|-------------------------------------|-------------------------------------|
+| **Propósito principal**         | Gestionar aplicaciones sin estado    | Ejecutar pods en todos los nodos    | Gestionar aplicaciones con estado   |
+| **Escalabilidad**               | Escalado automático y manual         | No escalable, un pod por nodo       | Escalado manual                     |
+| **Identidad de los pods**       | No garantiza identidad única         | No garantiza identidad única        | Garantiza identidad única           |
+| **Persistencia de datos**       | No garantiza persistencia            | No garantiza persistencia           | Garantiza persistencia              |
+| **Casos de uso comunes**        | Aplicaciones web, APIs               | Agentes de monitoreo, logging       | Bases de datos, sistemas distribuidos |
+| **Distribución de pods**        | Basado en el número deseado          | Uno por nodo o subconjunto de nodos | Basado en el número deseado         |
+| **Orden de despliegue**         | No garantiza orden específico        | No garantiza orden específico       | Garantiza orden de despliegue       |
+
+
+## DaemonSets
+Los DaemonSets son objetos de Kubernetes que garantizan que un pod se ejecute en todos los nodos de un clúster, o en un subconjunto específico de ellos. Esto es útil para aplicaciones que tienen que ejecutarse en cada nodo, como agentes de monitorización, recolectores de logs o servicios de red.
+
+Si un nodo se añade al clúster, el DaemonSet automáticamente crea un pod en ese nodo. Si un nodo se elimina, el pod asociado también se elimina. Simple y efectivo.
+
+Veamos un ejemplo de un DaemonSet que ejecuta un pod en todos los nodos del clúster:
+```yaml
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: fluentd-elasticsearch
+  labels:
+    k8s-app: fluentd-logging
+spec:
+  selector:
+    matchLabels:
+      name: fluentd-elasticsearch
+  template:
+    metadata:
+      labels:
+        name: fluentd-elasticsearch
+    spec:
+      containers:
+      - name: fluentd-elasticsearch
+        image: quay.io/fluentd_elasticsearch/fluentd:v2.5.2
+        resources:
+          limits:
+            memory: 200Mi
+          requests:
+            cpu: 100m
+            memory: 200Mi
+```
+
+Este DaemonSet ejecutará un pod de Fluentd en cada nodo del clúster. Fluentd es un agregador de logs que puede recopilar y enviar logs a diferentes destinos; en este caso podemos suponer que se está utilizando para recopilar los logs de todos los nodos del clúster.
+
+Para aplicar la configuración anterior, usaríamos el siguiente comando:
+```shell
+kubectl apply -f daemonset.yaml
+```
+Podríamos consultar el estado del DaemonSet con el comando:
+```shell
+kubectl get daemonset fluentd-elasticsearch
+```
+
+Como vemos, todos estos objetos se gestionan de forma similar a los deployments: solo hay que especificar el tipo de objeto después de las instrucciones get, edit, describe o delete.
+
+Podríamos borrar el DaemonSet con el siguiente comando:
+```shell
+kubectl delete daemonset fluentd-elasticsearch
+```
+
+
+## StatefulSets
+Los StatefulSets son objetos de Kubernetes que se utilizan para gestionar aplicaciones con estado. A diferencia de los deployments, los StatefulSets garantizan que los pods tengan una identidad única y estable, lo que es esencial para aplicaciones como bases de datos o sistemas distribuidos.
+
+Cada pod recibe un nombre único y predecible (`mongo-0`, `mongo-1`, `mongo-2`...) y un nombre DNS estable que no cambia, aunque el pod se reinicie o se reprograme en otro nodo. Además, cada pod va asociado a su propio volumen persistente, que se mantiene incluso si el pod se elimina.
+
+¿Ya nos imaginamos por dónde van los tiros? Efectivamente, esto es ideal para bases de datos o sistemas con almacenamiento persistente.
+
+Veamos un ejemplo de un StatefulSet que ejecuta una base de datos MongoDB:
+```yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mongo
+spec:
+  serviceName: mongo
+  replicas: 3
+  selector:
+    matchLabels:
+      app: mongo
+  template:
+    metadata:
+      labels:
+        app: mongo
+    spec:
+      containers:
+      - name: mongo
+        image: mongo
+        ports:
+        - containerPort: 27017
+          name: mongo
+```
+
+Fijémonos en el campo `serviceName`: los StatefulSets necesitan un servicio "headless" asociado, que es el que proporciona a cada pod su nombre DNS estable. Veremos los servicios en detalle en el [capítulo de Services](./110.Services.md).
+
+Este ejemplo estaría incompleto, ya que los volúmenes los veremos en capítulos posteriores ([Almacenamiento y volúmenes en Kubernetes](./115.Almacenamiento.md)), pero sirve para que veamos la estructura básica de un StatefulSet.
+
+Para aplicar la configuración anterior, usaríamos el siguiente comando:
+```shell
+kubectl apply -f statefulset.yaml
+```
+
+Y de igual forma que con los anteriores, podríamos utilizar los comandos get, edit, describe o delete para gestionar el StatefulSet:
+```shell
+kubectl <comando> statefulset mongo
+```
+
+
+## Conclusión
+Junto con los deployments, ya hemos visto los principales tipos de objetos que nos permiten gestionar pods de forma automática en Kubernetes. En el siguiente capítulo veremos los [jobs y cronjobs](/article/kubernetes/109-jobs-y-cronjobs), que son objetos que nos permiten ejecutar tareas programadas o de forma puntual.
+
+No nos preocupemos, porque iremos viendo todos estos objetos en profundidad en los casos prácticos.
+
+
+---
+* Lista de vídeos en Youtube: [Curso Kubernetes](https://www.youtube.com/playlist?list=PLQhxXeq1oc2k9MFcKxqXy5GV4yy7wqSma)
+
+[Volver al índice](README.md#índice)

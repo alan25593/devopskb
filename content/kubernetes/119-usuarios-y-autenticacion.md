@@ -1,0 +1,155 @@
+---
+title: "Usuarios y Service Accounts en Kubernetes - Gestión de Identidades"
+category: "kubernetes"
+description: "Aprende a gestionar usuarios, Service Accounts y autenticación en Kubernetes. Configura certificados, tokens y contextos para acceso seguro al cluster."
+tags:
+  - "kubernetes"
+  - "- usuarios"
+  - "- service-accounts"
+  - "- autenticación"
+  - "- CKA"
+keywords:
+  - "kubernetes usuarios"
+  - "- service accounts kubernetes"
+  - "- autenticación kubernetes"
+  - "- certificados kubernetes"
+  - "- kubeconfig contexts"
+  - "- kubernetes identidades"
+  - "- crear usuario kubernetes"
+  - "- kubectl create serviceaccount"
+  - "- RBAC service account"
+  - "- token service account kubernetes"
+  - "- certificatesigningrequest kubernetes"
+  - "- kubernetes access control"
+---
+
+# Usuarios y Service Accounts en Kubernetes
+
+En Kubernetes existen dos tipos de identidades:
+- **Usuarios**: personas (administradores, desarrolladores...). Kubernetes **no** tiene un objeto "User" en su API: los usuarios se gestionan fuera del cluster.
+- **Service Accounts**: identidades para procesos. Sí son objetos de la API y se usan para que los pods (u otras herramientas) se autentiquen contra el API server.
+
+En este capítulo veremos cómo crear ambos tipos. En el [siguiente](./120.Roles.md) veremos cómo darles permisos con RBAC.
+
+## Usuarios
+Normalmente los usuarios se definen en un sistema de autenticación externo, como un proveedor OIDC (OpenID Connect), LDAP o Active Directory. Kubernetes no tiene un sistema de usuarios propio, pero puede integrarse con estos sistemas mediante [estrategias de autenticación](https://kubernetes.io/docs/reference/access-authn-authz/authentication/#authentication-strategies).
+
+También se pueden definir usuarios de forma manual mediante certificados x509: para Kubernetes, cualquier certificado firmado por la CA del cluster identifica a un usuario, donde el `CN` (Common Name) es el nombre de usuario y la `O` (Organization) su grupo.
+
+### Crear un usuario mediante certificado x509 (firma manual)
+Estos pasos se realizan en un nodo del `control plane`, que es donde reside la CA del cluster (`/etc/kubernetes/pki/`).
+
+Primero creamos una clave privada para el usuario:
+
+```bash
+openssl genrsa -out user.key 2048
+```
+
+A continuación, generamos la petición de firma (CSR), donde `CN` es el nombre de usuario y `O` el grupo:
+```bash
+openssl req -new -key user.key -out user.csr -subj "/CN=user/O=group"
+```
+
+Finalmente, firmamos la petición con la CA del cluster:
+```bash
+openssl x509 -req -in user.csr -CA /etc/kubernetes/pki/ca.crt -CAkey /etc/kubernetes/pki/ca.key -CAcreateserial -out user.crt -days 365
+```
+
+### Crear un usuario mediante la API de CertificateSigningRequest
+La forma "nativa" de hacer lo mismo, y la que suele caer en el examen CKA, es delegar la firma en el propio Kubernetes mediante un objeto `CertificateSigningRequest`:
+
+```yaml
+apiVersion: certificates.k8s.io/v1
+kind: CertificateSigningRequest
+metadata:
+  name: user-csr
+spec:
+  request: <contenido de user.csr en base64 y en una sola línea>
+  signerName: kubernetes.io/kube-apiserver-client
+  expirationSeconds: 86400  # 1 día, opcional
+  usages:
+  - client auth
+```
+
+El campo `request` se rellena con `cat user.csr | base64 | tr -d "\n"`. Una vez aplicado, un administrador aprueba la petición y descarga el certificado firmado:
+
+```bash
+kubectl get csr
+kubectl certificate approve user-csr
+kubectl get csr user-csr -o jsonpath='{.status.certificate}' | base64 -d > user.crt
+```
+
+### Añadir el usuario a nuestro kubeconfig
+Con el certificado firmado (por cualquiera de los dos métodos), añadimos las credenciales y un contexto a nuestro kubeconfig:
+```bash
+kubectl config set-credentials user --client-certificate=user.crt --client-key=user.key --embed-certs=true
+
+kubectl config set-context user-context --cluster=kubernetes --user=user
+
+kubectl config use-context user-context
+```
+
+Por defecto, este usuario carecerá de permisos para realizar ninguna acción en el cluster. Para asignárselos, tendremos que vincularlo a un `Role` (a nivel de namespace) o a un `ClusterRole` (a nivel de cluster) mediante un `RoleBinding` o `ClusterRoleBinding`, como veremos en el [capítulo de RBAC](./120.Roles.md).
+
+> **Importante:** Kubernetes no permite "revocar" certificados x509. Si una clave se ve comprometida, la única solución práctica es rotar la CA o apoyarse en RBAC para retirar los permisos de ese usuario. Por eso, en producción, se recomienda autenticación vía OIDC con tokens de corta duración.
+
+## Service Accounts
+Las Service Accounts son las identidades de los **procesos**. Cada namespace tiene una llamada `default` y todo pod, salvo que se indique lo contrario, la utiliza.
+
+Crear una service account es trivial:
+```bash
+kubectl create serviceaccount mi-app-sa
+```
+
+O en yaml:
+```yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: mi-app-sa
+  namespace: default
+```
+
+Para que un pod la utilice, se indica en el `spec`:
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mi-app
+spec:
+  serviceAccountName: mi-app-sa
+  containers:
+  - name: app
+    image: nginx
+```
+
+El token de la service account se monta automáticamente en el pod, en `/var/run/secrets/kubernetes.io/serviceaccount/token`, y es el que usan las aplicaciones para hablar con la API.
+
+### Tokens de Service Account
+Desde Kubernetes 1.24, al crear una service account **ya no se genera un Secret con un token de larga duración**. Los tokens son efímeros y se solicitan bajo demanda:
+```bash
+kubectl create token mi-app-sa --duration=1h
+```
+
+Si nos encontramos tutoriales que buscan el token en un Secret asociado a la service account, están desactualizados.
+
+### Buenas prácticas con Service Accounts
+- **No usemos la service account `default`** para nuestras aplicaciones: creemos una por aplicación, con los permisos mínimos.
+- Si el pod no necesita hablar con la API de Kubernetes (la mayoría no lo necesita), desactivemos el montaje del token:
+```yaml
+spec:
+  serviceAccountName: mi-app-sa
+  automountServiceAccountToken: false
+```
+- Asignemos permisos siempre vía RBAC y de forma granular, como veremos en el siguiente capítulo.
+
+## Resumen
+- Los usuarios humanos no existen como objeto en Kubernetes: se autentican con certificados x509 (CN=usuario, O=grupo) o sistemas externos (OIDC).
+- La API `CertificateSigningRequest` permite firmar certificados de usuario desde el propio cluster (`kubectl certificate approve`).
+- Las Service Accounts son las identidades de los procesos y sus tokens son efímeros desde la 1.24 (`kubectl create token`).
+- Ninguna identidad tiene permisos por sí sola: estos se asignan con RBAC, que vemos en el [siguiente capítulo](./120.Roles.md).
+
+---
+* Lista de vídeos en Youtube: [Curso Kubernetes](https://www.youtube.com/playlist?list=PLQhxXeq1oc2k9MFcKxqXy5GV4yy7wqSma)
+
+[Volver al índice](README.md#índice)

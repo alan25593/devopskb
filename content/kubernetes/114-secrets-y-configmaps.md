@@ -1,0 +1,275 @@
+---
+title: "Secrets y ConfigMaps en Kubernetes - Gestión de Configuración"
+category: "kubernetes"
+description: "Aprende a gestionar configuraciones y datos sensibles en Kubernetes con Secrets y ConfigMaps. Guía completa con ejemplos y mejores prácticas de seguridad."
+tags:
+  - "kubernetes"
+  - "- secrets"
+  - "- configmaps"
+  - "- configuración"
+  - "- seguridad"
+keywords:
+  - "kubernetes secrets"
+  - "- configmaps kubernetes"
+  - "- configuración kubernetes"
+  - "- datos sensibles kubernetes"
+  - "- variables entorno kubernetes"
+  - "- gestión configuración kubernetes"
+  - "- cómo usar secrets kubernetes"
+  - "- base64 secrets kubernetes"
+  - "- external secrets kubernetes"
+  - "- vault kubernetes"
+  - "- configmap vs secret"
+  - "- kubernetes buenas practicas seguridad"
+---
+
+# Secrets y ConfigMaps en Kubernetes
+¿Queremos proteger los datos sensibles de nuestras aplicaciones en Kubernetes sin complicarnos la vida?
+
+Kubernetes parece muy desafiante al principio, pero es cuando llegamos a este tipo de objetos cuando su modularidad y diseño empiezan a cobrar más sentido que nunca.
+
+Vamos a ver cómo, con ConfigMaps y Secrets, podemos separar nuestra información sensible de la configuración pública y consumirla desde el resto de objetos de Kubernetes: pods, deployments, etc.
+
+En este capítulo vamos a desglosar: primero, qué son los ConfigMaps y los Secrets; segundo, cómo usarlos correctamente; y finalmente, veremos varios ejemplos prácticos que podemos implementar hoy mismo.
+
+Imaginemos que estamos construyendo nuestra aplicación. Necesitamos dos tipos de información: por un lado, las instrucciones de arranque, parámetros de entrada y cualquier tipo de configuración, que guardaríamos en ConfigMaps; y por otro, todos los secretos, como contraseñas de bases de datos o tokens de APIs, que irían en objetos de tipo Secret.
+
+A efectos prácticos son objetos muy similares, pero se han separado en dos tipos distintos por dos motivos: primero, para que podamos aplicar permisos de forma más granular; y segundo, porque los secretos permiten un tratamiento especial, como veremos en las consideraciones de seguridad.
+
+🎥 Vídeo completo, utilicemos los capítulos de youtube para saltar a la sección que nos interese:
+[https://youtu.be/8V-Knk76tWs](https://youtu.be/8V-Knk76tWs)
+
+[![Curso Kubernetes](https://img.youtube.com/vi/8V-Knk76tWs/maxresdefault.jpg)](https://www.youtube.com/watch?v=8V-Knk76tWs)
+
+
+## ¿Cómo se crean y consumen estos objetos?
+Como siempre, tenemos dos formas de crear estos objetos: usando comandos o declarando un yaml. Una vez creados, quedan en propiedad de un namespace y pueden ser consumidos por cualquier objeto dentro de ese namespace.
+
+Vamos a ver cada uno de ellos por separado.
+
+## Secrets
+Los secretos en Kubernetes son una forma de almacenar información sensible, que puede ser consumida por otros recursos del cluster.
+
+Listar secretos:
+``` bash
+kubectl get secrets
+```
+
+Crear secretos:
+``` bash
+# Crear un secreto llamado my-secret con una clave por cada fichero de la carpeta bar
+kubectl create secret generic my-secret --from-file=path/to/bar
+
+# Crear un secreto especificando el nombre de las claves, en lugar de usar el nombre del fichero
+kubectl create secret generic my-secret --from-file=ssh-privatekey=path/to/id_rsa --from-file=ssh-publickey=path/to/id_rsa.pub
+
+# Crear un secreto con key1=supersecret y key2=topsecret
+kubectl create secret generic my-secret --from-literal=key1=supersecret --from-literal=key2=topsecret
+
+# Crear un secreto combinando un fichero y un literal
+kubectl create secret generic my-secret --from-file=ssh-privatekey=path/to/id_rsa --from-literal=passphrase=topsecret
+
+# Crear un secreto a partir de un fichero de variables de entorno
+kubectl create secret generic my-secret --from-env-file=path/to/bar.env
+```
+
+También podríamos crear un secreto a partir de un yaml, por ejemplo:
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: my-secret
+type: Opaque
+data:
+  key1: c3VwZXJzZWNyZXQ=
+  key2: dG9wc2VjcmV0
+```
+
+Fijémonos en que los valores del campo `data` van codificados en **base64** (`echo -n 'supersecret' | base64`). Si preferimos escribirlos en texto plano, podemos usar el campo `stringData` y Kubernetes los codificará por nosotros.
+
+> **Importante:** base64 **no es cifrado**, es solo una codificación. Cualquiera con acceso de lectura al secreto puede decodificarlo al instante (`kubectl get secret my-secret -o jsonpath='{.data.key1}' | base64 -d`). Por defecto, los secretos tampoco se cifran dentro de etcd: para eso hay que habilitar el cifrado en reposo (encryption at rest) o usar gestores externos como Vault o External Secrets. Lo veremos en la parte de seguridad del curso.
+
+Borrar un secreto:
+``` bash
+kubectl delete secret <nombre>
+```
+
+Podemos crearlos de múltiples formas y tenemos opciones para guardar distintos formatos de secretos. Los genéricos (`Opaque`) son pares clave-valor; más adelante veremos cómo crear secretos de registry de imágenes, TLS y otros.
+
+### Usando secretos en un pod
+Un secreto se puede usar en la definición de un contenedor, ya sea en un pod, un deployment, un statefulset, etc.
+
+Las dos formas habituales de consumirlos son: cargarlos como variables de entorno o montarlos como un volumen en el contenedor. Veamos ambos ejemplos.
+
+Podríamos pasarlo como una variable de entorno como en el siguiente ejemplo:
+```yaml
+...
+spec:
+  containers:
+  - image: mysql:8.0
+    name: dbpod
+    env:
+    - name: MYSQL_ROOT_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: mysql
+          key: password
+```
+
+También podríamos montarlo como un volumen en un contenedor. Esto crea, en el path indicado, un fichero por cada clave del secreto, con su contenido como valor. Por ejemplo:
+
+``` yaml
+...
+spec:
+  containers:
+  - image: busybox
+    command:
+      - sleep
+      - "3600"
+    volumeMounts:
+    - mountPath: /mysqlsecret
+      name: mysqlsecret
+    name: busy
+  volumes:
+  - name: mysqlsecret
+    secret:
+      secretName: mysql
+```
+
+### Secretos de tipo docker-registry
+Los secretos de tipo `docker-registry` se utilizan para almacenar credenciales de acceso a un registro de imágenes de contenedores. Estos secretos permiten a Kubernetes autenticarse y descargar imágenes privadas desde un registro.
+Para crear un secreto de tipo `docker-registry`, podemos usar el siguiente comando:
+```bash
+kubectl create secret docker-registry <nombre-secreto> \
+  --docker-username=<usuario> \
+  --docker-password=<contraseña> \
+  --docker-email=<email>
+```
+
+Después, lo referenciaríamos en el pod mediante el campo `imagePullSecrets`.
+
+### Secretos de tipo tls
+Los secretos de tipo `tls` se utilizan para almacenar certificados TLS y claves privadas. Estos secretos son esenciales para habilitar conexiones seguras (HTTPS) en aplicaciones desplegadas en Kubernetes, como vimos en el [capítulo de Ingress](./111.Ingress_controller.md).
+Para crear un secreto de tipo `tls`, podemos usar el siguiente comando:
+```bash
+kubectl create secret tls <nombre-secreto> \
+  --cert=<ruta-al-certificado> \
+  --key=<ruta-a-la-clave-privada>
+```
+
+## Configmaps
+Dado el carácter efímero de un pod en Kubernetes, necesitamos algún método para compartir ficheros o información de configuración con los contenedores. Además, es muy habitual crear contenedores agnósticos del entorno y luego pasarles su configuración de arranque en variables de entorno.
+
+Ya sea por un caso, por el otro, o por ambos, los configmaps son la solución.
+
+### Crear un configmap con comandos
+Para crear un configmap usamos el siguiente comando:
+``` bash
+ kubectl create configmap <nombre> \
+ --from-literal=text=<texto> \
+ --from-file=<fichero> \
+ --from-file=<directorio>
+ ```
+Este nos permite importar información, ya sea texto plano que introduzcamos en el comando (`--from-literal=text=`), el contenido de un fichero (`--from-file=`) o el contenido de un directorio completo (`--from-file=`).
+
+
+Podemos consultar el contenido de un configmap con el siguiente comando:
+``` bash
+kubectl get configmap <nombre>
+```
+
+Aunque este solo nos mostrará el total de datos y su edad. Podemos obtener el contenido completo especificando la salida en formato yaml:
+``` bash
+kubectl get configmap <nombre> -o yaml
+```
+
+### Crear un configmap con yaml
+Podríamos declararlo como un yaml para facilitar el almacenamiento de la configuración como código:
+``` yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cars
+  namespace: default
+data:
+  car.make: Opel
+  car.model: Astra
+  car.trim: OPC
+```
+
+Para guardar el configmap en el cluster podemos usar el comando:
+```bash
+kubectl apply -f <configmap>.yaml
+```
+
+
+### Usar configmap en un pod
+
+#### Utilizar en el entorno de un pod
+Podemos cargar el contenido de un configmap en un pod como variable de entorno así:
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: demo
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    env:
+    - name: <nombre de la variable de entorno>
+      valueFrom:
+        configMapKeyRef:
+          name: <nombre_configmap>
+          key: <clave a usar>
+```
+Esto nos permitiría importar una única clave del configmap.
+
+También podríamos importar todo el contenido del configmap así:
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: demo
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    envFrom:
+    - configMapRef:
+        name: <nombre_configmap>
+```
+Cambiaríamos el `configMapKeyRef` por `configMapRef` y `env` por `envFrom`. Por último, eliminaríamos `key` y `valueFrom`, datos que ya no tendríamos que especificar.
+
+
+### Montar como volumen en un pod
+Podemos montar un configmap como un volumen en un pod. Esta sería una configuración de ejemplo:
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: shell-demo
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    volumeMounts:
+    - name: car-vol
+      mountPath: /etc/cars
+  volumes:
+  - name: car-vol
+    configMap:
+      name: cars
+```
+
+
+## Borrar un configmap
+Podemos eliminar este objeto de Kubernetes con el comando:
+``` bash
+kubectl delete configmap <nombre>
+```
+
+---
+* Lista de vídeos en Youtube: [Curso Kubernetes](https://www.youtube.com/playlist?list=PLQhxXeq1oc2k9MFcKxqXy5GV4yy7wqSma)
+
+[Volver al índice](README.md#índice)

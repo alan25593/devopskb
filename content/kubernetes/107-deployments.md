@@ -1,0 +1,226 @@
+---
+title: "Deployments en Kubernetes - Rolling Updates y Gestión de Aplicaciones"
+category: "kubernetes"
+description: "Domina Deployments en Kubernetes - rolling updates, rollbacks, scaling, estrategias de despliegue y gestión completa del ciclo de vida de aplicaciones."
+tags:
+  - "kubernetes"
+  - "- deployments"
+  - "- rolling-updates"
+  - "- CKAD"
+keywords:
+  - "kubernetes deployments"
+  - "- rolling updates kubernetes"
+  - "- rollback kubernetes"
+  - "- scaling deployments"
+  - "- estrategias despliegue kubernetes"
+  - "- replica sets"
+  - "- kubectl scale"
+  - "- deployment yaml kubernetes"
+  - "- actualizar aplicacion kubernetes"
+  - "- zero-downtime kubernetes"
+  - "- deployment strategy kubernetes"
+---
+
+# Deployments en Kubernetes
+
+Los [deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) son el objeto de Kubernetes para desplegar y gestionar aplicaciones sin estado. Nos permiten declarar cuántas réplicas de un pod queremos, actualizarlas de forma progresiva y volver a versiones anteriores si algo sale mal.
+
+El deployment gestiona uno o varios objetos ReplicaSet, y estos a su vez gestionan uno o más pods.
+
+![Deployments en kubernetes](/diagramas/kubernetes/deployments.drawio.svg)
+
+
+🎥 Vídeo completo, utilicemos los capítulos de youtube para saltar a la sección que nos interese:
+[https://youtu.be/JDVnWohX530](https://youtu.be/JDVnWohX530)
+
+[![Deployments](https://img.youtube.com/vi/JDVnWohX530/maxresdefault.jpg)](https://www.youtube.com/watch?v=JDVnWohX530)
+
+## ¿Qué es un ReplicaSet?
+Un ReplicaSet es un objeto de Kubernetes que asegura que un número específico de réplicas de un pod esté ejecutándose en todo momento. Los deployments utilizan ReplicaSets para gestionar la creación, actualización y eliminación de pods, asegurando alta disponibilidad y escalabilidad. En la práctica, nunca crearemos ReplicaSets a mano: siempre lo haremos a través de un deployment.
+
+## Definición de un deployment
+Este es un ejemplo de su estructura básica:
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+    app: nginx
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+```
+
+Fijémonos en que el `selector.matchLabels` debe coincidir con las labels del `template`: así es como el deployment sabe qué pods son suyos.
+
+Aplicaríamos la configuración anterior con el comando:
+```shell
+kubectl apply -f deployment.yaml
+```
+
+Este deployment crearía un ReplicaSet que, a su vez, mantendría tres pods de nginx en ejecución.
+
+Podríamos consultar el estado del deployment con el comando:
+```shell
+kubectl get deployment nginx-deployment
+```
+
+El cual nos devolvería una salida similar a la siguiente:
+```text
+NAME                            READY   UP-TO-DATE   AVAILABLE   AGE
+nginx-deployment                3       3            3           2m
+```
+
+## Crear un deployment con comandos
+También podemos crear un deployment con una sola instancia con el comando:
+```shell
+kubectl create deployment nginx --image=nginx
+```
+
+> **Truco de examen:** como con los pods, podemos generar el YAML de un deployment sin crearlo: `kubectl create deployment nginx --image=nginx --replicas=3 --dry-run=client -o yaml > deployment.yaml`. Después lo editamos y aplicamos.
+
+
+## Actualizar un deployment
+Supongamos que queremos actualizar el deployment para que use una nueva imagen, concretamente la de nginx basada en alpine. El yaml de configuración quedaría así:
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+    app: nginx
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:alpine
+        ports:
+        - containerPort: 80
+```
+
+Aplicamos los cambios de nuevo con `kubectl apply -f deployment.yaml` y esta vez nos devuelve que se ha configurado, en vez de crearse:
+```shell
+kubectl apply -f deployment.yaml
+deployment.apps/nginx-deployment configured # Salida del comando
+```
+
+También podríamos actualizar el deployment editándolo en caliente:
+```shell
+kubectl edit deployment nginx-deployment
+```
+
+O cambiar solo la imagen con un comando, muy habitual en los exámenes:
+```shell
+kubectl set image deployment/nginx-deployment nginx=nginx:alpine
+```
+
+Podemos seguir el progreso de la actualización con:
+```shell
+kubectl rollout status deployment nginx-deployment
+```
+
+### Estrategias de despliegue
+Por defecto, los deployments actualizan los pods de forma progresiva (estrategia `RollingUpdate`): van creando pods nuevos y eliminando antiguos poco a poco, sin pérdida de servicio. Se puede ajustar cuántos pods se crean de más (`maxSurge`) y cuántos pueden faltar (`maxUnavailable`) durante la actualización:
+```yaml
+spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+```
+
+La alternativa es la estrategia `Recreate`, que elimina todos los pods antiguos antes de crear los nuevos. Implica una caída del servicio, pero es necesaria cuando dos versiones no pueden convivir (por ejemplo, por una migración de base de datos).
+
+## Escalar un deployment
+Podemos escalar el deployment con el comando:
+```shell
+kubectl scale deployment nginx-deployment --replicas=5
+```
+
+## Historial y rollout de un deployment
+Kubernetes mantiene un historial de los cambios realizados en los deployments, lo que permite hacer un seguimiento de las versiones y realizar rollbacks si es necesario. Esto es especialmente útil para revertir cambios no deseados o fallidos, así como para auditar el historial de cambios en la configuración de la aplicación.
+
+
+### Historial de un deployment
+Podemos consultar el historial de un deployment con el comando:
+```shell
+kubectl rollout history deployment nginx-deployment
+```
+
+### Modificar el límite del historial de un deployment
+Por defecto, el historial de un deployment guarda las últimas 10 revisiones, a menos que modifiquemos el valor `revisionHistoryLimit` en el spec del deployment. Por ejemplo:
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+    app: nginx
+spec:
+  revisionHistoryLimit: 3
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+...
+```
+
+### Hacer un rollback a una versión anterior
+Es posible hacer un rollback a una versión anterior de un deployment, ya sea porque el último despliegue no funciona o porque la aplicación tiene errores inesperados.
+Se haría con el comando:
+```shell
+kubectl rollout undo deployment nginx-deployment
+```
+
+Este comando hace un rollback a la versión anterior del deployment. También podríamos indicarle una revisión concreta:
+```shell
+kubectl rollout undo deployment nginx-deployment --to-revision=1
+```
+
+
+## Buenas prácticas para trabajar con Deployments
+- Usemos etiquetas claras y consistentes para identificar nuestros recursos.
+- Configuremos `revisionHistoryLimit` para evitar almacenar demasiadas revisiones.
+- Realicemos actualizaciones progresivas para minimizar interrupciones.
+- Monitoricemos el estado de los despliegues con `kubectl rollout status`.
+- Usemos archivos YAML para mantener la configuración como código.
+
+## Errores comunes y soluciones
+
+### Error: "ImagePullBackOff"
+Ocurre cuando Kubernetes no puede descargar la imagen del contenedor. Verifiquemos:
+- Que el nombre y el tag de la imagen sean correctos.
+- Que tengamos acceso al registro de contenedores.
+- Usemos el comando `kubectl describe pod <nombre-pod>` para más detalles.
+
+### Error: "CrashLoopBackOff"
+Indica que el contenedor se está reiniciando continuamente. Verifiquemos:
+- Los logs del pod con `kubectl logs <nombre-pod>`.
+- Que la configuración del contenedor (puertos, variables de entorno, etc.) sea correcta.
+
+---
+* Lista de vídeos en Youtube: [Curso Kubernetes](https://www.youtube.com/playlist?list=PLQhxXeq1oc2k9MFcKxqXy5GV4yy7wqSma)
+
+[Volver al índice](README.md#índice)

@@ -1,0 +1,137 @@
+---
+title: "Namespaces y Contextos en Kubernetes - Organización y Aislamiento"
+category: "kubernetes"
+description: "Domina los Namespaces y Contextos en Kubernetes para organizar recursos y aislar aplicaciones. Guía completa con comandos y ejemplos prácticos."
+tags:
+  - "kubernetes"
+  - "- namespaces"
+  - "- contextos"
+  - "- organización"
+keywords:
+  - "kubernetes namespaces"
+  - "- qué son los namespaces kubernetes"
+  - "- contextos kubernetes"
+  - "- organizar recursos kubernetes"
+  - "- aislamiento kubernetes"
+  - "- kubectl context"
+  - "- kubectl config use-context"
+  - "- namespaces tutorial"
+  - "- crear namespace kubernetes"
+  - "- kubens herramienta"
+  - "- multitenancy kubernetes"
+---
+
+# Namespaces y contextos
+Los namespaces son una forma de agrupar los recursos de Kubernetes. Nos permiten gestionar los diferentes recursos de una aplicación (pod, deployment, service, etc.) y establecer sobre ellos cuotas de recursos, políticas de seguridad y configuraciones específicas.
+
+🎥 Vídeo completo, utilicemos los capítulos de youtube para saltar a la sección que nos interese:
+[https://youtu.be/_aiO_0YjhOQ](https://youtu.be/_aiO_0YjhOQ)
+
+[![Namespaces y Contextos](https://img.youtube.com/vi/_aiO_0YjhOQ/maxresdefault.jpg)](https://www.youtube.com/watch?v=_aiO_0YjhOQ)
+
+## Qué hace y qué no hace un namespace
+Un namespace no es una barrera de seguridad, sino una forma de organizar y gestionar los recursos de Kubernetes.
+
+Por defecto, un namespace solo separa recursos de forma lógica, no física. Por ejemplo, los pods de un namespace pueden acceder a los servicios de otro namespace vía red.
+
+Lo que sí nos permite un namespace, una vez definido, es aplicar control de acceso de usuarios (RBAC) sobre todos sus elementos, así como aplicar políticas de red para aislar sus recursos de otros namespaces y establecer cuotas para limitar el uso de CPU y memoria.
+
+
+## Listar namespaces
+Por omisión, Kubernetes crea un namespace llamado `default`, que es el namespace por defecto. Podemos listar los namespaces con el comando:
+```shell
+kubectl get ns
+```
+
+Esto nos muestra nuestro namespace por defecto y los namespaces del sistema de Kubernetes (mejor no tocar estos últimos):
+```text
+NAME              STATUS   AGE
+default           Active   26d
+kube-node-lease   Active   26d
+kube-public       Active   26d
+kube-system       Active   26d
+```
+
+Puede ser interesante listar los namespaces junto con sus `labels`:
+```shell
+kubectl get ns --show-labels
+```
+
+Este comando nos muestra los namespaces de la siguiente forma:
+```text
+NAME              STATUS   AGE   LABELS
+default           Active   26d   kubernetes.io/metadata.name=default
+kube-node-lease   Active   26d   kubernetes.io/metadata.name=kube-node-lease
+kube-public       Active   26d   kubernetes.io/metadata.name=kube-public
+kube-system       Active   26d   kubernetes.io/metadata.name=kube-system
+```
+
+## Crear un namespace
+Podemos crear un namespace simplemente con el comando:
+```shell
+kubectl create namespace <nombre-namespace>
+```
+
+O con su abreviatura:
+```shell
+kubectl create ns <nombre-namespace>
+```
+
+Aun así, también lo podemos crear con un fichero de configuración para dejarlo definido como código:
+```yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: development
+  labels:
+    name: development
+```
+
+Para utilizar este manifiesto, usamos el comando:
+```shell
+kubectl apply -f <fichero-yaml>
+```
+
+
+## Borrar un namespace
+Podemos borrar un namespace con el comando:
+```shell
+kubectl delete ns <nombre-namespace>
+```
+
+Ojo: al borrar un namespace se eliminan **todos** los recursos que contiene. Es una operación destructiva que conviene pensarse dos veces.
+
+
+## Cambiar de namespace y contextos
+Podemos ejecutar comandos en cualquier namespace añadiendo el parámetro `--namespace` a cualquier comando, por ejemplo:
+```shell
+kubectl --namespace development get pods
+```
+
+También podemos utilizar la abreviatura `-n`:
+```shell
+kubectl -n development get pods
+```
+
+Esto está bien para lanzar un comando puntual en un namespace concreto, pero si vamos a trabajar un rato en el mismo namespace se vuelve farragoso. En ese caso, es más recomendable asociar el namespace a nuestro contexto actual de kubectl:
+```shell
+kubectl config set-context --current --namespace=<nombre-namespace>
+```
+
+A partir de ese momento, todos los comandos se ejecutarán sobre ese namespace sin necesidad de indicarlo. Este comando es especialmente útil en los exámenes de certificación, donde cada ejercicio suele trabajar sobre un namespace distinto.
+
+> **Consejo:** si trabajamos con muchos namespaces a diario, echemos un ojo a las herramientas `kubectx` y `kubens`, que agilizan mucho el cambio de contexto y de namespace.
+
+
+## Consideraciones de seguridad
+Es importante recordar que los namespaces no son una barrera de seguridad, sino una forma de organizar y gestionar los recursos de Kubernetes.
+
+Para aislar recursos de forma segura, deberíamos utilizar `Network Policies` y `RBAC` (Role Based Access Control), que veremos en capítulos posteriores.
+
+Por defecto, los pods de un namespace pueden acceder por red a los pods de otro namespace, por lo que deberíamos configurar políticas de red para restringir este tráfico.
+
+
+---
+* Lista de vídeos en Youtube: [Curso Kubernetes](https://www.youtube.com/playlist?list=PLQhxXeq1oc2k9MFcKxqXy5GV4yy7wqSma)
+
+[Volver al índice](README.md#índice)

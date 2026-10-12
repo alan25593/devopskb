@@ -1,0 +1,77 @@
+---
+title: "Arquitectura de Kubernetes - Control Plane y Workers Explicados"
+category: "kubernetes"
+description: "Comprende la arquitectura de Kubernetes a fondo - Control Plane, nodos worker, etcd, API server y todos los componentes esenciales con diagramas claros."
+tags:
+  - "kubernetes"
+  - "- arquitectura"
+  - "- componentes"
+keywords:
+  - "kubernetes arquitectura"
+  - "- control plane kubernetes"
+  - "- worker nodes kubernetes"
+  - "- etcd kubernetes"
+  - "- api server kubernetes"
+  - "- scheduler kubernetes"
+  - "- kubelet"
+  - "- kube-proxy"
+  - "- componentes kubernetes"
+  - "- cluster kubernetes"
+  - "- cómo funciona kubernetes"
+  - "- arquitectura k8s"
+  - "- master node kubernetes"
+---
+
+# Arquitectura de Kubernetes
+Veamos la arquitectura de Kubernetes. Empezaremos por un vistazo general y luego profundizaremos en sus componentes principales.
+
+Un clúster de Kubernetes consta de dos piezas fundamentales:
+* El "control plane", o nodo maestro, que es el responsable de gestionar el clúster. No ejecuta pods ni ningún tipo de workloads o cargas de trabajo; se limita a interactuar con los nodos de trabajo y a gestionar los recursos del clúster.
+
+* Los nodos de trabajo o "workers", que alojan los pods (contenedores) y las cargas de trabajo. Es decir, son los encargados de ejecutar las aplicaciones y servicios que se despliegan en el clúster.
+
+Esta separación de funciones permite que los nodos maestros sean muy fiables y, por otra parte, aporta mayor flexibilidad al escalar los nodos de trabajo. Todos los nodos ejecutan el software de Kubernetes y se comunican entre sí a través de la red, repartiéndose las tareas y garantizando la alta disponibilidad de las aplicaciones.
+
+Una visión general de la arquitectura de Kubernetes se muestra en el siguiente diagrama:
+
+![Arquitectura de Kubernetes](/diagramas/kubernetes/arquitectura.drawio.svg)
+
+Aunque vamos a profundizar en los componentes de cada tipo de nodo, es principalmente para que entendamos a grandes rasgos cómo funciona Kubernetes. No es necesario que memoricemos todos los detalles: en la práctica, como usuarios, solo interactuaremos con el clúster a través de la API de Kubernetes. La excepción es la especialización CKA (administrador de Kubernetes), donde sí tendremos que conocer estos componentes a fondo para tareas de mantenimiento y troubleshooting.
+
+🎥 Vídeo completo, utilicemos los capítulos de youtube para saltar a la sección que nos interese:
+[https://youtu.be/8q5txsy3PAE](https://youtu.be/8q5txsy3PAE)
+
+[![Arquitectura de Kubernetes](https://img.youtube.com/vi/8q5txsy3PAE/maxresdefault.jpg)](https://www.youtube.com/watch?v=8q5txsy3PAE)
+
+
+
+
+## Componentes básicos de cualquier nodo
+ - **Container runtime**: es el software que se encarga de ejecutar los contenedores. Docker es el más popular, pero en Kubernetes lo habitual es usar containerd o CRI-O, alternativas más ligeras y especializadas en este tipo de entornos.
+ - **Kubelet**: es el encargado de gestionar los contenedores en un nodo y de garantizar que se mantengan en el estado deseado. Se comunica con el API Server para recibir instrucciones y transmitirlas al runtime de contenedores.
+ - **Kube-proxy**: gestiona el tráfico de red en el nodo. Se encarga de enrutar las peticiones a los servicios y de balancear la carga entre los pods. Traduce automáticamente las necesidades de red de los servicios a reglas de iptables (o IPVS, según la configuración del clúster).
+
+
+## Componentes de un nodo maestro
+Ya hemos visto que los componentes anteriores son necesarios en todos los nodos. Como se aprecia en el diagrama, el nodo maestro o control plane es el más complejo. Vamos a ver los componentes adicionales que lo forman:
+- **Kube-apiserver**: es el punto de entrada al clúster. Recibe las peticiones de los usuarios y de los nodos de trabajo, y es el único componente que se comunica directamente con la base de datos de Kubernetes, etcd. Valida las peticiones y las transforma en acciones sobre el clúster.
+- **Kube-scheduler**: es el encargado de decidir en qué nodo se ejecutará cada pod. Se basa en las necesidades de los pods y en las capacidades de los nodos para tomar la decisión.
+- **Etcd**: es la base de datos de Kubernetes. Almacena el estado del clúster y es el único componente que guarda información de forma persistente. Es un almacén clave-valor altamente consistente y tolerante a fallos.
+- **Kube-controller-manager**: es el componente que ejecuta los controladores de Kubernetes. Los controladores son procesos que corren de forma continua y se encargan de mantener el estado deseado del clúster. Por ejemplo, el controlador de replicación se asegura de que siempre haya el número de réplicas deseado de un pod.
+- **Cloud-controller-manager**: es como el kube-controller-manager, pero para entornos en la nube. Se encarga de interactuar con los servicios del proveedor, como los volúmenes de almacenamiento, los balanceadores de carga, etc.
+
+## Vale, muchos datos, pero...
+Por simplificar: la API de Kubernetes gestiona todas las peticiones de los usuarios o de los nodos, el scheduler decide dónde se ejecutan los pods, los controladores mantienen el estado deseado del clúster y etcd almacena ese estado.
+
+En conjunto, estos componentes garantizan que los kubelets de los nodos de trabajo ejecuten los pods y se aseguran de que estén en el estado deseado.
+
+Si nos fijamos, son muchas capas de abstracción. En nuestro PC utilizaríamos Docker directamente; aquí, en cambio, invocamos una API que coordina diferentes piezas para ejecutar esos contenedores. Además, Kubernetes no es solo contenedores: aporta nuevos conceptos para ejecutar grupos de contenedores, como los deployments, los servicios de red o el almacenamiento persistente, que iremos viendo en los siguientes capítulos.
+
+## Resumen
+En este capítulo hemos visto una visión general de la arquitectura de Kubernetes. Un clúster se compone de dos tipos de nodos: los maestros (control plane) y los de trabajo (workers). Hemos repasado los componentes básicos de cualquier nodo y hemos profundizado en los del nodo maestro. En el siguiente capítulo veremos cómo instalar un clúster de Kubernetes para meternos de lleno en la práctica.
+
+
+---
+* Lista de vídeos en Youtube: [Curso Kubernetes](https://www.youtube.com/playlist?list=PLQhxXeq1oc2k9MFcKxqXy5GV4yy7wqSma)
+
+[Volver al índice](README.md#índice)

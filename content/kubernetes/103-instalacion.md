@@ -1,0 +1,377 @@
+---
+title: "Instalación de Kubernetes - Cluster Completo Ubuntu Server con kubeadm"
+category: "kubernetes"
+description: "Guía completa para instalar Kubernetes en Ubuntu Server 22.04/24.04 con kubeadm, containerd y docker. Cluster multi-nodo paso a paso desde cero."
+tags:
+  - "kubernetes"
+  - "- instalación"
+  - "- ubuntu"
+  - "- kubeadm"
+  - "- cluster"
+keywords:
+  - "kubernetes instalación"
+  - "- kubeadm ubuntu"
+  - "- kubernetes cluster ubuntu"
+  - "- instalar kubernetes ubuntu server paso a paso"
+  - "- containerd kubernetes"
+  - "- instalar kubernetes desde cero"
+  - "- kubernetes multi-nodo"
+  - "- kubeconfig"
+  - "- calico cni"
+  - "- cilium kubernetes"
+  - "- kubernetes ubuntu 22.04"
+  - "- kubernetes ubuntu 24.04"
+---
+
+# Instalación de Kubernetes
+
+La instalación de Kubernetes en un cluster de nodos puede ser un proceso complejo la primera vez, pero no nos preocupemos. En esta guía agruparé distintos tutoriales de instalación con distintos motores de contenedores y distintos sistemas operativos. El proceso está muy mascado y probado, pero si tenemos algún problema, no dudemos en abrir un issue en el [repositorio de Github](https://github.com/pabpereza/pabpereza/issues).
+
+Para todas las instalaciones, estos son los requisitos mínimos y los recomendados para un cluster de Kubernetes:
+
+![Requisitos mínimos y recomendados para un cluster de Kubernetes](/diagramas/kubernetes/instalacion-requisitos.drawio.svg)
+
+
+🎥 Vídeo completo, utilicemos los capítulos de youtube para saltar a la sección que nos interese:
+[https://youtu.be/ZS0isVTIVyI](https://youtu.be/ZS0isVTIVyI)
+
+[![Instalación de Kubernetes](https://img.youtube.com/vi/ZS0isVTIVyI/maxresdefault.jpg)](https://www.youtube.com/watch?v=ZS0isVTIVyI)
+
+> **Nota sobre versiones**: en los ejemplos usamos Kubernetes v1.33. Podemos instalar otra versión cambiando el número en las URLs del repositorio y en los paquetes. Los repositorios antiguos (`apt.kubernetes.io` y `packages.cloud.google.com`) fueron retirados en 2024; usemos siempre los repositorios comunitarios `pkgs.k8s.io` como se muestra a continuación.
+
+## Ubuntu Server 24.04 con Containerd
+
+### Nodo maestro
+**NOTA:** Hasta el paso 11 todos los comandos se ejecutan con el usuario root. A partir de ese paso, se ejecutarán con el usuario normal que se haya creado en el sistema, en mi caso `pabpereza`.
+
+1. Actualizar paquetería e instalar requisitos previos:
+```bash
+apt update && apt upgrade -y
+
+apt install curl apt-transport-https git wget software-properties-common lsb-release ca-certificates socat -y
+```
+
+2. Desactivar swap (el kubelet, por defecto, no arranca con la swap activa):
+```bash
+swapoff -a
+sed -i '/swap/s/^\(.*\)$/#\1/g' /etc/fstab # Auto comenta la línea de swap en fstab
+```
+
+3. Cargar los módulos necesarios del kernel y añadir la configuración de sysctl:
+```bash
+modprobe overlay
+modprobe br_netfilter
+
+cat << EOF | tee /etc/sysctl.d/kubernetes.conf
+net.bridge.bridge-nf-call-ip6tables = 1
+net.bridge.bridge-nf-call-iptables = 1
+net.ipv4.ip_forward = 1
+EOF
+```
+
+4. Aplicar la configuración de sysctl y comprobar que se ha aplicado correctamente:
+```bash
+sysctl --system
+```
+
+5. Instalar las claves gpg de Docker para poder instalar containerd:
+```bash
+mkdir -p /etc/apt/keyrings
+
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg \
+| sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+
+echo \
+"deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] \
+https://download.docker.com/linux/ubuntu \
+$(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+```
+
+6. Instalar containerd y configurar el daemon para que use cgroups de systemd:
+```bash
+apt update && apt install containerd.io -y
+
+containerd config default | tee /etc/containerd/config.toml
+
+sed -e's/SystemdCgroup = false/SystemdCgroup = true/g' -i /etc/containerd/config.toml
+
+systemctl restart containerd
+```
+
+7. Instalar las claves gpg de Kubernetes:
+```bash
+mkdir -p -m 755 /etc/apt/keyrings
+
+curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.33/deb/Release.key \
+| sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+```
+
+8. Añadir el repositorio de Kubernetes 1.33 (podemos cambiar la versión modificando las URLs):
+```bash
+echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] \
+https://pkgs.k8s.io/core:/stable:/v1.33/deb/ /" \
+| sudo tee /etc/apt/sources.list.d/kubernetes.list
+
+apt update
+```
+
+9. Instalar kubeadm, kubelet y kubectl:
+```bash
+apt install -y kubeadm=1.33.1-1.1 kubelet=1.33.1-1.1 kubectl=1.33.1-1.1
+
+apt-mark hold kubelet kubeadm kubectl # Bloquear actualizaciones automáticas
+```
+
+Podemos consultar las versiones exactas disponibles en el repositorio con `apt-cache madison kubeadm`.
+
+10. Buscamos nuestra IP y la añadimos al fichero `/etc/hosts` con el nombre del nodo maestro (en mi caso `k8scp`, de control plane, pero podemos darle el nombre que prefiramos):
+```bash
+echo "<IP> k8scp" >> /etc/hosts
+```
+
+Podemos obtener nuestra IP con el comando `ip a`, `ip addr show` o `hostname -i`.
+
+11. Iniciar el cluster con kubeadm. Importante: elijamos un rango de IPs para los pods que **no se solape** con la red de nuestras máquinas ni con otros rangos en uso (de lo contrario tendremos problemas de enrutado difíciles de diagnosticar). Por último, añadimos el nombre del nodo maestro (recordemos usar el del paso anterior) y el puerto 6443:
+```bash
+kubeadm init --pod-network-cidr=<rango de IPs para pods> --control-plane-endpoint=<nombre añadido en el /etc/hosts>:6443
+
+# Por ejemplo:
+# kubeadm init --pod-network-cidr=192.168.0.0/16 --control-plane-endpoint=k8scp:6443
+```
+
+Guardemos la salida del comando: incluye el `kubeadm join` que usaremos después para unir los nodos worker.
+
+12. Configurar kubectl e instalar el autocompletado (desde aquí, con nuestro usuario normal):
+```bash
+mkdir -p $HOME/.kube
+
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+sudo apt install bash-completion -y
+
+source <(kubectl completion bash)
+
+echo 'source <(kubectl completion bash)' >> ~/.bashrc # persistir autocompletado
+```
+
+Esto nos permitirá usar el autocompletado en la terminal de bash: si pulsamos tabulador después de escribir `kubectl`, nos mostrará las opciones disponibles.
+
+
+13. Instalar Helm, necesario para instalar algunas aplicaciones en Kubernetes, incluido Cilium (la CNI que vamos a instalar):
+```bash
+curl -fsSL https://packages.buildkite.com/helm-linux/helm-debian/gpgkey | gpg --dearmor | sudo tee /usr/share/keyrings/helm.gpg > /dev/null
+
+echo "deb [signed-by=/usr/share/keyrings/helm.gpg] https://packages.buildkite.com/helm-linux/helm-debian/any/ any main" | sudo tee /etc/apt/sources.list.d/helm-stable-debian.list
+
+sudo apt update
+
+sudo apt install helm -y
+```
+
+14. Instalar Cilium, una CNI (Container Network Interface) que permitirá comunicar los pods entre sí:
+```bash
+helm repo add cilium https://helm.cilium.io/
+
+helm repo update
+
+helm template cilium cilium/cilium --version 1.17.4 \
+--namespace kube-system > cilium.yaml
+
+kubectl apply -f cilium.yaml
+```
+
+15. (Opcional y no recomendado) Si queremos que nuestro nodo maestro también ejecute pods como si fuera un worker (útil en laboratorios con un solo nodo), eliminemos su taint:
+```bash
+kubectl taint nodes --all node-role.kubernetes.io/control-plane-
+```
+
+Podríamos reactivar la restricción (taint) para que el nodo maestro no ejecute pods con el comando:
+```bash
+kubectl taint nodes --all node-role.kubernetes.io/control-plane:NoSchedule
+```
+
+> En versiones antiguas de Kubernetes (anteriores a la 1.24) existía también el taint `node-role.kubernetes.io/master`, hoy eliminado en favor de `control-plane`.
+
+### Nodo worker
+Esta parte de la instalación la haremos sobre el servidor que queramos añadir al cluster. En este caso, el nodo worker.
+
+1. Repetir los pasos 1 a 10 del nodo maestro. **IMPORTANTE:** en el fichero `/etc/hosts` debemos añadir la IP y el nombre **del nodo maestro**, exactamente igual que hicimos en él. No lo adaptemos a este nodo.
+
+2. Unir el nodo worker al cluster con el comando que nos proporcionó `kubeadm init` en el nodo maestro:
+```bash
+kubeadm join <nombre del nodo maestro>:6443 --token <token> --discovery-token-ca-cert-hash sha256:<hash>
+```
+
+El token se puede obtener con el comando `kubeadm token list` lanzado en el nodo maestro. Si hubiera expirado, se puede generar uno nuevo con `kubeadm token create`. De hecho, `kubeadm token create --print-join-command` nos genera el comando de unión completo, con token y hash incluidos.
+
+El hash también se puede obtener manualmente con el siguiente comando de openssl, lanzado en el nodo maestro:
+```bash
+openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outform der 2>/dev/null | openssl dgst -sha256 -hex | sed 's/^.* //'
+```
+
+3. Comprobar que el nodo worker se ha unido correctamente al cluster. Lancemos el siguiente comando en el nodo maestro (es posible que tarde un poco en aparecer como `Ready`):
+```bash
+kubectl get nodes
+```
+
+## Ubuntu Server 20.04 y 22.04 con Containerd
+El proceso es prácticamente idéntico al de Ubuntu 24.04. La única diferencia reseñable es que, en esta variante, usaremos Calico como CNI en lugar de Cilium.
+
+> **ATENCIÓN:** si venimos de tutoriales antiguos, los repositorios `apt.kubernetes.io` y `packages.cloud.google.com` ya no existen. Usemos los repositorios `pkgs.k8s.io` como se indica en los pasos 7 y 8 de la sección anterior.
+
+### Nodo maestro
+1. Instalar requisitos previos:
+```bash
+apt install curl apt-transport-https vim git wget gnupg2 \
+software-properties-common ca-certificates uidmap -y
+```
+
+2. Desactivar swap:
+```bash
+swapoff -a
+sed -i '/swap/s/^\(.*\)$/#\1/g' /etc/fstab # Auto comenta la línea de swap en fstab
+```
+
+3. Cargar los módulos necesarios y hacerlos persistentes:
+```bash
+modprobe overlay
+modprobe br_netfilter
+
+sudo tee /etc/modules-load.d/k8s.conf <<EOF
+overlay
+br_netfilter
+EOF
+```
+
+
+4. Configurar sysctl:
+```bash
+cat << EOF | tee /etc/sysctl.d/kubernetes.conf
+net.bridge.bridge-nf-call-ip6tables = 1
+net.bridge.bridge-nf-call-iptables = 1
+net.ipv4.ip_forward = 1
+EOF
+
+sysctl --system # Aplica la configuración
+```
+
+5. Añadir al fichero `/etc/hosts` la IP y el nombre de la máquina (ATENCIÓN: pongamos la IP del nodo maestro si estamos configurando un worker). Con esto podremos configurar el cluster usando el nombre de la máquina en vez de la IP:
+```bash
+echo "<IP> <NOMBRE>" >> /etc/hosts
+```
+
+6. Instalar containerd (mismos pasos 5 y 6 de la sección de Ubuntu 24.04):
+```bash
+mkdir -p /etc/apt/keyrings
+
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg \
+| sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+
+echo \
+"deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] \
+https://download.docker.com/linux/ubuntu \
+$(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+apt update && apt install containerd.io -y
+```
+
+7. Configurar containerd para que use cgroups de systemd:
+```bash
+mkdir -p /etc/containerd
+containerd config default | sudo tee /etc/containerd/config.toml
+
+sed -e's/SystemdCgroup = false/SystemdCgroup = true/g' -i /etc/containerd/config.toml
+```
+
+8. Iniciar containerd:
+```bash
+systemctl enable containerd
+systemctl restart containerd
+```
+
+9. Instalar kubeadm, kubelet y kubectl desde los repositorios `pkgs.k8s.io`:
+```bash
+# Añadir clave y repositorio de Kubernetes
+mkdir -p -m 755 /etc/apt/keyrings
+
+curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.33/deb/Release.key \
+| sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+
+echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] \
+https://pkgs.k8s.io/core:/stable:/v1.33/deb/ /" \
+| sudo tee /etc/apt/sources.list.d/kubernetes.list
+
+# Instalar paquetes
+apt update && apt install -y kubelet kubeadm kubectl
+# Especificar versión concreta, por ejemplo:
+#apt install -y kubelet=1.33.1-1.1 kubeadm=1.33.1-1.1 kubectl=1.33.1-1.1
+
+# Bloquear actualizaciones automáticas
+apt-mark hold kubelet kubeadm kubectl
+
+# Iniciar kubelet
+systemctl enable kubelet
+```
+
+
+10. Iniciar el cluster en el nodo maestro:
+```bash
+kubeadm init --pod-network-cidr=<rango de IPs para pods> --control-plane-endpoint=<nombre añadido en /etc/hosts>:6443
+```
+
+11. Configurar kubectl:
+```bash
+mkdir -p $HOME/.kube
+cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+chown $(id -u):$(id -g) $HOME/.kube/config
+```
+
+12. Instalar la red de pods:
+Este paso es importante: tendremos que editar el archivo de configuración de la red de pods para que funcione correctamente. En este caso usaremos Calico, pero podemos usar cualquier otra CNI. Debemos especificar en la variable `CALICO_IPV4POOL_CIDR` el mismo rango de IPs que usamos en el paso 10:
+```bash
+wget https://raw.githubusercontent.com/projectcalico/calico/v3.29.1/manifests/calico.yaml
+
+# Editar el archivo de configuración de Calico descomentando las líneas. Quedando así:
+- name: CALICO_IPV4POOL_CIDR
+  value: "rango de IPs para pods"
+```
+
+Por ejemplo:
+```yaml
+            # The default IPv4 pool to create on startup if none exists. Pod IPs will be
+            # chosen from this range. Changing this value after installation will have
+            # no effect. This should fall within `--cluster-cidr`.
+            - name: CALICO_IPV4POOL_CIDR
+              value: "192.168.0.0/16"
+```
+
+13. Aplicar la red de pods:
+```bash
+kubectl apply -f calico.yaml
+```
+
+
+
+### Nodo worker
+Repetimos los pasos 1 a 9 del nodo maestro. Esta vez, en el fichero `/etc/hosts` tenemos que añadir la IP y el nombre del **nodo maestro**.
+
+1. Unir el worker al cluster:
+```bash
+kubeadm join <nombre del nodo maestro>:6443 --token <token> --discovery-token-ca-cert-hash sha256:<hash>
+```
+
+El token se puede obtener con el comando `kubeadm token list` lanzado en el nodo maestro. Si hubiera expirado, se puede generar uno nuevo con `kubeadm token create`. Recordemos que `kubeadm token create --print-join-command` nos da el comando completo.
+
+El hash se puede obtener con el siguiente comando de openssl, lanzado en el nodo maestro:
+```bash
+openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outform der 2>/dev/null | openssl dgst -sha256 -hex | sed 's/^.* //'
+```
+
+
+
+---
+* Lista de vídeos en Youtube: [Curso Kubernetes](https://www.youtube.com/playlist?list=PLQhxXeq1oc2k9MFcKxqXy5GV4yy7wqSma)
+
+[Volver al índice](README.md#índice)

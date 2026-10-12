@@ -1,0 +1,280 @@
+---
+title: "Autoscaling en Kubernetes - HPA, VPA y Cluster Autoscaler"
+category: "kubernetes"
+description: "Domina el autoscaling en Kubernetes con HPA, VPA y Cluster Autoscaler. Aprende escalado horizontal y vertical automático para aplicaciones en producción."
+tags:
+  - "kubernetes"
+  - "- autoscaling"
+  - "- HPA"
+  - "- VPA"
+  - "- escalado"
+keywords:
+  - "kubernetes autoscaling"
+  - "- HPA kubernetes"
+  - "- VPA kubernetes"
+  - "- cluster autoscaler kubernetes"
+  - "- escalado automático kubernetes"
+  - "- horizontal pod autoscaler"
+  - "- vertical pod autoscaler"
+  - "- KEDA kubernetes"
+  - "- escalado basado en métricas"
+  - "- kubernetes scale automático"
+  - "- custom metrics autoscaling"
+---
+
+# Autoscaling en Kubernetes
+
+El autoescalado es una de las características más potentes de Kubernetes, permitiendo que nuestras aplicaciones se adapten dinámicamente a la carga de trabajo. En esta lección nos centraremos en el **Horizontal Pod Autoscaler (HPA)**.
+
+## Introducción
+
+Imaginemos que tenemos una tienda online. Durante la noche tenemos pocos visitantes, pero en el Black Friday el tráfico se dispara. Si tenemos una infraestructura estática, o pagamos de más por recursos que no usamos de noche, o nuestro sitio se cae en el pico de tráfico.
+
+Aquí es donde entra el **Autoscaling**. Kubernetes puede aumentar o disminuir automáticamente el número de réplicas de nuestros Pods basándose en métricas como el uso de CPU o memoria.
+
+🎥 Vídeo completo, utilicemos los capítulos de youtube para saltar a la sección que nos interese:
+[https://youtu.be/QhHzygBoN_8](https://youtu.be/QhHzygBoN_8)
+
+[![HPA en Kubernetes, autoescalado de Pods por CPU y RAM](https://img.youtube.com/vi/QhHzygBoN_8/maxresdefault.jpg)](https://www.youtube.com/watch?v=QhHzygBoN_8)
+
+![HPA en Kubernetes](/diagramas/kubernetes/HPALifecycle.gif)
+
+## Conceptos Fundamentales
+
+
+### ¿Qué es el HPA (Horizontal Pod Autoscaler)?
+
+El HPA escala el número de Pods en un replication controller, deployment, replica set o stateful set basándose en la utilización de CPU observada (o, con soporte de métricas personalizadas, en otras métricas de la aplicación).
+
+*   **Escalado Horizontal**: Añadir más Pods (máquinas/contenedores) al pool.
+*   **Escalado Vertical**: Añadir más recursos (CPU/RAM) a los Pods existentes (esto lo hace el VPA, que veremos en otra lección junto con KEDA).
+*   Cluster Autoscaler: Ajusta el número de nodos en el clúster basándose en la demanda de recursos.
+  
+![Autoscaling en Kubernetes](/diagramas/kubernetes/AutoscalerComparison.gif)
+  
+
+
+### Requisitos Previos
+
+Para que el HPA funcione, necesitamos tener el **Metrics Server** instalado en nuestro clúster. Este componente se encarga de recolectar las métricas de uso de recursos de los contenedores.
+
+Podemos verificar si está funcionando con:
+```bash
+kubectl top nodes
+kubectl top pods
+```
+
+## Ejemplo Práctico: HPA con la API Quotes
+
+Para este ejemplo utilizaremos una aplicación real: la **API de Citas Célebres** del repositorio [pabpereza/quotes](https://github.com/pabpereza/quotes). Esta API REST está construida con FastAPI y ya incluye probes de health check, lo que la hace perfecta para demostrar el autoescalado en Kubernetes.
+
+> 📦 Todos los manifiestos YAML están disponibles en la carpeta [`deploy/`](https://github.com/pabpereza/quotes/tree/main/deploy) del repositorio.
+
+### 1. Desplegar la aplicación
+
+Primero desplegamos la aplicación con su Deployment y Service. Observemos cómo definimos **requests** de CPU y memoria, que son **esenciales** para que el HPA pueda calcular los porcentajes de uso.
+
+Creemos un archivo `deployment.yaml`:
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: quotes-deployment
+  labels:
+    app: quotes
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: quotes
+  template:
+    metadata:
+      labels:
+        app: quotes
+    spec:
+      containers:
+        - name: quotes
+          image: pabpereza/quotes
+          ports:
+            - containerPort: 80
+          livenessProbe:
+            httpGet:
+              path: /probes/health
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /probes/ready
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              memory: "1024Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: quotes-service
+spec:
+  selector:
+    app: quotes
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 80
+  type: ClusterIP
+```
+
+**Puntos clave del Deployment:**
+- **`resources.requests`**: Define los recursos mínimos que necesita cada Pod (100m CPU, 256Mi RAM). El HPA usa estos valores como referencia.
+- **`livenessProbe` y `readinessProbe`**: La API expone endpoints en `/probes/health` y `/probes/ready` para que Kubernetes sepa cuándo el Pod está sano y listo.
+- **`replicas: 3`**: Iniciamos con 3 réplicas, pero el HPA ajustará este número dinámicamente.
+
+Apliquemos el manifiesto:
+
+```bash
+kubectl apply -f deployment.yaml
+```
+
+### 2. Crear el Horizontal Pod Autoscaler
+
+Ahora configuramos el HPA. Este ejemplo es más avanzado que el típico ejemplo de documentación, ya que escala basándose en **CPU y memoria**, e incluye una configuración de **comportamiento de desescalado**.
+
+Creemos un archivo `hpa.yaml`:
+
+```yaml
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: quotes-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: quotes-deployment
+  minReplicas: 3
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 50
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 50
+  behavior:
+    scaleDown:
+      # Reducimos el periodo de cooldown de 5 a 3 minutos
+      stabilizationWindowSeconds: 180
+      policies:
+      - type: Percent
+        value: 100
+        periodSeconds: 15
+```
+
+**Configuración explicada:**
+- **`minReplicas: 3`**: Mantiene siempre al menos 3 Pods para alta disponibilidad.
+- **`maxReplicas: 10`**: Límite máximo para evitar un escalado descontrolado.
+- **`metrics`**: Escala si la CPU **o** la memoria superan el 50% de los requests definidos.
+- **`behavior.scaleDown`**: Configura el comportamiento al desescalar:
+  - `stabilizationWindowSeconds: 180`: Espera 3 minutos (en lugar de 5) antes de reducir réplicas.
+  - La política permite reducir hasta el 100% de las réplicas excedentes cada 15 segundos.
+
+Apliquemos el HPA:
+```bash
+kubectl apply -f hpa.yaml
+```
+
+> **Truco de examen:** también se puede crear un HPA básico (solo CPU) de forma imperativa con `kubectl autoscale deployment quotes-deployment --min=3 --max=10 --cpu-percent=50`. Para configuraciones con varias métricas o `behavior`, como la de arriba, necesitaremos el YAML.
+
+Verifiquemos el estado del HPA:
+```bash
+kubectl get hpa quotes-hpa
+```
+*Deberíamos ver algo como `TARGETS: 12%/50%, 8%/50%` (CPU y memoria).*
+
+### 3. Generar Carga
+
+El repositorio incluye un script de prueba de carga usando [k6](https://k6.io/). Este script simula usuarios reales que consultan citas, crean usuarios y autentican tokens.
+
+Podemos ejecutar la prueba de carga con:
+
+```bash
+# Primero, expón el servicio (por ejemplo, con port-forward o Ingress)
+kubectl port-forward svc/quotes-service 8080:8080 &
+
+# Ejecuta k6 con el script de stress test
+k6 run https://raw.githubusercontent.com/pabpereza/quotes/main/deploy/stress-test.js
+```
+
+O genera carga manualmente con un contenedor:
+
+```bash
+kubectl run -i --tty load-generator --rm --image=busybox --restart=Never -- /bin/sh -c "while sleep 0.01; do wget -q -O- http://quotes-service:8080/quotes; done"
+```
+
+### 4. Observar el Escalado
+
+Observemos cómo reacciona el HPA en tiempo real:
+
+```bash
+kubectl get hpa quotes-hpa -w
+```
+
+Veremos algo similar a:
+
+```text
+NAME         REFERENCE                      TARGETS           MINPODS   MAXPODS   REPLICAS   AGE
+quotes-hpa   Deployment/quotes-deployment   12%/50%, 8%/50%   3         10        3          1m
+quotes-hpa   Deployment/quotes-deployment   85%/50%, 45%/50%  3         10        3          2m
+quotes-hpa   Deployment/quotes-deployment   85%/50%, 45%/50%  3         10        6          3m
+quotes-hpa   Deployment/quotes-deployment   42%/50%, 32%/50%  3         10        6          4m
+```
+
+También podemos ver el estado detallado:
+
+```bash
+kubectl describe hpa quotes-hpa
+```
+
+### 5. Detener la carga
+
+Si detenemos el generador de carga (Ctrl+C), veremos que después del periodo de estabilización (3 minutos en nuestra configuración), el número de réplicas volverá a 3 (el mínimo configurado).
+
+## Conclusiones
+
+El HPA es esencial para mantener la disponibilidad y el rendimiento de nuestras aplicaciones en Kubernetes sin intervención manual, optimizando al mismo tiempo el uso de recursos y costes.
+
+Recordemos:
+1.  Necesitamos **Metrics Server** instalado en nuestro clúster.
+2.  Debemos definir **Requests y Limits** en nuestros Pods para que el HPA pueda calcular los porcentajes correctamente.
+3.  Configuremos **múltiples métricas** (CPU y memoria) para un escalado más inteligente.
+4.  Ajustemos el **comportamiento de desescalado** para evitar fluctuaciones innecesarias.
+5.  Incluyamos **probes de health y readiness** para que Kubernetes gestione correctamente el tráfico durante el escalado.
+
+## Recursos Adicionales
+
+*   [Repositorio de ejemplo: pabpereza/quotes](https://github.com/pabpereza/quotes) - API completa con manifiestos de Kubernetes
+*   [Carpeta deploy/ con todos los manifiestos](https://github.com/pabpereza/quotes/tree/main/deploy) - Deployment, HPA, Ingress y test de carga
+*   [Documentación oficial de Kubernetes sobre HPA](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/)
+*   [Metrics Server en GitHub](https://github.com/kubernetes-sigs/metrics-server)
+*   [k6 - Herramienta de pruebas de carga](https://k6.io/)
+
+
+---
+* Lista de vídeos en Youtube: [Curso Kubernetes](https://www.youtube.com/playlist?list=PLQhxXeq1oc2k9MFcKxqXy5GV4yy7wqSma)
+
+[Volver al índice](README.md#índice)

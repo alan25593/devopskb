@@ -1,0 +1,155 @@
+---
+title: "Helm para Kubernetes - Gestión de Aplicaciones con Charts"
+category: "kubernetes"
+description: "Aprende Helm para Kubernetes - instalación, creación de charts, gestión de releases, valores y plantillas. Simplifica despliegues complejos con el gestor de paquetes."
+tags:
+  - "kubernetes"
+  - "- helm"
+  - "- charts"
+  - "- package-manager"
+keywords:
+  - "helm kubernetes"
+  - "- helm charts"
+  - "- kubernetes package manager"
+  - "- helm install"
+  - "- helm templates"
+  - "- helm values"
+  - "- gestión aplicaciones kubernetes"
+  - "- helm upgrade"
+  - "- helm rollback"
+  - "- helmfile"
+  - "- helm repository"
+  - "- crear helm chart"
+  - "- artifacthub helm"
+---
+
+# Helm en Kubernetes
+
+Helm es el gestor de paquetes de Kubernetes. Nos permite gestionar, versionar y desplegar aplicaciones completas (decenas de manifiestos) como una sola unidad llamada **chart**. Si venimos del mundo Linux, pensemos en él como el `apt` o `pacman` de Kubernetes.
+
+Ya lo hemos usado varias veces en el curso (para instalar Cilium, el ingress controller o el dashboard); ahora toca entender cómo funciona por dentro.
+
+## Estructura de un chart
+Los componentes de un chart se estructuran de la siguiente manera:
+```text
+├── Chart.yaml
+├── README.md
+├── templates
+│   ├── NOTES.txt
+│   ├── _helpers.tpl
+│   ├── configmap.yaml
+│   ├── deployment.yaml
+│   ├── pvc.yaml
+│   ├── secrets.yaml
+│   └── svc.yaml
+└── values.yaml
+```
+
+El fichero `Chart.yaml` contiene los metadatos del chart (nombre, versión, dependencias), el `values.yaml` contiene los valores configurables y la carpeta `templates` contiene los manifiestos de Kubernetes plantillados.
+
+Las templates son manifiestos normales de Kubernetes en los que los valores variables se sustituyen por plantillas Go, de forma que el mismo chart sirva para diferentes propósitos y organizaciones. Por ejemplo:
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+type: Opaque
+data:
+  mariadb-root-password: {{ default "" .Values.mariadbRootPassword | b64enc | quote }}
+  mariadb-password: {{ default "" .Values.mariadbPassword | b64enc | quote }}
+```
+
+Este objeto de tipo secreto está plantillado para que todos sus campos se recojan del fichero de values. Esto nos permite centralizar la configuración en un único fichero (`values.yaml`) y, por otra parte, hacer que nuestros manifiestos de Kubernetes sean reutilizables.
+
+Cada instalación de un chart en el cluster se llama **release**, y Helm guarda un historial de versiones de cada release que nos permitirá actualizar y hacer rollback.
+
+## Repositorios
+El buscador de referencia de charts es [Artifact Hub](https://artifacthub.io/), que indexa la mayoría de repositorios públicos.
+
+Podríamos buscar charts con el comando:
+``` bash
+helm search hub <nombre del chart> # Buscar en Artifact Hub
+
+helm search repo <nombre> # Buscar dentro de los repositorios añadidos en local
+```
+
+También podríamos añadir nuevos repositorios, por ejemplo, el de bitnami:
+``` bash
+helm repo add bitnami https://charts.bitnami.com/bitnami
+```
+
+Los repositorios añadidos pueden actualizarse (refrescar su índice de charts) con el comando:
+``` bash
+helm repo update
+```
+
+
+Si ahora quisiéramos buscar charts solo dentro de este repositorio, podríamos hacerlo así:
+``` bash
+helm search repo bitnami
+```
+
+## Desplegando un chart
+Podemos desplegar un chart directamente con `helm install`:
+``` bash
+helm install <nombre de la release> <repositorio>/<chart>
+
+# Por ejemplo:
+helm install mi-base-de-datos bitnami/mariadb
+```
+
+Pero la mayoría de charts necesitan personalización. Tenemos dos opciones: pasar valores sueltos con `--set` o, mucho más mantenible, un fichero de valores propio con `-f`:
+``` bash
+# Consultar los valores configurables del chart
+helm show values bitnami/mariadb > mis-valores.yaml
+
+# Editar mis-valores.yaml y desplegar con ellos
+helm install mi-base-de-datos bitnami/mariadb -f mis-valores.yaml
+```
+
+Si preferimos inspeccionar el chart completo en local antes de instalarlo (leer su README, revisar las templates), podemos descargarlo:
+``` bash
+helm pull bitnami/mariadb --untar
+helm install mi-base-de-datos ./mariadb -f mis-valores.yaml
+```
+
+> **Consejo:** antes de instalar, `helm template` renderiza los manifiestos finales sin aplicarlos, y `helm install --dry-run --debug` simula la instalación. Perfectos para revisar qué se va a crear exactamente en el cluster.
+
+## Ciclo de vida de una release
+Una vez desplegada, gestionamos la release con estos comandos:
+``` bash
+# Listar las releases desplegadas y sus versiones
+helm list
+
+# Actualizar una release (nueva versión del chart o nuevos valores)
+helm upgrade mi-base-de-datos bitnami/mariadb -f mis-valores.yaml
+
+# Ver el historial de revisiones
+helm history mi-base-de-datos
+
+# Volver a una revisión anterior
+helm rollback mi-base-de-datos 1
+
+# Desinstalar la release
+helm uninstall mi-base-de-datos
+```
+
+¿Nos suena este flujo? Es el mismo concepto de revisiones y rollbacks que vimos en los [deployments](./107.Deployments.md), pero a nivel de aplicación completa.
+
+## Crear nuestro propio chart
+Para empaquetar nuestras propias aplicaciones, Helm genera un esqueleto de chart funcional con un solo comando:
+``` bash
+helm create mi-aplicacion
+```
+
+Esto crea la estructura que vimos al principio, con un deployment, service e ingress plantillados que podemos adaptar a nuestra aplicación. Es la mejor forma de aprender: generemos el esqueleto y estudiemos cómo están plantillados sus manifiestos.
+
+---
+* Lista de vídeos en Youtube: [Curso Kubernetes](https://www.youtube.com/playlist?list=PLQhxXeq1oc2k9MFcKxqXy5GV4yy7wqSma)
+
+[Volver al índice](README.md#índice)

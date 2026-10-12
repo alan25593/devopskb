@@ -20,10 +20,13 @@ Funciona 100% offline — sin base de datos, sin backend, sin dependencias exter
 
 | Categoría | Artículos |
 |-----------|-----------|
-| Docker | 7 |
-| Kubernetes | 10 |
-| Git | 6 |
-| Terraform | 9 |
+| Kubernetes | 54 |
+| Windows | 19 |
+| Linux | 17 |
+| Clarive | 14 |
+| Terraform | 14 |
+| Docker | 12 |
+| Git | 11 |
 
 ---
 

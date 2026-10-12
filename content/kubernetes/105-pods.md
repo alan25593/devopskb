@@ -1,0 +1,138 @@
+---
+title: "Pods en Kubernetes - Guía Completa desde Cero"
+category: "kubernetes"
+description: "Aprende todo sobre Pods en Kubernetes - la unidad básica de ejecución. Cómo crear, gestionar y eliminar pods con ejemplos prácticos y mejores prácticas."
+tags:
+  - "kubernetes"
+  - "- pods"
+  - "- contenedores"
+keywords:
+  - "kubernetes pods"
+  - "- qué es un pod kubernetes"
+  - "- pods tutorial"
+  - "- crear pods kubernetes"
+  - "- gestionar pods kubernetes"
+  - "- contenedores kubernetes"
+  - "- pods ejemplos yaml"
+  - "- ciclo de vida pod"
+  - "- pod lifecycle kubernetes"
+  - "- kubectl exec pod"
+  - "- logs pod kubernetes"
+  - "- kubernetes principiantes"
+---
+
+# Pods
+Los pods son una unidad de ejecución de uno o varios contenedores que comparten la misma red y almacenamiento. Es el objeto más básico que podemos ejecutar en Kubernetes y el que nos permite ejecutar un contenedor. Vamos a ver cómo crear, gestionar y eliminar pods.
+
+🎥 Vídeo completo, utilicemos los capítulos de youtube para saltar a la sección que nos interese:
+[https://youtu.be/D1YjrFoqg4Q](https://youtu.be/D1YjrFoqg4Q)
+
+[![Pods](https://img.youtube.com/vi/D1YjrFoqg4Q/maxresdefault.jpg)](https://www.youtube.com/watch?v=D1YjrFoqg4Q)
+
+## Características de los pods
+1. **Uno o varios contenedores**:
+
+    En la mayoría de los casos, un pod contiene un solo contenedor (como un servicio web).
+
+    También puede contener varios contenedores que necesitan comunicarse estrechamente (por ejemplo, el contenedor de una app y otro que le ayuda a recopilar logs).
+
+2. **Compartición de recursos**:
+
+    Todos los contenedores dentro de un pod comparten la misma dirección IP y pueden comunicarse entre sí mediante localhost.
+
+    También pueden compartir volúmenes de almacenamiento persistente.
+
+3. **Ciclo de vida y gestión**:
+
+    Kubernetes no gestiona pods individuales de forma directa en producción, sino que usa objetos como Deployments, ReplicaSets o DaemonSets para gestionarlos automáticamente, que veremos en los siguientes capítulos.
+
+
+## Crear un pod con kubectl
+Ya hemos visto brevemente cómo crear pods con manifiestos. Algunos objetos de Kubernetes se pueden crear desde el propio CLI de `kubectl`. Por ejemplo, creamos un nuevo pod especificando el nombre que le queremos asignar y la imagen que utilizaremos:
+```bash
+kubectl run <nom_pod> --image=<imagen>
+```
+
+Por ejemplo, para crear un pod con la imagen de nginx:
+```bash
+kubectl run nginx --image=nginx
+```
+
+> **Truco de examen:** `kubectl run` también nos sirve para generar el manifiesto de un pod sin crearlo, con `kubectl run nginx --image=nginx --dry-run=client -o yaml > pod.yaml`. Es mucho más rápido que escribir el YAML desde cero y se usa constantemente en los exámenes de certificación.
+
+## Crear un pod con un manifiesto
+Para crear un pod con un manifiesto, creamos un archivo con extensión `.yaml` y lo aplicamos con `kubectl apply -f <archivo>`.
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+```
+Esta sería la forma más básica de crear un pod. En este caso, creamos un pod con un contenedor de nginx.
+
+## Modificar un pod
+Podemos modificar un pod con el comando `kubectl edit pod <nom_pod>`. Esto nos abrirá el manifiesto del pod en un editor de texto. Podemos modificarlo y guardarlo para que se apliquen los cambios.
+
+```bash
+kubectl edit pod nginx
+```
+
+También podríamos modificar el manifiesto directamente y aplicarlo con `kubectl apply -f <archivo>`. Kubernetes reconocerá que ya existe un pod con ese nombre y lo modificará para cumplir con los nuevos atributos.
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+spec:
+  containers:
+  - name: nginx
+    image: nginx:alpine
+```
+
+En este caso, hemos cambiado la imagen de nginx por la versión alpine. Kubernetes se encargará de parar el contenedor actual y crear uno nuevo con la nueva imagen.
+
+Tengamos en cuenta que solo algunos campos de un pod son modificables en caliente (la imagen, por ejemplo). Para cambios más profundos, como variables de entorno o volúmenes, tendremos que eliminar y recrear el pod (otro motivo por el que en producción se usan Deployments).
+
+
+## Ver un pod
+Tenemos varias formas de consultar un pod. Podemos listar todos los pods, listar un pod concreto, ver su descripción, obtener su manifiesto, etc. Por ejemplo:
+``` shell
+kubectl get pods # Listar todos los pods del namespace actual
+kubectl get pods -o wide  # Listar los pods en una tabla más amplia
+kubectl get pods <nom_pod> # Listar el pod especificado
+kubectl describe pods <nom_pod> # Describir el pod (eventos, estado, etc.)
+kubectl get pods <nom_pod> -o yaml  # Nos devuelve todo el manifiesto del pod
+```
+
+## Ver logs de un pod
+``` shell
+kubectl logs <nom_pod>
+```
+
+## Ejecutar un comando en un pod
+``` shell
+kubectl exec <nom_pod> -- ls
+```
+
+También podemos abrir una shell interactiva dentro del contenedor:
+``` shell
+kubectl exec -it <nom_pod> -- sh
+```
+
+## Eliminar un pod
+``` shell
+kubectl delete pod nginx
+```
+
+## Problemas de los pods
+Los pods no saben restaurarse ni replicarse a sí mismos: necesitan algo que gestione estos procesos por ellos. Para eso se utilizan otros tipos de objetos, como los [ReplicaSets y Deployments](./107.Deployments.md) que veremos en los próximos capítulos.
+
+---
+* Lista de vídeos en Youtube: [Curso Kubernetes](https://www.youtube.com/playlist?list=PLQhxXeq1oc2k9MFcKxqXy5GV4yy7wqSma)
+
+[Volver al índice](README.md#índice)

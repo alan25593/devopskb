@@ -1,0 +1,96 @@
+---
+title: "Introducción a Kubernetes - Guía Completa para Principiantes"
+category: "kubernetes"
+description: "Aprende qué es Kubernetes, sus beneficios y por qué es esencial para DevOps moderno. Guía completa desde cero con ejemplos prácticos y preparación para certificaciones."
+tags:
+  - "kubernetes"
+  - "- principiantes"
+  - "- introduccion"
+keywords:
+  - "kubernetes"
+  - "- introducción kubernetes"
+  - "- qué es kubernetes"
+  - "- orquestación contenedores"
+  - "- devops"
+  - "- docker"
+  - "- certificación CKA"
+  - "- CKAD"
+  - "- CKS"
+  - "- principiantes"
+  - "- tutorial"
+---
+
+# Introducción
+Os damos la bienvenida a este curso de Kubernetes, completamente gratuito, en el que aprenderemos desde los conceptos básicos de esta tecnología de orquestación de contenedores hasta llegar a un nivel avanzado.
+
+Todo el curso está basado y enfocado en las certificaciones oficiales de Kubernetes: CKA, CKAD y CKS (Certified Kubernetes Administrator, Application Developer y Security Specialist, respectivamente) de la Cloud Native Computing Foundation (CNCF).
+
+He optado por hacer una parte común del curso para las tres certificaciones y, después, dividir el contenido en tres bloques, enfocándonos en la perspectiva de cada una de ellas: el punto de vista del desarrollador para la certificación CKAD, el del administrador de sistemas para la CKA y el del especialista en seguridad para la CKS. Esto nos permitirá prepararnos para cualquiera de las tres certificaciones. Y si no nos interesa ninguna, también nos servirá para aprender Kubernetes desde cero hasta un nivel avanzado.
+
+Podemos seguir todo el contenido del curso por escrito en mi página web [pabpereza.dev](./README.md) o en esta lista de reproducción de [Youtube](https://www.youtube.com/playlist?list=PLQhxXeq1oc2k9MFcKxqXy5GV4yy7wqSma).
+
+
+🎥 Vídeo completo, utilicemos los capítulos de youtube para saltar a la sección que nos interese:
+[https://youtu.be/eqxQGmem_bc](https://youtu.be/eqxQGmem_bc)
+
+[![Curso Kubernetes](https://img.youtube.com/vi/eqxQGmem_bc/maxresdefault.jpg)](https://www.youtube.com/watch?v=eqxQGmem_bc)
+
+## Requisitos previos
+Este curso está diseñado para principiantes, por lo que no necesitamos conocimientos previos de Kubernetes. Sin embargo, es recomendable tener una base de contenedores y Docker, ya que Kubernetes se apoya en ellos. Si no la tenemos, te recomiendo que empecemos por mi [curso de Docker](../docker/README.md).
+
+Si estamos aquí, también se presupone que tenemos conocimientos básicos de sistemas operativos Linux, virtualización y redes. Vamos con el curso.
+
+## ¿Qué es Kubernetes?
+Kubernetes es una plataforma de código abierto que sirve para automatizar el despliegue, el escalado y la operación de aplicaciones en contenedores. Nació de la experiencia de Google orquestando contenedores a gran escala con su sistema interno Borg, y fue liberado como código abierto en 2014. Actualmente es uno de los proyectos más populares de la Cloud Native Computing Foundation (CNCF). Tras más de diez años de desarrollo, se ha convertido en la plataforma de orquestación de contenedores más utilizada y es ampliamente adoptada por empresas de todo el mundo.
+
+Kubernetes crea una capa de abstracción entre la infraestructura y las aplicaciones. Por ejemplo, si tenemos múltiples servidores, nos permite agruparlos en lo que llamaríamos un clúster y consumirlos como una pieza individual, desplegando aplicaciones sobre todos los nodos de forma transparente para el usuario.
+
+Esto nos permite, como desarrolladores, centrarnos en la creación de aplicaciones sin preocuparnos por la infraestructura subyacente. Y desde el punto de vista del administrador, nos permite dedicarnos a mantener la infraestructura y los nodos del clúster sin preocuparnos por las aplicaciones que se despliegan en él. Como ya vimos en el curso de Docker, la contenerización nos garantiza el funcionamiento de la aplicación en cualquier entorno; Kubernetes lo lleva a otro nivel.
+
+Un ejemplo práctico rápido: en un entorno tradicional, un administrador de sistemas tendría que provisionar una máquina virtual (con sus correspondientes configuraciones de red, paquetería, hardware...) por cada aplicación, con los requisitos específicos de la misma.
+
+![Despliegue tradicional con una máquina virtual por aplicación](/diagramas/kubernetes/intro-tradicional.drawio.svg)
+
+En un entorno de Kubernetes (ejemplificado con cuatro servidores Ubuntu: un nodo maestro y tres trabajadores), el administrador solo tendría que añadir y mantener los nodos del clúster. Cuando se solicita una nueva aplicación, se le asigna una reserva lógica de recursos del clúster, que uno o varios desarrolladores pueden consumir de forma autónoma. Ya no estaríamos entregando una "máquina", sino una cantidad de recursos cuantificados en CPU y RAM del clúster, que no tienen por qué corresponderse con un nodo en concreto.
+
+![Despliegue sobre un clúster de Kubernetes](/diagramas/kubernetes/intro-kubernetes.drawio.svg)
+
+Todo esto, bajo una potente capa de gestión de recursos, configuración de red, tolerancia a fallos, seguridad y escalabilidad.
+
+
+## ¿Por qué Kubernetes?
+Kubernetes es una herramienta muy potente que nos ofrece, principalmente, las siguientes ventajas (algunas ya mencionadas):
+- **Escalabilidad**: permite escalar aplicaciones de forma automática en función de la demanda, tanto vertical como horizontalmente: aumentando los recursos de la aplicación, creando más réplicas de la misma o incluso añadiendo más nodos al clúster.
+- **Resiliencia**: en caso de fallo de un nodo o de un contenedor, Kubernetes se encarga de reubicar la aplicación en otro nodo sano. Además, permite replicar aplicaciones para garantizar la disponibilidad.
+- **Automatización**: automatiza muchas tareas de administración de aplicaciones, como el despliegue, el escalado o la auto-reparación. Esto simplifica la operativa y facilita despliegues de tipo canary, blue-green u otros más complejos, sin pérdida de servicio.
+- **Estandarización**: al ser una plataforma de código abierto, Kubernetes se ha convertido en un estándar de facto en la orquestación de contenedores. Todos los servicios de nube ofrecen soporte para Kubernetes y también podemos instalarlo en nuestro propio centro de datos. Esto nos permite crear entornos interoperables entre sí, migrar fácilmente aplicaciones entre diferentes entornos o incluso montar arquitecturas híbridas o multi-cloud.
+- **Ecosistema**: cuenta con un amplio ecosistema de herramientas y servicios que permiten extender su funcionalidad. Además, al instalar una herramienta a nivel de plataforma, queda integrada automáticamente con todas las aplicaciones desplegadas en el clúster. Por ejemplo, un sistema de monitorización: los desarrolladores ya no tendrían que configurar la monitorización de sus aplicaciones individualmente, mejorando así la eficiencia.
+- **Oportunidades laborales**: es una tecnología muy demandada en el mercado laboral, por lo que tener conocimientos de Kubernetes puede abrirnos muchas puertas en nuestra carrera profesional, ya sea como desarrollador, DevOps, SRE, administrador de sistemas o especialista en seguridad.
+- **Comunidad activa**: cuenta con una gran comunidad de desarrolladores y usuarios que contribuyen activamente a su desarrollo y mejora. Además, está abanderado por la Cloud Native Computing Foundation (CNCF) y las principales empresas tecnológicas del mundo, así que tiene cuerda para rato.
+- **Y muchas más...** que iremos viendo a lo largo del curso, cuando consiga que nos enamoremos de Kubernetes.
+
+
+## ¿Qué aprenderás en este curso?
+En este curso aprenderemos tanto los conceptos básicos de Kubernetes como los avanzados, incluyendo:
+- **Arquitectura de Kubernetes**: su diseño y cómo funciona internamente.
+- **Instalación de Kubernetes**: tanto para nuestro entorno de desarrollo como para producción.
+- **Gestión de clústeres**: cómo administrar clústeres de Kubernetes y cómo escalar aplicaciones.
+- **Despliegue de aplicaciones**: cómo implementar aplicaciones en Kubernetes y gestionar su ciclo de vida.
+- **Monitorización y registro**: trabajar con métricas y logs de las aplicaciones desplegadas en Kubernetes.
+- **Seguridad**: proteger las aplicaciones y los datos desplegados en Kubernetes.
+- **Práctica real**: realizaremos ejercicios prácticos para reforzar los conceptos aprendidos y adquiriremos experiencia en el uso de Kubernetes en un ámbito profesional.
+- **Certificaciones**: nos servirá de preparación para las certificaciones oficiales de Kubernetes: CKA, CKAD y CKS.
+
+## ¿Cómo seguir el curso?
+Podemos seguir el curso de forma secuencial, ya sea a través de mi web o de la lista de vídeos de Youtube. Cada entrada de la web corresponde a un vídeo de Youtube.
+
+Una vez que hayamos terminado la parte común del curso, podemos elegir el bloque que más nos interese: el de desarrollador, el de administrador o el de especialista en seguridad. O, si lo preferimos, podemos seguir los tres para obtener una visión completa de Kubernetes.
+
+Recuerda utilizar el [ÍNDICE DEL CURSO](./README.md#índice) para navegar más cómodamente por el contenido.
+
+Apoya este contenido gratuito dejando una estrella a este repositorio y suscribiéndote a mi canal de Youtube. Nos vemos en el siguiente capítulo.
+
+---
+* Lista de vídeos en Youtube: [Curso Kubernetes](https://www.youtube.com/playlist?list=PLQhxXeq1oc2k9MFcKxqXy5GV4yy7wqSma)
+
+[Volver al índice](README.md#índice)
