@@ -228,6 +228,21 @@ my @topicos = mdb->topic->find({
     })->fields({_id => 0, mid => 1, title => 1})->all;
 ```
 
+### Búsqueda de tópicos por Type y ID de estado
+Filtra tópicos en Clarive por categoría (`category_name`), identificador específico de estado (`category_status.id`) y el tipo de estado del flujo de trabajo (`category_status.type`), optimizando la consulta al proyectar solo los campos `mid` y `title`.
+
+```perl
+my @topicos = mdb->topic->find({
+    category_name          => 'Soporte',
+    'category_status.id'   => 'status-61',
+    'category_status.type' => 'G'
+})->fields({mid => 1, title => 1})->all;
+
+foreach my $t (@topicos) {
+    print "$t->{mid} - $t->{title}\n";
+}
+```
+
 ### Filtro de soportes por estado (Pipeline avanzado)
 Encuentra tópicos de la categoría "Soporte" que estén en un estado particular (`status-79`) y tengan vinculadas aprobaciones que se encuentren en otro estado específico (`status-19`), proyectando el timestamp de la transición de estado.
 
