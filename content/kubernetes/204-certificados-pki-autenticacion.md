@@ -140,6 +140,3 @@ sudo kubeadm init phase certs apiserver --config kubeadm.yaml
 - Ante errores `x509`, leemos el mensaje completo: dice exactamente qué falla (caducidad, CA o SANs).
 
 ---
-* Lista de vídeos en Youtube: [Curso Kubernetes](https://www.youtube.com/playlist?list=PLQhxXeq1oc2k9MFcKxqXy5GV4yy7wqSma)
-
-[Volver al índice](README.md#índice)

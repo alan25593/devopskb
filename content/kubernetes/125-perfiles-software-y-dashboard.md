@@ -110,6 +110,3 @@ k delete pod nginx $now
 Con esto cerramos la parte común del curso. A partir de aquí, elijamos nuestra especialización: [CKA (administración)](./201.Mantenimiento_backup.md), [CKAD (desarrollo)](./301.Pods_initcontainers.md) o [CKS (seguridad)](./401.CIS_benchmarks.md).
 
 ---
-* Lista de vídeos en Youtube: [Curso Kubernetes](https://www.youtube.com/playlist?list=PLQhxXeq1oc2k9MFcKxqXy5GV4yy7wqSma)
-
-[Volver al índice](README.md#índice)

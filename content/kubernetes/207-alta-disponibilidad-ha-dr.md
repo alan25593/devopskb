@@ -137,6 +137,3 @@ Dos siglas que conviene conocer (y que aparecen en cualquier conversación seria
 - DR = backups de etcd y PKI fuera del cluster + GitOps + backup de volúmenes (Velero) + restauraciones ensayadas.
 
 ---
-* Lista de vídeos en Youtube: [Curso Kubernetes](https://www.youtube.com/playlist?list=PLQhxXeq1oc2k9MFcKxqXy5GV4yy7wqSma)
-
-[Volver al índice](README.md#índice)

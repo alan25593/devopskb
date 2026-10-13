@@ -29,12 +29,6 @@ El deployment gestiona uno o varios objetos ReplicaSet, y estos a su vez gestion
 
 ![Deployments en kubernetes](/diagramas/kubernetes/deployments.drawio.svg)
 
-
-🎥 Vídeo completo, utilicemos los capítulos de youtube para saltar a la sección que nos interese:
-[https://youtu.be/JDVnWohX530](https://youtu.be/JDVnWohX530)
-
-[![Deployments](https://img.youtube.com/vi/JDVnWohX530/maxresdefault.jpg)](https://www.youtube.com/watch?v=JDVnWohX530)
-
 ## ¿Qué es un ReplicaSet?
 Un ReplicaSet es un objeto de Kubernetes que asegura que un número específico de réplicas de un pod esté ejecutándose en todo momento. Los deployments utilizan ReplicaSets para gestionar la creación, actualización y eliminación de pods, asegurando alta disponibilidad y escalabilidad. En la práctica, nunca crearemos ReplicaSets a mano: siempre lo haremos a través de un deployment.
 
@@ -91,7 +85,6 @@ kubectl create deployment nginx --image=nginx
 ```
 
 > **Truco de examen:** como con los pods, podemos generar el YAML de un deployment sin crearlo: `kubectl create deployment nginx --image=nginx --replicas=3 --dry-run=client -o yaml > deployment.yaml`. Después lo editamos y aplicamos.
-
 
 ## Actualizar un deployment
 Supongamos que queremos actualizar el deployment para que use una nueva imagen, concretamente la de nginx basada en alpine. El yaml de configuración quedaría así:
@@ -162,7 +155,6 @@ kubectl scale deployment nginx-deployment --replicas=5
 ## Historial y rollout de un deployment
 Kubernetes mantiene un historial de los cambios realizados en los deployments, lo que permite hacer un seguimiento de las versiones y realizar rollbacks si es necesario. Esto es especialmente útil para revertir cambios no deseados o fallidos, así como para auditar el historial de cambios en la configuración de la aplicación.
 
-
 ### Historial de un deployment
 Podemos consultar el historial de un deployment con el comando:
 ```shell
@@ -199,7 +191,6 @@ Este comando hace un rollback a la versión anterior del deployment. También po
 kubectl rollout undo deployment nginx-deployment --to-revision=1
 ```
 
-
 ## Buenas prácticas para trabajar con Deployments
 - Usemos etiquetas claras y consistentes para identificar nuestros recursos.
 - Configuremos `revisionHistoryLimit` para evitar almacenar demasiadas revisiones.
@@ -221,6 +212,3 @@ Indica que el contenedor se está reiniciando continuamente. Verifiquemos:
 - Que la configuración del contenedor (puertos, variables de entorno, etc.) sea correcta.
 
 ---
-* Lista de vídeos en Youtube: [Curso Kubernetes](https://www.youtube.com/playlist?list=PLQhxXeq1oc2k9MFcKxqXy5GV4yy7wqSma)
-
-[Volver al índice](README.md#índice)

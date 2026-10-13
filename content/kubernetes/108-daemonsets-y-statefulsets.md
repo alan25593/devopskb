@@ -23,12 +23,6 @@ keywords:
 # DaemonSets y StatefulSets en Kubernetes
 Ya hemos visto los deployments, pero existen otros objetos similares que nos permiten gestionar múltiples pods de forma automática. En este capítulo vamos a verlos: los DaemonSets y los StatefulSets.
 
-🎥 Vídeo completo, utilicemos los capítulos de youtube para saltar a la sección que nos interese:
-[https://youtu.be/zNEKiAy1F6Q](https://youtu.be/zNEKiAy1F6Q)
-
-[![DaemonSets y StatefulSets](https://img.youtube.com/vi/zNEKiAy1F6Q/maxresdefault.jpg)](https://www.youtube.com/watch?v=zNEKiAy1F6Q)
-
-
 Al igual que los deployments, permiten gestionar pods de forma automática, pero tienen unas características diferentes que los hacen más adecuados para ciertos casos de uso.
 
 Comparemos primero los Deployments con los DaemonSets y StatefulSets:
@@ -41,7 +35,6 @@ Comparemos primero los Deployments con los DaemonSets y StatefulSets:
 | **Casos de uso comunes**        | Aplicaciones web, APIs               | Agentes de monitoreo, logging       | Bases de datos, sistemas distribuidos |
 | **Distribución de pods**        | Basado en el número deseado          | Uno por nodo o subconjunto de nodos | Basado en el número deseado         |
 | **Orden de despliegue**         | No garantiza orden específico        | No garantiza orden específico       | Garantiza orden de despliegue       |
-
 
 ## DaemonSets
 Los DaemonSets son objetos de Kubernetes que garantizan que un pod se ejecute en todos los nodos de un clúster, o en un subconjunto específico de ellos. Esto es útil para aplicaciones que tienen que ejecutarse en cada nodo, como agentes de monitorización, recolectores de logs o servicios de red.
@@ -94,7 +87,6 @@ Podríamos borrar el DaemonSet con el siguiente comando:
 kubectl delete daemonset fluentd-elasticsearch
 ```
 
-
 ## StatefulSets
 Los StatefulSets son objetos de Kubernetes que se utilizan para gestionar aplicaciones con estado. A diferencia de los deployments, los StatefulSets garantizan que los pods tengan una identidad única y estable, lo que es esencial para aplicaciones como bases de datos o sistemas distribuidos.
 
@@ -141,14 +133,9 @@ Y de igual forma que con los anteriores, podríamos utilizar los comandos get, e
 kubectl <comando> statefulset mongo
 ```
 
-
 ## Conclusión
 Junto con los deployments, ya hemos visto los principales tipos de objetos que nos permiten gestionar pods de forma automática en Kubernetes. En el siguiente capítulo veremos los [jobs y cronjobs](/article/kubernetes/109-jobs-y-cronjobs), que son objetos que nos permiten ejecutar tareas programadas o de forma puntual.
 
 No nos preocupemos, porque iremos viendo todos estos objetos en profundidad en los casos prácticos.
 
-
 ---
-* Lista de vídeos en Youtube: [Curso Kubernetes](https://www.youtube.com/playlist?list=PLQhxXeq1oc2k9MFcKxqXy5GV4yy7wqSma)
-
-[Volver al índice](README.md#índice)

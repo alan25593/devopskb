@@ -32,15 +32,9 @@ Imaginemos que tenemos una tienda online. Durante la noche tenemos pocos visitan
 
 Aquí es donde entra el **Autoscaling**. Kubernetes puede aumentar o disminuir automáticamente el número de réplicas de nuestros Pods basándose en métricas como el uso de CPU o memoria.
 
-🎥 Vídeo completo, utilicemos los capítulos de youtube para saltar a la sección que nos interese:
-[https://youtu.be/QhHzygBoN_8](https://youtu.be/QhHzygBoN_8)
-
-[![HPA en Kubernetes, autoescalado de Pods por CPU y RAM](https://img.youtube.com/vi/QhHzygBoN_8/maxresdefault.jpg)](https://www.youtube.com/watch?v=QhHzygBoN_8)
-
 ![HPA en Kubernetes](/diagramas/kubernetes/HPALifecycle.gif)
 
 ## Conceptos Fundamentales
-
 
 ### ¿Qué es el HPA (Horizontal Pod Autoscaler)?
 
@@ -52,7 +46,6 @@ El HPA escala el número de Pods en un replication controller, deployment, repli
   
 ![Autoscaling en Kubernetes](/diagramas/kubernetes/AutoscalerComparison.gif)
   
-
 
 ### Requisitos Previos
 
@@ -66,9 +59,7 @@ kubectl top pods
 
 ## Ejemplo Práctico: HPA con la API Quotes
 
-Para este ejemplo utilizaremos una aplicación real: la **API de Citas Célebres** del repositorio [pabpereza/quotes](https://github.com/pabpereza/quotes). Esta API REST está construida con FastAPI y ya incluye probes de health check, lo que la hace perfecta para demostrar el autoescalado en Kubernetes.
-
-> 📦 Todos los manifiestos YAML están disponibles en la carpeta [`deploy/`](https://github.com/pabpereza/quotes/tree/main/deploy) del repositorio.
+Para este ejemplo utilizaremos un despliegue de una API de ejemplo con endpoints de healthcheck configurados y requests de recursos definidos para demostrar el autoescalado.
 
 ### 1. Desplegar la aplicación
 
@@ -95,7 +86,7 @@ spec:
     spec:
       containers:
         - name: quotes
-          image: pabpereza/quotes
+          image: registry.k8s.io/hpa-example
           ports:
             - containerPort: 80
           livenessProbe:
@@ -217,7 +208,7 @@ Podemos ejecutar la prueba de carga con:
 kubectl port-forward svc/quotes-service 8080:8080 &
 
 # Ejecuta k6 con el script de stress test
-k6 run https://raw.githubusercontent.com/pabpereza/quotes/main/deploy/stress-test.js
+kubectl run -i --tty load-generator --rm --image=busybox:1.28 --restart=Never -- /bin/sh -c 'while sleep 0.01; do wget -q -O- http://quotes-service; done'
 ```
 
 O genera carga manualmente con un contenedor:
@@ -267,14 +258,8 @@ Recordemos:
 
 ## Recursos Adicionales
 
-*   [Repositorio de ejemplo: pabpereza/quotes](https://github.com/pabpereza/quotes) - API completa con manifiestos de Kubernetes
-*   [Carpeta deploy/ con todos los manifiestos](https://github.com/pabpereza/quotes/tree/main/deploy) - Deployment, HPA, Ingress y test de carga
 *   [Documentación oficial de Kubernetes sobre HPA](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/)
 *   [Metrics Server en GitHub](https://github.com/kubernetes-sigs/metrics-server)
 *   [k6 - Herramienta de pruebas de carga](https://k6.io/)
 
-
 ---
-* Lista de vídeos en Youtube: [Curso Kubernetes](https://www.youtube.com/playlist?list=PLQhxXeq1oc2k9MFcKxqXy5GV4yy7wqSma)
-
-[Volver al índice](README.md#índice)

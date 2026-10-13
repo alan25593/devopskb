@@ -192,6 +192,3 @@ Este comando es oro puro tanto para administrar como para auditar la seguridad d
 - Auditemos los permisos periódicamente con `kubectl auth can-i --list`.
 
 ---
-* Lista de vídeos en Youtube: [Curso Kubernetes](https://www.youtube.com/playlist?list=PLQhxXeq1oc2k9MFcKxqXy5GV4yy7wqSma)
-
-[Volver al índice](README.md#índice)

@@ -107,6 +107,3 @@ Si dominamos esta lista con los ojos cerrados, el aprobado está cerca. Todos es
 ¡Mucha suerte, almirante! Y cuando la tengamos: la CKA es requisito para presentarse a la [CKS](./401.CIS_benchmarks.md), por si nos quedamos con ganas de más.
 
 ---
-* Lista de vídeos en Youtube: [Curso Kubernetes](https://www.youtube.com/playlist?list=PLQhxXeq1oc2k9MFcKxqXy5GV4yy7wqSma)
-
-[Volver al índice](README.md#índice)

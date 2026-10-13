@@ -120,6 +120,3 @@ Para el examen CKAD basta con el concepto: qué es, qué aporta (mTLS, tráfico,
 - No es obligatorio: adoptémoslo cuando el número de servicios y los requisitos lo justifiquen.
 
 ---
-* Lista de vídeos en Youtube: [Curso Kubernetes](https://www.youtube.com/playlist?list=PLQhxXeq1oc2k9MFcKxqXy5GV4yy7wqSma)
-
-[Volver al índice](README.md#índice)

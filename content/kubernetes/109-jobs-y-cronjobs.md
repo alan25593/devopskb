@@ -22,124 +22,192 @@ keywords:
   - "- ejecutar scripts kubernetes"
 ---
 
-# Jobs y CronJobs en Kubernetes
-Los `Jobs` y los `CronJobs` son recursos en Kubernetes diseñados para automatizar tareas de forma puntual o recurrente. A diferencia de los `Pods`, los `Jobs` tienen un número de ejecuciones definido y un tiempo de vida limitado, mientras que los `CronJobs` permiten programar tareas recurrentes basadas en un cronograma.
-
-Estos recursos son ideales para tareas de mantenimiento, como limpieza de logs, backups de datos o cualquier tarea que no requiera ejecución continua.
-
-🎥 Vídeo completo, utilicemos los capítulos de youtube para saltar a la sección que nos interese:
-[https://youtu.be/DJGkIhNxE94](https://youtu.be/DJGkIhNxE94)
-
-[![Jobs y CronJobs](https://img.youtube.com/vi/DJGkIhNxE94/maxresdefault.jpg)](https://www.youtube.com/watch?v=DJGkIhNxE94)
-
-## ¿Qué es un Job?
-Un `Job` en Kubernetes asegura que un conjunto de tareas se ejecuten una cantidad específica de veces. Una vez que se completan todas las ejecuciones, el `Job` finaliza.
-
-### Ejemplo básico de un Job
-```yaml
-apiVersion: batch/v1
-kind: Job
-metadata:
-  name: test-job
-spec:
-  completions: 5 # Número de ejecuciones deseadas
-  backoffLimit: 3 # Número máximo de reintentos en caso de fallo
-  template:
-    spec:
-      containers:
-      - name: test
-        image: busybox
-        command: ["/bin/sleep"]
-        args: ["3"] # Simula una tarea que dura 3 segundos
-      restartPolicy: Never
-```
-
-### Características principales de un Job
-- **Control de ejecuciones:** Podemos definir cuántas veces debe ejecutarse la tarea utilizando el parámetro `completions`.
-- **Paralelismo:** Con el parámetro `parallelism` podemos indicar cuántos pods del Job pueden ejecutarse a la vez. Por ejemplo, `completions: 5` y `parallelism: 2` ejecutará 5 tareas en total, de dos en dos.
-- **Reintentos automáticos:** Si una tarea falla, Kubernetes puede reintentarla automáticamente según el valor de `backoffLimit`.
-- **Política de reinicio:** El parámetro `restartPolicy` controla si los contenedores fallidos deben reiniciarse (`Never` o `OnFailure`). En los Jobs es obligatorio especificarla, ya que el valor por defecto de los pods (`Always`) no tiene sentido para una tarea que debe terminar.
-
-### Estados de un Job
-Un `Job` puede tener los siguientes estados:
-- **Pending:** El `Job` está esperando recursos disponibles para ejecutarse.
-- **Running:** El `Job` está en ejecución.
-- **Succeeded:** Todas las ejecuciones se completaron con éxito.
-- **Failed:** El `Job` alcanzó el límite de reintentos sin éxito.
-
-
-## ¿Qué es un CronJob?
-Un `CronJob` en Kubernetes permite programar tareas recurrentes basadas en un cronograma. Es ideal para tareas que necesitan ejecutarse en intervalos regulares, como limpiezas diarias o backups semanales.
-
-### Ejemplo básico de un CronJob
-```yaml
-apiVersion: batch/v1
-kind: CronJob
-metadata:
-  name: test-cronjob
-spec:
-  schedule: "*/1 * * * *" # Ejecuta la tarea cada minuto
-  successfulJobsHistoryLimit: 3 # Mantiene un historial de 3 ejecuciones exitosas
-  failedJobsHistoryLimit: 1 # Mantiene un historial de 1 ejecución fallida
-  concurrencyPolicy: Forbid # No permite que dos Jobs se ejecuten en paralelo
-  jobTemplate:
-    spec:
-      completions: 1
-      backoffLimit: 2
-      template:
-        spec:
-          containers:
-          - name: test
-            image: busybox
-            command: ["/bin/sleep"]
-            args: ["3"]
-          restartPolicy: Never
-```
-
-### Características principales de un CronJob
-- **Programación flexible:** Utiliza la sintaxis de cron para definir cuándo debe ejecutarse la tarea.
-- **Historial de ejecuciones:** Podemos controlar cuántos `Jobs` completados o fallidos se deben mantener en el historial con `successfulJobsHistoryLimit` y `failedJobsHistoryLimit`.
-- **Control de concurrencia:** El parámetro `concurrencyPolicy` define si los `Jobs` pueden ejecutarse en paralelo (`Allow`), deben esperar a que termine el anterior (`Forbid`), o si se cancela el anterior antes de iniciar uno nuevo (`Replace`).
-
-
-### Explicación del parámetro `schedule`
-La sintaxis de `schedule` sigue el formato cron:
-```
-# ┌───────────── minuto (0 - 59)
-# │ ┌───────────── hora (0 - 23)
-# │ │ ┌───────────── día del mes (1 - 31)
-# │ │ │ ┌───────────── mes (1 - 12)
-# │ │ │ │ ┌───────────── día de la semana (0 - 6) (domingo a sábado)
-# │ │ │ │ │
-# * * * * *
-```
-Ejemplos comunes:
-- `@daily`: Ejecuta la tarea una vez al día.
-- `@hourly`: Ejecuta la tarea una vez por hora.
-- `@weekly`: Ejecuta la tarea una vez por semana.
-
-
-## Comandos útiles para Jobs y CronJobs
-También podemos crear estos recursos de forma imperativa, algo muy práctico en los exámenes de certificación:
-```shell
-# Crear un Job
-kubectl create job test-job --image=busybox -- /bin/sleep 3
-
-# Crear un CronJob
-kubectl create cronjob test-cronjob --image=busybox --schedule="*/1 * * * *" -- /bin/sleep 3
-
-# Lanzar manualmente un Job a partir de un CronJob existente (muy útil para probarlo sin esperar)
-kubectl create job test-manual --from=cronjob/test-cronjob
-
-# Consultar el estado y los logs
-kubectl get jobs
-kubectl get cronjobs
-kubectl logs job/test-job
-```
-
-Continuaremos en el siguiente capítulo viendo los servicios y cómo exponer aplicaciones en Kubernetes.
-
+# Jobs y CronJobs en Kubernetes
+
+Los `Jobs` y los `CronJobs` son recursos en Kubernetes diseñados para automatizar tareas de forma puntual o recurrente. A diferencia de los `Pods`, los `Jobs` tienen un número de ejecuciones definido y un tiempo de vida limitado, mientras que los `CronJobs` permiten programar tareas recurrentes basadas en un cronograma.
+
+Estos recursos son ideales para tareas de mantenimiento, como limpieza de logs, backups de datos o cualquier tarea que no requiera ejecución continua.
+
+## ¿Qué es un Job?
+
+Un `Job` en Kubernetes asegura que un conjunto de tareas se ejecuten una cantidad específica de veces. Una vez que se completan todas las ejecuciones, el `Job` finaliza.
+
+### Ejemplo básico de un Job
+
+```yaml
+
+apiVersion: batch/v1
+
+kind: Job
+
+metadata:
+
+  name: test-job
+
+spec:
+
+  completions: 5 # Número de ejecuciones deseadas
+
+  backoffLimit: 3 # Número máximo de reintentos en caso de fallo
+
+  template:
+
+    spec:
+
+      containers:
+
+      - name: test
+
+        image: busybox
+
+        command: ["/bin/sleep"]
+
+        args: ["3"] # Simula una tarea que dura 3 segundos
+
+      restartPolicy: Never
+
+```
+
+### Características principales de un Job
+
+- **Control de ejecuciones:** Podemos definir cuántas veces debe ejecutarse la tarea utilizando el parámetro `completions`.
+
+- **Paralelismo:** Con el parámetro `parallelism` podemos indicar cuántos pods del Job pueden ejecutarse a la vez. Por ejemplo, `completions: 5` y `parallelism: 2` ejecutará 5 tareas en total, de dos en dos.
+
+- **Reintentos automáticos:** Si una tarea falla, Kubernetes puede reintentarla automáticamente según el valor de `backoffLimit`.
+
+- **Política de reinicio:** El parámetro `restartPolicy` controla si los contenedores fallidos deben reiniciarse (`Never` o `OnFailure`). En los Jobs es obligatorio especificarla, ya que el valor por defecto de los pods (`Always`) no tiene sentido para una tarea que debe terminar.
+
+### Estados de un Job
+
+Un `Job` puede tener los siguientes estados:
+
+- **Pending:** El `Job` está esperando recursos disponibles para ejecutarse.
+
+- **Running:** El `Job` está en ejecución.
+
+- **Succeeded:** Todas las ejecuciones se completaron con éxito.
+
+- **Failed:** El `Job` alcanzó el límite de reintentos sin éxito.
+
+## ¿Qué es un CronJob?
+
+Un `CronJob` en Kubernetes permite programar tareas recurrentes basadas en un cronograma. Es ideal para tareas que necesitan ejecutarse en intervalos regulares, como limpiezas diarias o backups semanales.
+
+### Ejemplo básico de un CronJob
+
+```yaml
+
+apiVersion: batch/v1
+
+kind: CronJob
+
+metadata:
+
+  name: test-cronjob
+
+spec:
+
+  schedule: "*/1 * * * *" # Ejecuta la tarea cada minuto
+
+  successfulJobsHistoryLimit: 3 # Mantiene un historial de 3 ejecuciones exitosas
+
+  failedJobsHistoryLimit: 1 # Mantiene un historial de 1 ejecución fallida
+
+  concurrencyPolicy: Forbid # No permite que dos Jobs se ejecuten en paralelo
+
+  jobTemplate:
+
+    spec:
+
+      completions: 1
+
+      backoffLimit: 2
+
+      template:
+
+        spec:
+
+          containers:
+
+          - name: test
+
+            image: busybox
+
+            command: ["/bin/sleep"]
+
+            args: ["3"]
+
+          restartPolicy: Never
+
+```
+
+### Características principales de un CronJob
+
+- **Programación flexible:** Utiliza la sintaxis de cron para definir cuándo debe ejecutarse la tarea.
+
+- **Historial de ejecuciones:** Podemos controlar cuántos `Jobs` completados o fallidos se deben mantener en el historial con `successfulJobsHistoryLimit` y `failedJobsHistoryLimit`.
+
+- **Control de concurrencia:** El parámetro `concurrencyPolicy` define si los `Jobs` pueden ejecutarse en paralelo (`Allow`), deben esperar a que termine el anterior (`Forbid`), o si se cancela el anterior antes de iniciar uno nuevo (`Replace`).
+
+### Explicación del parámetro `schedule`
+
+La sintaxis de `schedule` sigue el formato cron:
+
+```
+
+# ┌───────────── minuto (0 - 59)
+
+# │ ┌───────────── hora (0 - 23)
+
+# │ │ ┌───────────── día del mes (1 - 31)
+
+# │ │ │ ┌───────────── mes (1 - 12)
+
+# │ │ │ │ ┌───────────── día de la semana (0 - 6) (domingo a sábado)
+
+# │ │ │ │ │
+
+# * * * * *
+
+```
+
+Ejemplos comunes:
+
+- `@daily`: Ejecuta la tarea una vez al día.
+
+- `@hourly`: Ejecuta la tarea una vez por hora.
+
+- `@weekly`: Ejecuta la tarea una vez por semana.
+
+## Comandos útiles para Jobs y CronJobs
+
+También podemos crear estos recursos de forma imperativa, algo muy práctico en los exámenes de certificación:
+
+```shell
+
+# Crear un Job
+
+kubectl create job test-job --image=busybox -- /bin/sleep 3
+
+# Crear un CronJob
+
+kubectl create cronjob test-cronjob --image=busybox --schedule="*/1 * * * *" -- /bin/sleep 3
+
+# Lanzar manualmente un Job a partir de un CronJob existente (muy útil para probarlo sin esperar)
+
+kubectl create job test-manual --from=cronjob/test-cronjob
+
+# Consultar el estado y los logs
+
+kubectl get jobs
+
+kubectl get cronjobs
+
+kubectl logs job/test-job
+
+```
+
+Continuaremos en el siguiente capítulo viendo los servicios y cómo exponer aplicaciones en Kubernetes.
+
 ---
-* Lista de vídeos en Youtube: [Curso Kubernetes](https://www.youtube.com/playlist?list=PLQhxXeq1oc2k9MFcKxqXy5GV4yy7wqSma)
-
-[Volver al índice](README.md#índice)

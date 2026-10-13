@@ -36,12 +36,6 @@ Imaginemos que estamos construyendo nuestra aplicación. Necesitamos dos tipos d
 
 A efectos prácticos son objetos muy similares, pero se han separado en dos tipos distintos por dos motivos: primero, para que podamos aplicar permisos de forma más granular; y segundo, porque los secretos permiten un tratamiento especial, como veremos en las consideraciones de seguridad.
 
-🎥 Vídeo completo, utilicemos los capítulos de youtube para saltar a la sección que nos interese:
-[https://youtu.be/8V-Knk76tWs](https://youtu.be/8V-Knk76tWs)
-
-[![Curso Kubernetes](https://img.youtube.com/vi/8V-Knk76tWs/maxresdefault.jpg)](https://www.youtube.com/watch?v=8V-Knk76tWs)
-
-
 ## ¿Cómo se crean y consumen estos objetos?
 Como siempre, tenemos dos formas de crear estos objetos: usando comandos o declarando un yaml. Una vez creados, quedan en propiedad de un namespace y pueden ser consumidos por cualquier objeto dentro de ese namespace.
 
@@ -172,7 +166,6 @@ Para crear un configmap usamos el siguiente comando:
  ```
 Este nos permite importar información, ya sea texto plano que introduzcamos en el comando (`--from-literal=text=`), el contenido de un fichero (`--from-file=`) o el contenido de un directorio completo (`--from-file=`).
 
-
 Podemos consultar el contenido de un configmap con el siguiente comando:
 ``` bash
 kubectl get configmap <nombre>
@@ -201,7 +194,6 @@ Para guardar el configmap en el cluster podemos usar el comando:
 ```bash
 kubectl apply -f <configmap>.yaml
 ```
-
 
 ### Usar configmap en un pod
 
@@ -241,7 +233,6 @@ spec:
 ```
 Cambiaríamos el `configMapKeyRef` por `configMapRef` y `env` por `envFrom`. Por último, eliminaríamos `key` y `valueFrom`, datos que ya no tendríamos que especificar.
 
-
 ### Montar como volumen en un pod
 Podemos montar un configmap como un volumen en un pod. Esta sería una configuración de ejemplo:
 ```yaml
@@ -262,7 +253,6 @@ spec:
       name: cars
 ```
 
-
 ## Borrar un configmap
 Podemos eliminar este objeto de Kubernetes con el comando:
 ``` bash
@@ -270,6 +260,3 @@ kubectl delete configmap <nombre>
 ```
 
 ---
-* Lista de vídeos en Youtube: [Curso Kubernetes](https://www.youtube.com/playlist?list=PLQhxXeq1oc2k9MFcKxqXy5GV4yy7wqSma)
-
-[Volver al índice](README.md#índice)

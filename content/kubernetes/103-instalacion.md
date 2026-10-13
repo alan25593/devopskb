@@ -25,24 +25,18 @@ keywords:
 
 # Instalación de Kubernetes
 
-La instalación de Kubernetes en un cluster de nodos puede ser un proceso complejo la primera vez, pero no nos preocupemos. En esta guía agruparé distintos tutoriales de instalación con distintos motores de contenedores y distintos sistemas operativos. El proceso está muy mascado y probado, pero si tenemos algún problema, no dudemos en abrir un issue en el [repositorio de Github](https://github.com/pabpereza/pabpereza/issues).
+La instalación de Kubernetes en un cluster de nodos puede ser un proceso complejo la primera vez, pero no nos preocupemos. En esta guía agruparé distintos tutoriales de instalación con distintos motores de contenedores y distintos sistemas operativos. El proceso está muy mascado y probado, pero si se presentan inconvenientes, verificar los logs de `kubelet` y `journalctl` según la guía de troubleshooting.
 
 Para todas las instalaciones, estos son los requisitos mínimos y los recomendados para un cluster de Kubernetes:
 
 ![Requisitos mínimos y recomendados para un cluster de Kubernetes](/diagramas/kubernetes/instalacion-requisitos.drawio.svg)
-
-
-🎥 Vídeo completo, utilicemos los capítulos de youtube para saltar a la sección que nos interese:
-[https://youtu.be/ZS0isVTIVyI](https://youtu.be/ZS0isVTIVyI)
-
-[![Instalación de Kubernetes](https://img.youtube.com/vi/ZS0isVTIVyI/maxresdefault.jpg)](https://www.youtube.com/watch?v=ZS0isVTIVyI)
 
 > **Nota sobre versiones**: en los ejemplos usamos Kubernetes v1.33. Podemos instalar otra versión cambiando el número en las URLs del repositorio y en los paquetes. Los repositorios antiguos (`apt.kubernetes.io` y `packages.cloud.google.com`) fueron retirados en 2024; usemos siempre los repositorios comunitarios `pkgs.k8s.io` como se muestra a continuación.
 
 ## Ubuntu Server 24.04 con Containerd
 
 ### Nodo maestro
-**NOTA:** Hasta el paso 11 todos los comandos se ejecutan con el usuario root. A partir de ese paso, se ejecutarán con el usuario normal que se haya creado en el sistema, en mi caso `pabpereza`.
+**NOTA:** Hasta el paso 11 todos los comandos se ejecutan con el usuario root. A partir de ese paso, se ejecutarán con el usuario normal que se haya creado en el sistema, en nuestro caso un usuario no privilegiado (ej. `devops`).
 
 1. Actualizar paquetería e instalar requisitos previos:
 ```bash
@@ -158,7 +152,6 @@ echo 'source <(kubectl completion bash)' >> ~/.bashrc # persistir autocompletado
 
 Esto nos permitirá usar el autocompletado en la terminal de bash: si pulsamos tabulador después de escribir `kubectl`, nos mostrará las opciones disponibles.
 
-
 13. Instalar Helm, necesario para instalar algunas aplicaciones en Kubernetes, incluido Cilium (la CNI que vamos a instalar):
 ```bash
 curl -fsSL https://packages.buildkite.com/helm-linux/helm-debian/gpgkey | gpg --dearmor | sudo tee /usr/share/keyrings/helm.gpg > /dev/null
@@ -245,7 +238,6 @@ br_netfilter
 EOF
 ```
 
-
 4. Configurar sysctl:
 ```bash
 cat << EOF | tee /etc/sysctl.d/kubernetes.conf
@@ -315,7 +307,6 @@ apt-mark hold kubelet kubeadm kubectl
 systemctl enable kubelet
 ```
 
-
 10. Iniciar el cluster en el nodo maestro:
 ```bash
 kubeadm init --pod-network-cidr=<rango de IPs para pods> --control-plane-endpoint=<nombre añadido en /etc/hosts>:6443
@@ -352,8 +343,6 @@ Por ejemplo:
 kubectl apply -f calico.yaml
 ```
 
-
-
 ### Nodo worker
 Repetimos los pasos 1 a 9 del nodo maestro. Esta vez, en el fichero `/etc/hosts` tenemos que añadir la IP y el nombre del **nodo maestro**.
 
@@ -369,9 +358,4 @@ El hash se puede obtener con el siguiente comando de openssl, lanzado en el nodo
 openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outform der 2>/dev/null | openssl dgst -sha256 -hex | sed 's/^.* //'
 ```
 
-
-
 ---
-* Lista de vídeos en Youtube: [Curso Kubernetes](https://www.youtube.com/playlist?list=PLQhxXeq1oc2k9MFcKxqXy5GV4yy7wqSma)
-
-[Volver al índice](README.md#índice)

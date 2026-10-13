@@ -24,11 +24,6 @@ keywords:
 # Pods
 Los pods son una unidad de ejecución de uno o varios contenedores que comparten la misma red y almacenamiento. Es el objeto más básico que podemos ejecutar en Kubernetes y el que nos permite ejecutar un contenedor. Vamos a ver cómo crear, gestionar y eliminar pods.
 
-🎥 Vídeo completo, utilicemos los capítulos de youtube para saltar a la sección que nos interese:
-[https://youtu.be/D1YjrFoqg4Q](https://youtu.be/D1YjrFoqg4Q)
-
-[![Pods](https://img.youtube.com/vi/D1YjrFoqg4Q/maxresdefault.jpg)](https://www.youtube.com/watch?v=D1YjrFoqg4Q)
-
 ## Características de los pods
 1. **Uno o varios contenedores**:
 
@@ -45,7 +40,6 @@ Los pods son una unidad de ejecución de uno o varios contenedores que comparten
 3. **Ciclo de vida y gestión**:
 
     Kubernetes no gestiona pods individuales de forma directa en producción, sino que usa objetos como Deployments, ReplicaSets o DaemonSets para gestionarlos automáticamente, que veremos en los siguientes capítulos.
-
 
 ## Crear un pod con kubectl
 Ya hemos visto brevemente cómo crear pods con manifiestos. Algunos objetos de Kubernetes se pueden crear desde el propio CLI de `kubectl`. Por ejemplo, creamos un nuevo pod especificando el nombre que le queremos asignar y la imagen que utilizaremos:
@@ -98,7 +92,6 @@ En este caso, hemos cambiado la imagen de nginx por la versión alpine. Kubernet
 
 Tengamos en cuenta que solo algunos campos de un pod son modificables en caliente (la imagen, por ejemplo). Para cambios más profundos, como variables de entorno o volúmenes, tendremos que eliminar y recrear el pod (otro motivo por el que en producción se usan Deployments).
 
-
 ## Ver un pod
 Tenemos varias formas de consultar un pod. Podemos listar todos los pods, listar un pod concreto, ver su descripción, obtener su manifiesto, etc. Por ejemplo:
 ``` shell
@@ -133,6 +126,3 @@ kubectl delete pod nginx
 Los pods no saben restaurarse ni replicarse a sí mismos: necesitan algo que gestione estos procesos por ellos. Para eso se utilizan otros tipos de objetos, como los [ReplicaSets y Deployments](./107.Deployments.md) que veremos en los próximos capítulos.
 
 ---
-* Lista de vídeos en Youtube: [Curso Kubernetes](https://www.youtube.com/playlist?list=PLQhxXeq1oc2k9MFcKxqXy5GV4yy7wqSma)
-
-[Volver al índice](README.md#índice)

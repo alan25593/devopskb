@@ -88,7 +88,6 @@ Los repositorios añadidos pueden actualizarse (refrescar su índice de charts) 
 helm repo update
 ```
 
-
 Si ahora quisiéramos buscar charts solo dentro de este repositorio, podríamos hacerlo así:
 ``` bash
 helm search repo bitnami
@@ -150,6 +149,3 @@ helm create mi-aplicacion
 Esto crea la estructura que vimos al principio, con un deployment, service e ingress plantillados que podemos adaptar a nuestra aplicación. Es la mejor forma de aprender: generemos el esqueleto y estudiemos cómo están plantillados sus manifiestos.
 
 ---
-* Lista de vídeos en Youtube: [Curso Kubernetes](https://www.youtube.com/playlist?list=PLQhxXeq1oc2k9MFcKxqXy5GV4yy7wqSma)
-
-[Volver al índice](README.md#índice)

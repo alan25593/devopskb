@@ -164,6 +164,3 @@ En producción seria, el ciclo "subir peso → mirar métricas → subir más o 
 - Cuidado siempre con el estado compartido (esquema de base de datos) cuando conviven dos versiones.
 
 ---
-* Lista de vídeos en Youtube: [Curso Kubernetes](https://www.youtube.com/playlist?list=PLQhxXeq1oc2k9MFcKxqXy5GV4yy7wqSma)
-
-[Volver al índice](README.md#índice)

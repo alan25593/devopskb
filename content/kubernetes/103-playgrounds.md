@@ -32,43 +32,17 @@ De todas las opciones que veremos, solo k3s es recomendable para entornos de pro
 
 Además, si nuestro equipo no cumple los requisitos, o queremos seguir el curso sin instalar nada, podemos usar entornos de "playground", que nos ofrecen un cluster de Kubernetes en la nube de forma gratuita.
 
-
 ## Playgrounds y minikube
 Para empezar, podemos usar entornos de "playground" que nos ofrecen un cluster de Kubernetes en la nube de forma gratuita. Ya sé que no es un método de instalación, pero es una forma de empezar a trastear sin tener que montar nada y quería mencionarlo. El más popular es [Killercoda](https://killercoda.com/playgrounds), que además es el entorno en el que se basan los simuladores de los exámenes de certificación.
 
-
 Aquí cabe destacar también una de las formas más sencillas de tener un cluster de Kubernetes en nuestro equipo: minikube. Minikube es una herramienta que permite ejecutar un cluster de Kubernetes en un único nodo, ideal para entornos de desarrollo o pruebas. Además de ser multiplataforma, tiene una capa de addons que permite añadir funcionalidades extra al cluster (como el dashboard o un registry) de forma muy sencilla.
-
-Ambas opciones las vemos en profundidad en el siguiente vídeo:
-[https://youtu.be/GuSs-gPF_uM](https://youtu.be/GuSs-gPF_uM)
-
-[![Playgrounds y minikube](https://img.youtube.com/vi/GuSs-gPF_uM/maxresdefault.jpg)](https://www.youtube.com/watch?v=GuSs-gPF_uM)
-
-
 
 ## Docker Desktop
 ¿Kubernetes en Docker? Pues claro, ¿por qué no? Ya hemos visto que los propios servicios de Kubernetes también se ejecutan en contenedores (salvo el kubelet), así que no es en absoluto descabellado.
 
 También podríamos usar Rancher Desktop o Podman Desktop. Con cualquiera de ellos, con un solo click, podemos tener un cluster de Kubernetes en nuestro equipo sin mucha complicación.
 
-Dentro vídeo:
-[https://youtu.be/GaIVr8m0chk](https://youtu.be/GaIVr8m0chk)
-
-[![Docker Desktop](https://img.youtube.com/vi/GaIVr8m0chk/maxresdefault.jpg)](https://www.youtube.com/watch?v=GaIVr8m0chk)
-
-
 ## k3s
 Por último, veremos k3s, una distribución de Kubernetes ligera y fácil de instalar, ideal para entornos de producción pequeños o entornos de pruebas.
 
-Esta distribución nos permite tener un cluster de múltiples nodos en varios equipos. En el siguiente vídeo vemos cómo instalar un clúster de 3 nodos (un control plane y dos workers) en tres máquinas virtuales distintas:
-[https://youtu.be/8JOfM7HKQ70](https://youtu.be/8JOfM7HKQ70)
-
-[![k3s](https://img.youtube.com/vi/8JOfM7HKQ70/maxresdefault.jpg)](https://www.youtube.com/watch?v=8JOfM7HKQ70)
-
-
-
-
----
-* Lista de vídeos en Youtube: [Curso Kubernetes](https://www.youtube.com/playlist?list=PLQhxXeq1oc2k9MFcKxqXy5GV4yy7wqSma)
-
-[Volver al índice](README.md#índice)
+Esta distribución nos permite tener un cluster de múltiples nodos en varios equipos. ---

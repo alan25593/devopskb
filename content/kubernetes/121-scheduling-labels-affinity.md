@@ -180,6 +180,3 @@ Esto garantiza que la diferencia de réplicas entre zonas nunca supere 1. Es el 
 En el siguiente capítulo veremos la otra cara de la moneda: los [taints y tolerations](./122.Taints_tolerations.md), donde es el nodo quien repele a los pods.
 
 ---
-* Lista de vídeos en Youtube: [Curso Kubernetes](https://www.youtube.com/playlist?list=PLQhxXeq1oc2k9MFcKxqXy5GV4yy7wqSma)
-
-[Volver al índice](README.md#índice)

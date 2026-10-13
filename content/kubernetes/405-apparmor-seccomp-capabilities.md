@@ -169,6 +169,3 @@ Mismo gotcha que seccomp: si el perfil no está cargado en el nodo, el pod se qu
 - Verificación: `/proc/1/attr/current` (AppArmor) y probar operaciones prohibidas; los fallos de perfil aparecen en eventos del pod.
 
 ---
-* Lista de vídeos en Youtube: [Curso Kubernetes](https://www.youtube.com/playlist?list=PLQhxXeq1oc2k9MFcKxqXy5GV4yy7wqSma)
-
-[Volver al índice](README.md#índice)

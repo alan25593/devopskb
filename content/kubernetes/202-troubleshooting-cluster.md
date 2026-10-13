@@ -150,6 +150,3 @@ kubectl -n kube-system logs <pod-de-kube-proxy>
 - Cuando el API server está caído, `crictl` y los logs en `/var/log/pods/` nos permiten trabajar sin kubectl.
 
 ---
-* Lista de vídeos en Youtube: [Curso Kubernetes](https://www.youtube.com/playlist?list=PLQhxXeq1oc2k9MFcKxqXy5GV4yy7wqSma)
-
-[Volver al índice](README.md#índice)

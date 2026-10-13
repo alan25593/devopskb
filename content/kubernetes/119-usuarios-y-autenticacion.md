@@ -150,6 +150,3 @@ spec:
 - Ninguna identidad tiene permisos por sí sola: estos se asignan con RBAC, que vemos en el [siguiente capítulo](./120.Roles.md).
 
 ---
-* Lista de vídeos en Youtube: [Curso Kubernetes](https://www.youtube.com/playlist?list=PLQhxXeq1oc2k9MFcKxqXy5GV4yy7wqSma)
-
-[Volver al índice](README.md#índice)

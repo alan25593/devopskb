@@ -131,6 +131,3 @@ overhead:
 - Son para cargas no confiables; no sustituyen al resto de capas de seguridad.
 
 ---
-* Lista de vídeos en Youtube: [Curso Kubernetes](https://www.youtube.com/playlist?list=PLQhxXeq1oc2k9MFcKxqXy5GV4yy7wqSma)
-
-[Volver al índice](README.md#índice)

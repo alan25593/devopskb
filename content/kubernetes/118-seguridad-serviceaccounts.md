@@ -109,7 +109,6 @@ Los campos más importantes que debemos conocer:
 
 Si una de las propiedades del contexto de seguridad se incumple (por ejemplo, `runAsNonRoot: true` con una imagen que corre como root), el contenedor no se ejecutará: se quedará en estado de error y el motivo aparecerá en su mensaje de estado (`kubectl describe pod`).
 
-
 ## Pod Security Standards y Pod Security Admission
 Quizá nos suenen las **Pod Security Policies (PSP)**: permitían definir políticas de seguridad globales para todos los pods. Quedaron obsoletas en Kubernetes 1.21 y fueron **eliminadas definitivamente en la 1.25**. Si nos las encontramos en documentación o tutoriales, es señal de que ese contenido está desactualizado.
 
@@ -208,6 +207,3 @@ Veremos patrones más avanzados de políticas de red en la [especialización CKS
 En los próximos capítulos profundizaremos en [usuarios y service accounts](./119.Usuarios.md) y en [roles y permisos RBAC](./120.Roles.md).
 
 ---
-* Lista de vídeos en Youtube: [Curso Kubernetes](https://www.youtube.com/playlist?list=PLQhxXeq1oc2k9MFcKxqXy5GV4yy7wqSma)
-
-[Volver al índice](README.md#índice)

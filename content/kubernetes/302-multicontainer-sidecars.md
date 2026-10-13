@@ -152,6 +152,3 @@ kubectl describe pod <pod>                     # Estado de cada contenedor por s
 Un pod `2/2 Running` tiene sus dos contenedores sanos; un `1/2` nos dice exactamente dónde mirar.
 
 ---
-* Lista de vídeos en Youtube: [Curso Kubernetes](https://www.youtube.com/playlist?list=PLQhxXeq1oc2k9MFcKxqXy5GV4yy7wqSma)
-
-[Volver al índice](README.md#índice)

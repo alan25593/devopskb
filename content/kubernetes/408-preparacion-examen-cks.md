@@ -115,6 +115,3 @@ Misma logística que las anteriores (proctor, identificación, sala despejada). 
 Y ya está. Si hemos llegado hasta aquí con las tres certificaciones (o sin ellas, pero con todo el curso practicado), tenemos un perfil que muy pocos equipos dejarían escapar: sabemos desplegar, administrar y **asegurar** Kubernetes. Gracias por navegar hasta el final, almirante. ⚓
 
 ---
-* Lista de vídeos en Youtube: [Curso Kubernetes](https://www.youtube.com/playlist?list=PLQhxXeq1oc2k9MFcKxqXy5GV4yy7wqSma)
-
-[Volver al índice](README.md#índice)

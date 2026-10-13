@@ -159,6 +159,3 @@ kubectl create token <nombre de la service account>
 Copiamos el token que devuelve el comando y lo pegamos en la pantalla de login del dashboard.
 
 ---
-* Lista de vídeos en Youtube: [Curso Kubernetes](https://www.youtube.com/playlist?list=PLQhxXeq1oc2k9MFcKxqXy5GV4yy7wqSma)
-
-[Volver al índice](README.md#índice)

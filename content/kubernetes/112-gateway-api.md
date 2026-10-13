@@ -25,12 +25,6 @@ En el capítulo anterior vimos los [Ingress Controllers](/article/kubernetes/111
 
 **Gateway API** es la respuesta oficial de Kubernetes a todos esos problemas. No es una versión 2 de Ingress, es un rediseño completo de cómo se gestiona el tráfico entrante en un clúster.
 
-🎥 Vídeo completo, utilicemos los capítulos de youtube para saltar a la sección que nos interese:
-[https://youtu.be/MwnJn9tBaa0](https://youtu.be/MwnJn9tBaa0)
-
-[![Gateway API en Kubernetes](https://img.youtube.com/vi/MwnJn9tBaa0/maxresdefault.jpg)](https://www.youtube.com/watch?v=MwnJn9tBaa0)
-
-
 ## ¿Por qué Gateway API?
 
 Ingress nació siendo una API muy simple, casi minimalista, con la idea de que "lo avanzado lo resuelve cada controlador". El resultado es que hoy en día, cualquier caso de uso real requiere anotaciones propietarias: traffic splitting, redirecciones, reescritura de URLs, matching por headers... todo acaba siendo una cadena mágica específica del proveedor.
@@ -444,6 +438,3 @@ Si estamos empezando un clúster nuevo en 2026, no lo dudemos: vamos directament
 Nos vemos en el siguiente.
 
 ---
-* Lista de vídeos en Youtube: [Curso Kubernetes](https://www.youtube.com/playlist?list=PLQhxXeq1oc2k9MFcKxqXy5GV4yy7wqSma)
-
-[Volver al índice](README.md#índice)

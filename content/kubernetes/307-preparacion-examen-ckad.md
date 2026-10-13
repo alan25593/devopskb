@@ -109,6 +109,3 @@ Los mismos consejos logísticos del [CKA](./208.Preparacion_CKA.md) aplican (pro
 ¡A por ello! Y si después queremos el cinturón completo: [CKA](./208.Preparacion_CKA.md) para administrar el cluster y [CKS](./408.Preparacion_CKS.md) para asegurarlo.
 
 ---
-* Lista de vídeos en Youtube: [Curso Kubernetes](https://www.youtube.com/playlist?list=PLQhxXeq1oc2k9MFcKxqXy5GV4yy7wqSma)
-
-[Volver al índice](README.md#índice)

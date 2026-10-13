@@ -124,6 +124,3 @@ El pod tiene un periodo de gracia (`terminationGracePeriodSeconds`, 30s por defe
 En el [siguiente capítulo](./302.Multicontainer_sidecars.md) veremos la otra forma de componer pods: varios contenedores conviviendo a la vez, con los patrones sidecar, ambassador y adapter.
 
 ---
-* Lista de vídeos en Youtube: [Curso Kubernetes](https://www.youtube.com/playlist?list=PLQhxXeq1oc2k9MFcKxqXy5GV4yy7wqSma)
-
-[Volver al índice](README.md#índice)

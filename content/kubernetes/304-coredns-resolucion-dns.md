@@ -167,6 +167,3 @@ kubectl get endpoints mydb
 - Ante fallos: pod de pruebas con `nslookup`, estado de CoreDNS y, sobre todo, los endpoints del service.
 
 ---
-* Lista de vídeos en Youtube: [Curso Kubernetes](https://www.youtube.com/playlist?list=PLQhxXeq1oc2k9MFcKxqXy5GV4yy7wqSma)
-
-[Volver al índice](README.md#índice)

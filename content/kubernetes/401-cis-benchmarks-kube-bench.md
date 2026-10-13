@@ -126,6 +126,3 @@ Además del benchmark, la CNCF y la NSA/CISA publican sus propias guías de hard
 - Pasar el benchmark es el punto de partida del hardening, no el final. El resto de la especialización cubre lo que el benchmark no ve.
 
 ---
-* Lista de vídeos en Youtube: [Curso Kubernetes](https://www.youtube.com/playlist?list=PLQhxXeq1oc2k9MFcKxqXy5GV4yy7wqSma)
-
-[Volver al índice](README.md#índice)

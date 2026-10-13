@@ -31,14 +31,7 @@ Tenemos tres tipos de probes:
 - **Readiness Probe**: Comprueba si el pod está listo para recibir tráfico. Si falla, Kubernetes dejará de enviarle tráfico hasta que esté listo de nuevo.
 - **Startup Probe**: Comprueba si el pod ha arrancado correctamente. Si falla, Kubernetes reiniciará el pod.
 
-🎥 Vídeo completo, utilicemos los capítulos de youtube para saltar a la sección que nos interese:
-[https://youtu.be/PCzsfwL0z-Q](https://youtu.be/PCzsfwL0z-Q)
-
-[![Curso Kubernetes](https://img.youtube.com/vi/PCzsfwL0z-Q/maxresdefault.jpg)](https://www.youtube.com/watch?v=PCzsfwL0z-Q)
-
-
 Antes de ver cómo funcionan, repasemos brevemente el ciclo de vida de un pod en Kubernetes:
-
 
 ## Ciclo de vida de un Pod
 Un pod en Kubernetes pasa por varios estados a lo largo de su ciclo de vida. Estos estados son:
@@ -144,9 +137,4 @@ Las probes tienen varios atributos que se pueden configurar:
 - **successThreshold**: Número de veces que la probe debe tener éxito antes de considerar que el contenedor está listo o vivo.
 - **failureThreshold**: Número de veces que la probe puede fallar antes de que Kubernetes tome una acción (reiniciar el pod o marcarlo como no listo).
 
-
-
 ---
-* Lista de vídeos en Youtube: [Curso Kubernetes](https://www.youtube.com/playlist?list=PLQhxXeq1oc2k9MFcKxqXy5GV4yy7wqSma)
-
-[Volver al índice](README.md#índice)

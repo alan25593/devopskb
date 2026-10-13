@@ -146,6 +146,3 @@ El puerto **10250 del kubelet** merece mención especial: es un objetivo clásic
 - Auditamos los flags del API server (`anonymous-auth`, `authorization-mode`, admission plugins) y protegemos el puerto 10250 del kubelet.
 
 ---
-* Lista de vídeos en Youtube: [Curso Kubernetes](https://www.youtube.com/playlist?list=PLQhxXeq1oc2k9MFcKxqXy5GV4yy7wqSma)
-
-[Volver al índice](README.md#índice)

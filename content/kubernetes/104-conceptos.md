@@ -26,14 +26,8 @@ keywords:
 # Conceptos básicos y kubectl
 En este capítulo vamos a ver cómo configurar nuestro kubectl para que pueda comunicarse con nuestro cluster de Kubernetes y cómo definir manifiestos para poder aplicarlos de forma sencilla.
 
-🎥 Vídeo completo, utilicemos los capítulos de youtube para saltar a la sección que nos interese:
-[https://youtu.be/cOFcLadQa70](https://youtu.be/cOFcLadQa70)
-
-[![Conceptos básicos](https://img.youtube.com/vi/cOFcLadQa70/maxresdefault.jpg)](https://www.youtube.com/watch?v=cOFcLadQa70)
-
 ## Conceptos básicos
 Para empezar, tenemos que tener claro que en Kubernetes todo es un recurso u objeto. Un recurso es cualquier cosa que se pueda definir en un cluster de Kubernetes, como un pod, un deployment, un service, etc. Cada recurso es de un tipo y tiene unas propiedades y atributos que lo definen. Estos recursos se pueden definir en archivos manifiesto que se aplican al cluster para que se creen o modifiquen.
-
 
 ## Esquema de recursos en Kubernetes
 El pod es el recurso más básico de Kubernetes y es, a su vez, un grupo de uno o varios contenedores. Los pods no suelen crearse directamente, sino a través de otros recursos como deployments, statefulsets, etc. Estos recursos se encargan de gestionar los pods y de asegurarse de que siempre haya el número de pods que se ha definido en el cluster.
@@ -41,7 +35,6 @@ El pod es el recurso más básico de Kubernetes y es, a su vez, un grupo de uno 
 Además de los pods, hay otros recursos que se pueden definir en Kubernetes: los services, que exponen los pods al exterior; los volumes, que almacenan datos de forma persistente; los namespaces, que agrupan recursos, etc.
 
 Iremos profundizando en cada uno de estos recursos a lo largo del curso, pero es importante tener claro que todo en Kubernetes es un recurso y que se define en archivos manifiesto que se aplican al cluster.
-
 
 ## Manifiestos
 Por debajo de todas las acciones de Kubernetes, lo que el motor entiende son archivos manifiesto que definen cada elemento. Pueden escribirse en formato YAML o JSON. Aunque Kubernetes los procesa finalmente en formato JSON, lo más habitual para los humanos es escribirlos en YAML.
@@ -79,7 +72,6 @@ spec:
 
 Este sería un ejemplo muy sencillo, pero en un manifiesto podemos definir cualquier tipo de recurso de Kubernetes: pods, deployments, services, etc.
 
-
 ### Definir un pod en un manifiesto
 Vamos a ponerlo en práctica.
 
@@ -112,8 +104,6 @@ También podríamos eliminarlo usando el manifiesto con el comando:
 ```shell
 kubectl delete -f pod.yaml
 ```
-
-
 
 ## Kubectl
 Kubectl es la herramienta de línea de comandos que nos permite interactuar con nuestro cluster de Kubernetes. Con ella podemos crear, modificar, eliminar y consultar los recursos del cluster. Además, también nos permite ver logs, ejecutar comandos en los contenedores, etc.
@@ -151,7 +141,6 @@ contexts:
 current-context: mi-contexto
 ```
 
-
 ### Kubectl config y contextos
 El comando `kubectl config` nos permite gestionar la configuración de kubectl. Algunos comandos útiles son:
 * `kubectl config view`: muestra la configuración actual.
@@ -160,15 +149,9 @@ El comando `kubectl config` nos permite gestionar la configuración de kubectl. 
 
 También podemos añadir nuevos contextos con el comando `kubectl config set-context <nombre-contexto> --cluster=<nombre-cluster> --user=<nombre-usuario>`, sin tener que modificar el archivo de configuración manualmente.
 
-
-
-
 ## Resumen
 Ya iremos profundizando; con tener claro el funcionamiento general y cómo configurar kubectl es suficiente para empezar a trabajar con Kubernetes.
 
 A lo largo del curso veremos todos los objetos que podemos definir en Kubernetes y las distintas etiquetas, atributos y propiedades que podemos usar para definirlos en estos manifiestos.
 
 ---
-* Lista de vídeos en Youtube: [Curso Kubernetes](https://www.youtube.com/playlist?list=PLQhxXeq1oc2k9MFcKxqXy5GV4yy7wqSma)
-
-[Volver al índice](README.md#índice)

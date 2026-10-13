@@ -123,6 +123,3 @@ Esto enlaza con un detalle interesante: cuando un nodo falla, Kubernetes le aña
 La regla mnemotécnica: los **labels atraen**, los **taints repelen**.
 
 ---
-* Lista de vídeos en Youtube: [Curso Kubernetes](https://www.youtube.com/playlist?list=PLQhxXeq1oc2k9MFcKxqXy5GV4yy7wqSma)
-
-[Volver al índice](README.md#índice)

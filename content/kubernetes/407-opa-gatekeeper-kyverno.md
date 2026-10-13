@@ -170,6 +170,3 @@ Regla práctica: Gatekeeper si necesitamos la expresividad de Rego o ya usamos O
 - Kyverno es la alternativa YAML con mutación y generación; ValidatingAdmissionPolicy cubre los casos simples sin instalar nada.
 
 ---
-* Lista de vídeos en Youtube: [Curso Kubernetes](https://www.youtube.com/playlist?list=PLQhxXeq1oc2k9MFcKxqXy5GV4yy7wqSma)
-
-[Volver al índice](README.md#índice)

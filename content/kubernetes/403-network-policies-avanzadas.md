@@ -249,6 +249,3 @@ El error más común al depurar: probar desde un pod **sin los labels** que la p
 - Las CRDs de Cilium/Calico extienden el estándar con L7, FQDNs y deny explícito.
 
 ---
-* Lista de vídeos en Youtube: [Curso Kubernetes](https://www.youtube.com/playlist?list=PLQhxXeq1oc2k9MFcKxqXy5GV4yy7wqSma)
-
-[Volver al índice](README.md#índice)

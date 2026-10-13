@@ -21,22 +21,14 @@ keywords:
 ---
 
 # Introducción
-Os damos la bienvenida a este curso de Kubernetes, completamente gratuito, en el que aprenderemos desde los conceptos básicos de esta tecnología de orquestación de contenedores hasta llegar a un nivel avanzado.
+Esta guía completa de Kubernetes cubre desde los fundamentos y la arquitectura de orquestación de contenedores hasta la administración avanzada, hardening y patrones de despliegue en producción.
 
 Todo el curso está basado y enfocado en las certificaciones oficiales de Kubernetes: CKA, CKAD y CKS (Certified Kubernetes Administrator, Application Developer y Security Specialist, respectivamente) de la Cloud Native Computing Foundation (CNCF).
 
-He optado por hacer una parte común del curso para las tres certificaciones y, después, dividir el contenido en tres bloques, enfocándonos en la perspectiva de cada una de ellas: el punto de vista del desarrollador para la certificación CKAD, el del administrador de sistemas para la CKA y el del especialista en seguridad para la CKS. Esto nos permitirá prepararnos para cualquiera de las tres certificaciones. Y si no nos interesa ninguna, también nos servirá para aprender Kubernetes desde cero hasta un nivel avanzado.
-
-Podemos seguir todo el contenido del curso por escrito en mi página web [pabpereza.dev](./README.md) o en esta lista de reproducción de [Youtube](https://www.youtube.com/playlist?list=PLQhxXeq1oc2k9MFcKxqXy5GV4yy7wqSma).
-
-
-🎥 Vídeo completo, utilicemos los capítulos de youtube para saltar a la sección que nos interese:
-[https://youtu.be/eqxQGmem_bc](https://youtu.be/eqxQGmem_bc)
-
-[![Curso Kubernetes](https://img.youtube.com/vi/eqxQGmem_bc/maxresdefault.jpg)](https://www.youtube.com/watch?v=eqxQGmem_bc)
+El contenido está estructurado y alineado con los tres tracks profesionales de la Cloud Native Computing Foundation (CNCF): desarrollo de aplicaciones (CKAD), administración de clústeres (CKA) y seguridad en runtime (CKS).
 
 ## Requisitos previos
-Este curso está diseñado para principiantes, por lo que no necesitamos conocimientos previos de Kubernetes. Sin embargo, es recomendable tener una base de contenedores y Docker, ya que Kubernetes se apoya en ellos. Si no la tenemos, te recomiendo que empecemos por mi [curso de Docker](../docker/README.md).
+Este curso está diseñado para principiantes, por lo que no necesitamos conocimientos previos de Kubernetes. Sin embargo, es recomendable tener una base de contenedores y Docker, ya que Kubernetes se apoya en ellos. Si no se cuenta con esa experiencia previa, se recomienda repasar los conceptos fundamentales en la sección de Docker.
 
 Si estamos aquí, también se presupone que tenemos conocimientos básicos de sistemas operativos Linux, virtualización y redes. Vamos con el curso.
 
@@ -57,7 +49,6 @@ En un entorno de Kubernetes (ejemplificado con cuatro servidores Ubuntu: un nodo
 
 Todo esto, bajo una potente capa de gestión de recursos, configuración de red, tolerancia a fallos, seguridad y escalabilidad.
 
-
 ## ¿Por qué Kubernetes?
 Kubernetes es una herramienta muy potente que nos ofrece, principalmente, las siguientes ventajas (algunas ya mencionadas):
 - **Escalabilidad**: permite escalar aplicaciones de forma automática en función de la demanda, tanto vertical como horizontalmente: aumentando los recursos de la aplicación, creando más réplicas de la misma o incluso añadiendo más nodos al clúster.
@@ -69,7 +60,6 @@ Kubernetes es una herramienta muy potente que nos ofrece, principalmente, las si
 - **Comunidad activa**: cuenta con una gran comunidad de desarrolladores y usuarios que contribuyen activamente a su desarrollo y mejora. Además, está abanderado por la Cloud Native Computing Foundation (CNCF) y las principales empresas tecnológicas del mundo, así que tiene cuerda para rato.
 - **Y muchas más...** que iremos viendo a lo largo del curso, cuando consiga que nos enamoremos de Kubernetes.
 
-
 ## ¿Qué aprenderás en este curso?
 En este curso aprenderemos tanto los conceptos básicos de Kubernetes como los avanzados, incluyendo:
 - **Arquitectura de Kubernetes**: su diseño y cómo funciona internamente.
@@ -80,17 +70,3 @@ En este curso aprenderemos tanto los conceptos básicos de Kubernetes como los a
 - **Seguridad**: proteger las aplicaciones y los datos desplegados en Kubernetes.
 - **Práctica real**: realizaremos ejercicios prácticos para reforzar los conceptos aprendidos y adquiriremos experiencia en el uso de Kubernetes en un ámbito profesional.
 - **Certificaciones**: nos servirá de preparación para las certificaciones oficiales de Kubernetes: CKA, CKAD y CKS.
-
-## ¿Cómo seguir el curso?
-Podemos seguir el curso de forma secuencial, ya sea a través de mi web o de la lista de vídeos de Youtube. Cada entrada de la web corresponde a un vídeo de Youtube.
-
-Una vez que hayamos terminado la parte común del curso, podemos elegir el bloque que más nos interese: el de desarrollador, el de administrador o el de especialista en seguridad. O, si lo preferimos, podemos seguir los tres para obtener una visión completa de Kubernetes.
-
-Recuerda utilizar el [ÍNDICE DEL CURSO](./README.md#índice) para navegar más cómodamente por el contenido.
-
-Apoya este contenido gratuito dejando una estrella a este repositorio y suscribiéndote a mi canal de Youtube. Nos vemos en el siguiente capítulo.
-
----
-* Lista de vídeos en Youtube: [Curso Kubernetes](https://www.youtube.com/playlist?list=PLQhxXeq1oc2k9MFcKxqXy5GV4yy7wqSma)
-
-[Volver al índice](README.md#índice)

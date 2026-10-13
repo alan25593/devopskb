@@ -38,19 +38,10 @@ Una visión general de la arquitectura de Kubernetes se muestra en el siguiente 
 
 Aunque vamos a profundizar en los componentes de cada tipo de nodo, es principalmente para que entendamos a grandes rasgos cómo funciona Kubernetes. No es necesario que memoricemos todos los detalles: en la práctica, como usuarios, solo interactuaremos con el clúster a través de la API de Kubernetes. La excepción es la especialización CKA (administrador de Kubernetes), donde sí tendremos que conocer estos componentes a fondo para tareas de mantenimiento y troubleshooting.
 
-🎥 Vídeo completo, utilicemos los capítulos de youtube para saltar a la sección que nos interese:
-[https://youtu.be/8q5txsy3PAE](https://youtu.be/8q5txsy3PAE)
-
-[![Arquitectura de Kubernetes](https://img.youtube.com/vi/8q5txsy3PAE/maxresdefault.jpg)](https://www.youtube.com/watch?v=8q5txsy3PAE)
-
-
-
-
 ## Componentes básicos de cualquier nodo
  - **Container runtime**: es el software que se encarga de ejecutar los contenedores. Docker es el más popular, pero en Kubernetes lo habitual es usar containerd o CRI-O, alternativas más ligeras y especializadas en este tipo de entornos.
  - **Kubelet**: es el encargado de gestionar los contenedores en un nodo y de garantizar que se mantengan en el estado deseado. Se comunica con el API Server para recibir instrucciones y transmitirlas al runtime de contenedores.
  - **Kube-proxy**: gestiona el tráfico de red en el nodo. Se encarga de enrutar las peticiones a los servicios y de balancear la carga entre los pods. Traduce automáticamente las necesidades de red de los servicios a reglas de iptables (o IPVS, según la configuración del clúster).
-
 
 ## Componentes de un nodo maestro
 Ya hemos visto que los componentes anteriores son necesarios en todos los nodos. Como se aprecia en el diagrama, el nodo maestro o control plane es el más complejo. Vamos a ver los componentes adicionales que lo forman:
@@ -70,8 +61,4 @@ Si nos fijamos, son muchas capas de abstracción. En nuestro PC utilizaríamos D
 ## Resumen
 En este capítulo hemos visto una visión general de la arquitectura de Kubernetes. Un clúster se compone de dos tipos de nodos: los maestros (control plane) y los de trabajo (workers). Hemos repasado los componentes básicos de cualquier nodo y hemos profundizado en los del nodo maestro. En el siguiente capítulo veremos cómo instalar un clúster de Kubernetes para meternos de lleno en la práctica.
 
-
 ---
-* Lista de vídeos en Youtube: [Curso Kubernetes](https://www.youtube.com/playlist?list=PLQhxXeq1oc2k9MFcKxqXy5GV4yy7wqSma)
-
-[Volver al índice](README.md#índice)

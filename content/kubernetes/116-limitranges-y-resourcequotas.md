@@ -32,11 +32,6 @@ Por defecto, un Pod en Kubernetes no tiene límites de recursos definidos. Puede
 1.  **El problema del "Vecino Ruidoso" (Noisy Neighbor):** Una aplicación con un comportamiento anómalo o un bug puede acaparar los recursos del nodo, degradando el rendimiento de otras cargas de trabajo críticas que comparten la misma infraestructura.
 2.  **OOMKilled (Out Of Memory):** Si el consumo de memoria excede la capacidad física del nodo, el kernel de Linux invocará al OOM Killer para terminar procesos y liberar memoria. Este mecanismo puede terminar pods críticos de forma impredecible.
 
-🎥 Vídeo completo, utilicemos los capítulos de youtube para saltar a la sección que nos interese:
-[https://youtu.be/C5Zg08HkG6o](https://youtu.be/C5Zg08HkG6o)
-
-[![Rangos y quotas en Kubernetes](https://img.youtube.com/vi/C5Zg08HkG6o/maxresdefault.jpg)](https://www.youtube.com/watch?v=C5Zg08HkG6o)
-
 Para mitigar estos riesgos y gobernar el consumo de recursos, Kubernetes proporciona dos primitivas esenciales: **ResourceQuotas** (Límites agregados a nivel de Namespace) y **LimitRanges** (Restricciones a nivel de Pod/Contenedor).
 
 ```mermaid
@@ -98,8 +93,6 @@ spec:
 ## 2. LimitRanges: Restricciones a Nivel de Contenedor
 
 Mientras que ResourceQuota gestiona el total, el **LimitRange** establece restricciones granulares a nivel de **Pod y Contenedor individual**. Permite definir políticas de recursos mínimos y máximos, así como asignar valores por defecto.
-
-
 
 ### Funciones Críticas
 1.  **Validación:** Asegura que ningún contenedor solicite recursos por debajo de un mínimo útil o por encima de un máximo permitido.
@@ -199,6 +192,3 @@ kubectl describe limitrange limites-contenedor-backend -n backend
 ```
 
 ---
-* Lista de vídeos en Youtube: [Curso Kubernetes](https://www.youtube.com/playlist?list=PLQhxXeq1oc2k9MFcKxqXy5GV4yy7wqSma)
-
-[Volver al índice](README.md#índice)

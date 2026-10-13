@@ -145,6 +145,3 @@ Para el CKA basta con dominar el lado de consumidor: instalar una CRD, crear sus
 - Gran parte del ecosistema que ya usamos (cert-manager, Gateway API, Cilium...) funciona sobre CRDs.
 
 ---
-* Lista de vídeos en Youtube: [Curso Kubernetes](https://www.youtube.com/playlist?list=PLQhxXeq1oc2k9MFcKxqXy5GV4yy7wqSma)
-
-[Volver al índice](README.md#índice)

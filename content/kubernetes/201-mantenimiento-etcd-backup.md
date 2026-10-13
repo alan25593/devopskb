@@ -194,6 +194,3 @@ Repetimos el proceso en cada nodo del cluster, de uno en uno, comprobando que to
 - **Actualización**: repositorio nuevo → kubeadm → `upgrade plan` → `apply` (primer control plane) o `node` (resto) → kubelet y kubectl → nodo a nodo.
 
 ---
-* Lista de vídeos en Youtube: [Curso Kubernetes](https://www.youtube.com/playlist?list=PLQhxXeq1oc2k9MFcKxqXy5GV4yy7wqSma)
-
-[Volver al índice](README.md#índice)

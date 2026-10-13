@@ -120,6 +120,3 @@ Falco alerta; responder es cosa nuestra (o de nuestra automatización):
 - La detección sin plan de respuesta es solo ruido: enruta las alertas (falcosidekick) y ten un manual de aislamiento y evidencia.
 
 ---
-* Lista de vídeos en Youtube: [Curso Kubernetes](https://www.youtube.com/playlist?list=PLQhxXeq1oc2k9MFcKxqXy5GV4yy7wqSma)
-
-[Volver al índice](README.md#índice)
