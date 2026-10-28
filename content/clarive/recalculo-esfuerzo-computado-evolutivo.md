@@ -1,294 +1,259 @@
 ---
 title: "Recálculo de Esfuerzo Computado en Evolutivos (Clarive)"
 category: "clarive"
-tags: ["clarive", "perl", "mongodb", "esfuerzo", "evolutivo", "recalculo", "post-modified"]
-keywords: ["recalculo esfuerzo computado evolutivo", "esfuerzo computado especificacion", "clarive esfuerzo evolutivo", "todos mis descendientes clarive", "regla clarive esfuerzo", "esfuerzos otros evos clarive", "barrera corte evolutivo clarive"]
-description: "Cómo calcular y recalcular los campos de esfuerzo computado (especificación y construcción) en Evolutivos de Clarive, evitando sumar esfuerzos de otros EVOs relacionados o estados cancelados."
+tags: ["clarive", "perl", "esfuerzo", "effort", "evolutivo", "recalculo", "post-modified", "calculate_effort"]
+keywords: ["recalculo esfuerzo computado evolutivo", "esfuerzo computado especificacion", "clarive esfuerzo evolutivo", "service.topic.calculate_effort", "regla clarive esfuerzo", "esfuerzos otros evos clarive", "barrera corte evolutivo clarive", "Baseliner::RuleFuncs::launch"]
+description: "Cómo calcular y recalcular los campos de esfuerzo computado (especificación y construcción) en Evolutivos de Clarive usando service.topic.calculate_effort, sin sumar esfuerzos de otros EVOs relacionados."
 ---
 
 # Recálculo de Esfuerzo Computado en Evolutivos
 
-En Clarive, los atributos **`esfuerzo_computado_especificacion`** (Análisis y Diseño) y **`esfuerzo_computado_construccion`** consolidan los esfuerzos registrados en un Evolutivo (EVO) y en sus tópicos descendientes legítimos.
+En Clarive, los atributos **`esfuerzo_computado_especificacion`** (Análisis y Diseño) y **`esfuerzo_computado_construccion`** consolidan los esfuerzos cargados en un Evolutivo (EVO) y en sus tópicos descendientes.
+
+**Regla de negocio:** cada EVO suma **solo sus propios esfuerzos**. Nunca suma los de otro Evolutivo, aunque estén relacionados o uno se haya creado a partir del otro.
 
 ---
 
-## 1. Problema: Incrementos Fantasma y Cruce entre EVOs
+## 1. Cómo se guardan los esfuerzos
 
-Al revisar el log de auditoría de un Evolutivo (por ejemplo, `#326851`), se detectó que `esfuerzo_computado_especificacion` se incrementaba progresivamente (ej. $262.5 \rightarrow 264 \rightarrow 265.5 \rightarrow 273.5 \rightarrow 303$) **sin que existieran cargas de esfuerzos visibles en el EVO ni en sus tópicos hijos**.
+El esfuerzo **no es una categoría de tópico**: es un objeto *effort* (otra clase). Buscar hijos con `category_name eq 'Esfuerzo'` en `mdb->topic` no devuelve nada y cualquier cálculo hecho así da **0**.
 
-### Causas Raíz Técnicas
-
-1. **Salto de Relación en `SERVICE.TOPIC.RELATED`:**
-   - La regla disparada al modificar un esfuerzo buscaba el Evolutivo ancestro con `Depth: 4`, `Query type: parents`, `Single: true`.
-   - Cuando un EVO nuevo (#339505) está enlazado a un EVO anterior (#326851), el servicio ascendía hasta el EVO relacionado y lo seleccionaba para actualizar.
-   - Además, el filtro de estados solo tenía `CANCELADO`, omitiendo estados reales como **`CANCELADA POR INACTIVIDAD`**.
-2. **Descenso a otros Evolutivos (`_created_by_parent`):**
-   - La función recursiva de búsqueda descendente navegaba en base a `_created_by_parent`.
-   - Si el EVO nuevo fue creado desde el EVO viejo, su `_created_by_parent` era el EVO viejo.
-   - El script no validaba la categoría del hijo y **descendía dentro del nuevo Evolutivo**, absorbiendo las épicas y esfuerzos de otro proyecto.
-3. **Falta de Filtro de Estados y Categorías:**
-   - No se validaba si el esfuerzo o el tópico intermedio estaba cancelado.
-   - No se restringía la búsqueda a las categorías aprobadas por la especificación funcional (Épicas, Historias de Usuario, Parametrías, Cambios de Alcance).
-
----
-
-## 2. Configuración en Clarive (Regla CM: Post Modified)
-
-### A. Servicio: Buscar Cambios EVO (`[SERVICE.TOPIC.RELATED]`)
-- **Mid:** `${mid}`
-- **Query type:** `parents`
-- **Filter categories:** `Evolutivo`
-- **Filter statuses:** Agregar **todos** los estados inactivos del catálogo:
-  - `CANCELADO`
-  - `CANCELADA`
-  - `CANCELADA POR INACTIVIDAD`
-  - `CANCELADO POR INACTIVIDAD`
-- **Not in statuses:** `[x]` (Marcado)
-- **Depth:** `4`
-- **Single?:** `[x]`
-- **Mids only?:** `[x]`
-
----
-
-### B. Nodo de Código: Buscar Esfuerzos EVO Hijos
-Implementa la **barrera de corte de Evolutivos** para evitar cruce entre proyectos, filtra cancelados y restringe categorías según la matriz funcional:
+Para obtener horas hay que usar el servicio nativo **`service.topic.calculate_effort`** (implementado en `BaselinerX::Service::TopicServices`). Devuelve en el stash:
 
 ```perl
-use List::Util qw(uniq);
-
-my $evo_mid = $stash->{evo_esfuerzo};
-my $niveles = 5;
-
-# Categorías autorizadas por la matriz funcional
-my %cat_permitidas = map { $_ => 1 } (
-    'Épica',
-    'Epica',
-    'Historia de Usuario',
-    'Parametria',
-    'Parametría',
-    'Cambio de Alcance'
-);
-
-sub todos_mis_descendientes {
-    my ($niveles_restantes, @padres) = @_;
-    return () if $niveles_restantes <= 0 || !@padres;
-
-    # Soportar búsqueda tanto por string como por int para MongoDB
-    my @padres_query = map { ($_, 0 + $_) } @padres;
-
-    my @hijos = mdb->topic->find({
-        _created_by_parent => { '$in' => \@padres_query },
-        status             => { '$nin' => [
-            'CANCELADO', 
-            'CANCELADA', 
-            'CANCELADA POR INACTIVIDAD', 
-            'CANCELADO POR INACTIVIDAD'
-        ]}
-    })->fields({ _id => 0, mid => 1, category_name => 1, status => 1 })->all;
-
-    return () unless @hijos;
-
-    my @esfuerzos_encontrados;
-    my @padres_siguiente_nivel;
-
-    foreach my $hijo (@hijos) {
-        my $cat = $hijo->{category_name} // '';
-
-        # 1. Si es esfuerzo, se recolecta
-        if ($cat eq 'Esfuerzo') {
-            push @esfuerzos_encontrados, $hijo->{mid};
-        }
-        # 2. BARRERA DE SEGURIDAD: Nunca descender a otro Evolutivo
-        elsif ($cat eq 'Evolutivo') {
-            _info "Omitiendo Evolutivo hijo/relacionado MID: $hijo->{mid} para aislar proyectos";
-            next;
-        }
-        # 3. Solo descender por ramas autorizadas
-        elsif ($cat_permitidas{$cat}) {
-            push @padres_siguiente_nivel, $hijo->{mid};
-        }
-    }
-
-    my @descendientes_profundos = ();
-    if (@padres_siguiente_nivel) {
-        @descendientes_profundos = todos_mis_descendientes($niveles_restantes - 1, @padres_siguiente_nivel);
-    }
-
-    return (@esfuerzos_encontrados, @descendientes_profundos);
+{
+    total             => 134,
+    total_by_type     => { 'Análisis' => 113.5, 'Diseño' => 20.5 },
+    total_by_status   => { en_progreso => { total => 79, total_by_type => {...} }, ... },
+    first_effort_date => '2026-07-29',
+    last_effort_date  => '2026-10-14',
 }
-
-# Ejecutar recursión desde el EVO raíz
-my @esfuerzos_raw = todos_mis_descendientes($niveles, ($evo_mid));
-
-# Deduplicar MIDs
-my @esfuerzos = uniq(grep { defined $_ && $_ ne '' } @esfuerzos_raw);
-
-_log "Nº Esfuerzos legítimos del EVO $evo_mid: " . scalar(@esfuerzos);
-_log _dump \@esfuerzos;
-
-$stash->{esfuerzos_evo} = \@esfuerzos;
 ```
 
+| Campo del EVO | Tipos de esfuerzo |
+|---|---|
+| `esfuerzo_computado_especificacion` | `BFTipoEsfuerzo-25` (Análisis), `BFTipoEsfuerzo-26` (Diseño) |
+| `esfuerzo_computado_construccion` | `BFTipoEsfuerzo-27`, `BFTipoEsfuerzo-42`, `cla-default-BFTipoEsfuerzo-51`, `BFTipoEsfuerzo-38` |
+
 ---
 
-### C. Nodo de Código: Asignar Datos del EST EVO
-Valida que cada esfuerzo esté activo y normaliza decimales:
+## 2. Problema: el EVO suma esfuerzos de otro EVO
+
+La regla original llamaba a `calculate_effort` sobre el EVO con `depth: 3` y `categories` vacío. El servicio recorre todo el árbol y **no se detiene al llegar a otro Evolutivo**: si un EVO está relacionado con otro (o el nuevo se creó desde el viejo), suma las horas de ambos.
+
+Además, el servicio `Buscar EVO` (`service.topic.related`, `query_type: parents`) solo excluía un estado cancelado, por lo que podía elegir como destino un EVO `CANCELADA POR INACTIVIDAD`.
+
+---
+
+## 3. Solución: recorrido propio con barrera en Evolutivo
+
+En lugar de pedirle a `calculate_effort` todo el árbol:
+
+1. Se baja desde el EVO nivel por nivel (hasta 3) con `service.topic.related` en modo `children`.
+2. **Si un hijo es de categoría `41` (Evolutivo), no se suma ni se desciende por él.**
+3. Para cada tópico válido se pide a `calculate_effort` solo su esfuerzo directo (`depth: 0`) y se acumula.
+4. Se calculan **especificación y construcción juntas**, así un cambio de tipo de esfuerzo no deja un campo desactualizado.
+
+### Estructura de la regla (Post Modified del esfuerzo)
+
+```
+IF effort_type like ^(Análisis|Diseño|Desarrollo|Testing)$   (incluir también los tipos 51 y 38)
+└─ GROUP "Cambio EVO"
+   ├─ IF scope.id_category not_eq 41 → Buscar EVO (service.topic.related)
+   │     parents, categoría 41, Not in statuses: todos los cancelados
+   │     (CANCELADO, CANCELADA, CANCELADA POR INACTIVIDAD, CANCELADO POR INACTIVIDAD)
+   ├─ ELSE → SET evo_esfuerzo = ${topic_mid}
+   └─ IF evo_esfuerzo not_empty
+      ├─ CODE "Calcular esfuerzo propio del EVO"   (código abajo)
+      └─ service.topic.update
+            mid = ${evo_esfuerzo}, username = clarive, touch_parents = 1
+            esfuerzo_computado_especificacion = ${esfuerzo_espec}
+            esfuerzo_computado_construccion   = ${esfuerzo_constr}
+```
+
+### Nodo CODE: Calcular esfuerzo propio del EVO
 
 ```perl
-my @evo_estimacion_suma_est = @{ $stash->{esfuerzos_evo} || [] };
-_info "evo_estimacion_suma_est: @evo_estimacion_suma_est"; 
+# Entrada: $stash->{evo_esfuerzo}
+# Salida:  $stash->{esfuerzo_espec}, $stash->{esfuerzo_constr}, $stash->{esfuerzo_detalle}
 
-my $total_a = 0; # Especificación (Análisis / Diseño)
-my $total_b = 0; # Construcción
+my $CAT_EVOLUTIVO = '41';
+my $PROFUNDIDAD   = 3;
+my %TIPOS = (
+    espec  => ['BFTipoEsfuerzo-25', 'BFTipoEsfuerzo-26'],
+    constr => ['BFTipoEsfuerzo-27', 'BFTipoEsfuerzo-42', 'cla-default-BFTipoEsfuerzo-51', 'BFTipoEsfuerzo-38'],
+);
 
-foreach my $topico_es (@evo_estimacion_suma_est) {
-    my $mid = ref($topico_es) eq 'HASH' ? $topico_es->{mid} : $topico_es;
-    next unless $mid;
-    
-    my $est_p = mdb->topic->find_one({ mid => { '$in' => ["$mid", 0 + $mid] } });
-    next unless $est_p; 
-    
-    # Omitir esfuerzos cancelados
-    my $status = $est_p->{status} // '';
-    next if $status =~ /cancel/i;
-    
-    my $tipo_esf = '';
-    if (ref($est_p->{tipo_esfuerzo}) eq 'ARRAY' && @{$est_p->{tipo_esfuerzo}}) {
-        $tipo_esf = $est_p->{tipo_esfuerzo}->[0] // '';
-    } else {
-        $tipo_esf = $est_p->{tipo_esfuerzo} // '';
-    }
-    
-    my $horas = $est_p->{horas} // 0;
-    $horas =~ s/,/./;
-    $horas = 0 unless $horas =~ /^-?\d+(\.\d+)?$/;
-    
-    _info "Procesando Esfuerzo $mid (tipo: $tipo_esf, horas: $horas)";
-    
-    # BFTipoEsfuerzo-25: Análisis | BFTipoEsfuerzo-26: Diseño
-    if ($tipo_esf eq 'BFTipoEsfuerzo-25' || $tipo_esf eq 'BFTipoEsfuerzo-26') {
-        $total_a += $horas;
-    }
-    # BFTipoEsfuerzo-27 / BFTipoEsfuerzo-42: Construcción
-    elsif ($tipo_esf eq 'BFTipoEsfuerzo-27' || $tipo_esf eq 'BFTipoEsfuerzo-42') {
-        $total_b += $horas;
-    }
-}
+my $lanzar  = defined &launch ? \&launch : \&Baseliner::RuleFuncs::launch;
+my $evo_mid = "$stash->{evo_esfuerzo}";
 
-$stash->{datos_esf_ev} = {
-    esfuerzo_computado_especificacion => $total_a,
-    esfuerzo_computado_construccion   => $total_b,
+# Hijos directos de un topico
+my $hijos_de = sub {
+    my ($mid) = @_;
+    my $tmp = {};
+    $lanzar->('service.topic.related', 'Hijos EVO', $tmp, {
+        mid => "$mid", query_type => 'children', depth => '1',
+        related_categories => '', related_status => '', not_in_status => '',
+        single => '0', mid_only => '1', fields => '',
+    }, 'hijos');
+    my $r = $tmp->{hijos};
+    my @l = ref $r eq 'ARRAY' ? @$r : (defined $r && $r ne '') ? ($r) : ();
+    return map { ref $_ eq 'HASH' ? $_->{mid} : $_ } @l;
 };
 
-_info "total_a (Especificación): " . $total_a;
-_info "total_b (Construcción): " . $total_b;
+# 1) Recorrer el arbol del EVO cortando en cualquier otro Evolutivo
+my %visto   = ($evo_mid => 1);
+my @topicos = ($evo_mid);
+my @nivel   = ($evo_mid);
+foreach my $n (1 .. $PROFUNDIDAD) {
+    my @siguiente;
+    foreach my $padre (@nivel) {
+        foreach my $hijo ($hijos_de->($padre)) {
+            next if !$hijo || $visto{$hijo}++;
+            my $t = mdb->topic->find_one({ mid => "$hijo" }) or next;
+            next if ($t->{id_category} // '') eq $CAT_EVOLUTIVO;
+            push @topicos, $hijo;
+            push @siguiente, $hijo;
+        }
+    }
+    @nivel = @siguiente or last;
+}
+
+# 2) Sumar solo los esfuerzos cargados directamente en cada topico (depth 0)
+my %total = (espec => 0, constr => 0);
+my @detalle;
+foreach my $mid (@topicos) {
+    foreach my $k (sort keys %TIPOS) {
+        my $tmp = {};
+        $lanzar->('service.topic.calculate_effort', 'Esfuerzo propio', $tmp, {
+            mid => "$mid", depth => '0', effort_type => $TIPOS{$k},
+            categories => '', statuses => '', init_date => '', end_date => '',
+        }, 'esf');
+        my $horas = ($tmp->{esf} || {})->{total} // 0;
+        $total{$k} += $horas;
+        push @detalle, { mid => $mid, tipo => $k, horas => $horas } if $horas;
+    }
+}
+
+$stash->{esfuerzo_espec}   = $total{espec};
+$stash->{esfuerzo_constr}  = $total{constr};
+$stash->{esfuerzo_detalle} = \@detalle;
 ```
 
 ---
 
-## 3. Script de Recálculo Manual / Mantenimiento Masivo
+## 4. Recálculo retroactivo desde la consola
 
-Dado que las reglas `Post Modified` son reactivas y no actúan de forma retroactiva, los EVOs que ya tenían datos erróneos (o que quedaron en 0 por ser inactivos) deben corregirse con este script desde la consola o job de Clarive:
+Las reglas `Post Modified` son reactivas: los EVOs con valores erróneos se corrigen con este script desde la consola Perl de Clarive.
+
+> **Ojo:** la consola ejecuta en `Clarive::Code::Perl::Eval`, donde `launch` no existe. Hay que invocarlo como **`Baseliner::RuleFuncs::launch`**.
+
+Con `$DRY_RUN = 1` solo muestra el desglose por tópico (nivel, categoría, horas), los Evolutivos que se cortan y la comparación entre el valor nuevo, el que daría la regla anterior y el guardado en BD. Con `$DRY_RUN = 0` escribe usando `service.topic.update`, igual que la regla.
 
 ```perl
-use List::Util qw(uniq);
-
-# Lista de EVOs a recalcular
+# Consola: misma logica que el nodo de la regla + recalculo retroactivo
 my @evos_a_reparar = ('326851', '339505');
+my $DRY_RUN = 1;   # 1 = solo muestra; 0 = escribe en BD
 
-my %cat_permitidas = map { $_ => 1 } (
-    'Épica', 'Epica',
-    'Historia de Usuario',
-    'Parametria', 'Parametría',
-    'Cambio de Alcance'
+my $CAT_EVOLUTIVO = '41';
+my $PROFUNDIDAD   = 3;
+my %TIPOS = (
+    espec  => ['BFTipoEsfuerzo-25', 'BFTipoEsfuerzo-26'],
+    constr => ['BFTipoEsfuerzo-27', 'BFTipoEsfuerzo-42', 'cla-default-BFTipoEsfuerzo-51', 'BFTipoEsfuerzo-38'],
 );
+my $lanzar = \&Baseliner::RuleFuncs::launch;
 
-sub obtener_esfuerzos_evo {
-    my ($niveles, @padres) = @_;
-    return () if $niveles <= 0 || !@padres;
+sub hijos_de {
+    my ($mid) = @_;
+    my $tmp = {};
+    $lanzar->('service.topic.related', 'Hijos EVO', $tmp, {
+        mid => "$mid", query_type => 'children', depth => '1',
+        related_categories => '', related_status => '', not_in_status => '',
+        single => '0', mid_only => '1', fields => '',
+    }, 'hijos');
+    my $r = $tmp->{hijos};
+    my @l = ref $r eq 'ARRAY' ? @$r : (defined $r && $r ne '') ? ($r) : ();
+    return map { ref $_ eq 'HASH' ? $_->{mid} : $_ } @l;
+}
 
-    my @padres_query = map { ($_, 0 + $_) } @padres;
+sub esfuerzo {
+    my ($mid, $tipos, $depth) = @_;
+    my $tmp = {};
+    $lanzar->('service.topic.calculate_effort', 'Esfuerzo', $tmp, {
+        mid => "$mid", depth => "$depth", effort_type => $tipos,
+        categories => '', statuses => '', init_date => '', end_date => '',
+    }, 'esf');
+    return ($tmp->{esf} || {})->{total} // 0;
+}
 
-    my @hijos = mdb->topic->find({
-        _created_by_parent => { '$in' => \@padres_query },
-        status             => { '$nin' => [
-            'CANCELADO', 'CANCELADA', 
-            'CANCELADA POR INACTIVIDAD', 'CANCELADO POR INACTIVIDAD'
-        ]}
-    })->fields({ _id => 0, mid => 1, category_name => 1, status => 1 })->all;
-
-    return () unless @hijos;
-
-    my @esfs;
-    my @siguiente_nivel;
-
-    foreach my $hijo (@hijos) {
-        my $cat = $hijo->{category_name} // '';
-        if ($cat eq 'Esfuerzo') {
-            push @esfs, $hijo->{mid};
-        } elsif ($cat eq 'Evolutivo') {
-            next; # BARRERA: No entrar a otros Evolutivos
-        } elsif ($cat_permitidas{$cat}) {
-            push @siguiente_nivel, $hijo->{mid};
-        }
-    }
-
-    my @deep = ();
-    if (@siguiente_nivel) {
-        @deep = obtener_esfuerzos_evo($niveles - 1, @siguiente_nivel);
-    }
-    return (@esfs, @deep);
+sub info {
+    my ($t) = @_;
+    return sprintf("#%s [%s] %s", $t->{mid}, $t->{category_name} // '?', substr($t->{title} // '', 0, 45));
 }
 
 foreach my $evo_mid (@evos_a_reparar) {
-    my $evo = mdb->topic->find_one({ mid => { '$in' => ["$evo_mid", 0 + $evo_mid] } });
-    unless ($evo) {
-        print "EVO #$evo_mid no encontrado.\n";
-        next;
-    }
+    my $evo = mdb->topic->find_one({ mid => "$evo_mid" });
+    unless ($evo) { print "EVO #$evo_mid no encontrado.\n"; next; }
 
     print "\n========================================\n";
-    print "Procesando EVO #$evo_mid (" . ($evo->{title} // '') . ")\n";
-    print "Estado: " . ($evo->{status} // '') . "\n";
-    print "Valor anterior en BD: " . ($evo->{esfuerzo_computado_especificacion} // 0) . "\n";
+    print info($evo) . "\n";
 
-    my @esfuerzos_raw = obtener_esfuerzos_evo(5, ($evo_mid));
-    my @esfuerzos = uniq(grep { defined $_ && $_ ne '' } @esfuerzos_raw);
-
-    my $total_a = 0; # Especificación
-    my $total_b = 0; # Construcción
-
-    foreach my $mid_esf (@esfuerzos) {
-        my $t = mdb->topic->find_one({ mid => { '$in' => ["$mid_esf", 0 + $mid_esf] } });
-        next unless $t;
-        next if ($t->{status} // '') =~ /cancel/i;
-
-        my $tipo = ref($t->{tipo_esfuerzo}) eq 'ARRAY' ? $t->{tipo_esfuerzo}->[0] : $t->{tipo_esfuerzo};
-        my $horas = $t->{horas} // 0;
-        $horas =~ s/,/./;
-        $horas = 0 unless $horas =~ /^-?\d+(\.\d+)?$/;
-
-        if ($tipo eq 'BFTipoEsfuerzo-25' || $tipo eq 'BFTipoEsfuerzo-26') {
-            $total_a += $horas;
-        } elsif ($tipo eq 'BFTipoEsfuerzo-27' || $tipo eq 'BFTipoEsfuerzo-42') {
-            $total_b += $horas;
+    # Recorrido con barrera en Evolutivo
+    my %visto   = ($evo_mid => 1);
+    my @topicos = ([$evo, 0]);
+    my @nivel   = ($evo_mid);
+    foreach my $n (1 .. $PROFUNDIDAD) {
+        my @siguiente;
+        foreach my $padre (@nivel) {
+            foreach my $hijo (hijos_de($padre)) {
+                next if !$hijo || $visto{$hijo}++;
+                my $t = mdb->topic->find_one({ mid => "$hijo" }) or next;
+                if (($t->{id_category} // '') eq $CAT_EVOLUTIVO) {
+                    print "  [CORTE] nivel $n: " . info($t) . " (otro Evolutivo, no se suma)\n";
+                    next;
+                }
+                push @topicos, [$t, $n];
+                push @siguiente, $hijo;
+            }
         }
+        @nivel = @siguiente or last;
     }
 
-    print "Nuevo valor calculado -> Especificación: $total_a | Construcción: $total_b\n";
+    my %total = (espec => 0, constr => 0);
+    foreach my $item (@topicos) {
+        my ($t, $n) = @$item;
+        my %h = map { $_ => esfuerzo($t->{mid}, $TIPOS{$_}, 0) } keys %TIPOS;
+        $total{$_} += $h{$_} for keys %h;
+        printf "  nivel %d  %-60s espec=%-6s constr=%s\n", $n, info($t), $h{espec}, $h{constr};
+    }
 
-    mdb->topic->update(
-        { mid => $evo->{mid} },
-        { '$set' => {
-            esfuerzo_computado_especificacion => $total_a,
-            esfuerzo_computado_construccion   => $total_b
-        }}
-    );
+    # Control: lo que da la regla anterior (depth 3, sin barrera)
+    printf "  -> NUEVO: espec=%s constr=%s | REGLA ACTUAL: espec=%s constr=%s | BD: espec=%s constr=%s\n",
+        $total{espec}, $total{constr},
+        esfuerzo($evo_mid, $TIPOS{espec}, 3), esfuerzo($evo_mid, $TIPOS{constr}, 3),
+        $evo->{esfuerzo_computado_especificacion} // 0, $evo->{esfuerzo_computado_construccion} // 0;
 
-    eval {
-        Baseliner::Model::Topic->touch($evo->{mid});
-    };
+    next if $DRY_RUN;
 
-    print "¡EVO #$evo_mid actualizado exitosamente!\n";
+    my $tmp = {};
+    $lanzar->('service.topic.update', 'Update esfuerzo evo', $tmp, {
+        mid => "$evo_mid", username => 'clarive', touch_parents => '1',
+        variables => {
+            esfuerzo_computado_especificacion => $total{espec},
+            esfuerzo_computado_construccion   => $total{constr},
+        },
+    }, '');
+    print "  EVO #$evo_mid actualizado.\n";
 }
 ```
+
+---
+
+## 5. Errores frecuentes
+
+| Síntoma | Causa |
+|---|---|
+| El cálculo da siempre 0 | Se buscan esfuerzos como tópicos (`category_name eq 'Esfuerzo'`); son objetos *effort*. Usar `calculate_effort`. |
+| `Undefined subroutine &Clarive::Code::Perl::Eval::launch` | En consola usar `Baseliner::RuleFuncs::launch`. |
+| `"my" variable ... masks earlier declaration` / strings sin cerrar | La consola tenía código previo o el script se cortó al copiarlo. Vaciar la consola y copiar desde un archivo. |
+| Un EVO suma horas de otro EVO | `calculate_effort` con `depth > 0` no corta en Evolutivos. Usar el recorrido con barrera. |
