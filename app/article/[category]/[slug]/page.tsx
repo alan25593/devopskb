@@ -18,16 +18,20 @@ export function generateMetadata({ params }: Props): Metadata {
   const categoryLabel = params.category.charAt(0).toUpperCase() + params.category.slice(1)
   const keywords = [...new Set([...article.keywords, ...article.tags, categoryLabel, 'DevOps', 'SRE'])]
   const description = article.description || `Guía de ${article.title} — DevOps KB`
+  const canonicalUrl = `/article/${params.category}/${params.slug}/`
 
   return {
     title: article.title,
     description,
     keywords,
+    alternates: {
+      canonical: canonicalUrl,
+    },
     openGraph: {
       title: article.title,
       description,
       type: 'article',
-      url: `/article/${params.category}/${params.slug}/`,
+      url: canonicalUrl,
       tags: article.tags,
     },
     twitter: {

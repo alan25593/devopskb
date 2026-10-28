@@ -11,9 +11,6 @@ export const metadata: Metadata = {
     template: '%s | DevOps KB',
   },
   description: 'Base de conocimiento DevOps — Docker, Kubernetes, Terraform, Linux, Git y Windows. Snippets listos para copiar.',
-  alternates: {
-    canonical: BASE_URL,
-  },
   manifest: '/site.webmanifest',
   icons: {
     apple: [

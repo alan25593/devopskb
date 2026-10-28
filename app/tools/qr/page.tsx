@@ -1,17 +1,37 @@
 import Link from 'next/link'
 import Sidebar from '@/components/Sidebar'
 import QRGenerator from '@/components/tools/QRGenerator'
+import ToolSchema from '@/components/ToolSchema'
 import type { Metadata } from 'next'
 
+const TITLE = 'QR Code Generator | WiresOps'
+const DESCRIPTION = 'Generador de códigos QR gratuito. Crea códigos QR personalizados con colores y sin fondo. Descargá en PNG o SVG.'
+const PATH = '/tools/qr/'
+
 export const metadata: Metadata = {
-  title: 'QR Code Generator',
-  description: 'Generador de códigos QR gratuito. Crea códigos QR personalizados con colores y sin fondo. Descargá en PNG o SVG.',
+  title: TITLE,
+  description: DESCRIPTION,
+  alternates: {
+    canonical: PATH,
+  },
+  openGraph: {
+    title: TITLE,
+    description: DESCRIPTION,
+    url: PATH,
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary',
+    title: TITLE,
+    description: DESCRIPTION,
+  },
 }
 
 export default function QRPage() {
   return (
     <div className="flex h-dvh overflow-hidden">
       <Sidebar mode="link" activeCategory={null} activeToolSlug="qr" />
+      <ToolSchema name="QR Code Generator" description={DESCRIPTION} url={PATH} />
 
       <main className="flex-1 overflow-auto">
         <div className="pt-14 px-4 pb-6 md:p-6 max-w-5xl mx-auto">

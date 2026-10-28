@@ -4,9 +4,27 @@ import Sidebar from '@/components/Sidebar'
 import ToolsDashboard from '@/components/ToolsDashboard'
 import type { Metadata } from 'next'
 
+const TITLE = 'Herramientas DevOps | DevOps KB'
+const DESCRIPTION = 'Utilidades para DevOps, DevSecOps y SRE. Todo corre 100% en tu navegador. Ningún dato se envía a servidores externos.'
+const PATH = '/tools/'
+
 export const metadata: Metadata = {
   title: 'Herramientas DevOps',
-  description: 'Utilidades para DevOps, DevSecOps y SRE. Todo corre 100% en tu navegador. Ningún dato se envía a servidores externos.',
+  description: DESCRIPTION,
+  alternates: {
+    canonical: PATH,
+  },
+  openGraph: {
+    title: TITLE,
+    description: DESCRIPTION,
+    url: PATH,
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary',
+    title: TITLE,
+    description: DESCRIPTION,
+  },
 }
 
 export default function ToolsPage() {
@@ -39,6 +57,3 @@ export default function ToolsPage() {
     </div>
   )
 }
-
-
-

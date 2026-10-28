@@ -13,6 +13,9 @@ const PATH = '/tools/cidr/'
 export const metadata: Metadata = {
   title: TITLE,
   description: DESCRIPTION,
+  alternates: {
+    canonical: PATH,
+  },
   openGraph: {
     title: TITLE,
     description: DESCRIPTION,
@@ -23,7 +26,7 @@ export const metadata: Metadata = {
     card: 'summary',
     title: TITLE,
     description: DESCRIPTION,
-  }
+  },
 }
 
 export default function CidrPage() {

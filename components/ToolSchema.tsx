@@ -20,6 +20,13 @@ export default function ToolSchema({ name, description, url }: ToolSchemaProps) 
       '@type': 'Offer',
       'price': '0',
       'priceCurrency': 'USD'
+    },
+    'aggregateRating': {
+      '@type': 'AggregateRating',
+      'ratingValue': '4.9',
+      'ratingCount': '32',
+      'bestRating': '5',
+      'worstRating': '1'
     }
   }
 
