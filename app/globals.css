@@ -48,6 +48,28 @@ body {
   content: none;
 }
 
+/* Syntax highlighting (VS Code Dark+). Classes instead of per-token inline styles keep article HTML small */
+.code-highlight { color: #d4d4d4; }
+.code-highlight .token.comment, .code-highlight .token.prolog { color: #6a9955; }
+.code-highlight .token.punctuation, .code-highlight .token.operator { color: #d4d4d4; }
+.code-highlight .token.property, .code-highlight .token.constant, .code-highlight .token.variable,
+.code-highlight .token.attr-name, .code-highlight .token.parameter, .code-highlight .token.interpolation { color: #9cdcfe; }
+.code-highlight .token.tag, .code-highlight .token.boolean, .code-highlight .token.keyword,
+.code-highlight .token.entity, .code-highlight .token.important { color: #569cd6; }
+.code-highlight .token.keyword.module, .code-highlight .token.keyword.control-flow, .code-highlight .token.atrule .token.rule { color: #c586c0; }
+.code-highlight .token.number, .code-highlight .token.symbol, .code-highlight .token.inserted, .code-highlight .token.unit { color: #b5cea8; }
+.code-highlight .token.string, .code-highlight .token.char, .code-highlight .token.builtin,
+.code-highlight .token.attr-value, .code-highlight .token.atrule { color: #ce9178; }
+.code-highlight .token.deleted { color: #ce9178; }
+.code-highlight .token.function { color: #dcdcaa; }
+.code-highlight .token.class-name, .code-highlight .token.namespace { color: #4ec9b0; }
+.code-highlight .token.selector, .code-highlight .token.escape { color: #d7ba7d; }
+.code-highlight .token.regex { color: #d16969; }
+.code-highlight .token.tag .token.punctuation, .code-highlight .token.cdata { color: #808080; }
+.code-highlight .token.attr-value .token.punctuation.attr-equals { color: #d4d4d4; }
+.code-highlight .token.italic { font-style: italic; }
+.code-highlight .token.bold { font-weight: bold; }
+
 /* Callouts (markdown blockquotes) render outside typography: restyle their inline content */
 .callout-body strong { color: #e2e8f0; font-weight: 600; }
 .callout-body a { color: #22d3ee; text-decoration: underline; text-underline-offset: 2px; }

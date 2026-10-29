@@ -2,7 +2,6 @@ import Link from 'next/link'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
-import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism'
 import { slugify } from '@/lib/content'
 import type { Article, Heading as HeadingType, RelatedArticle } from '@/lib/content'
 import { getCategoryLabel } from '@/lib/categories'
@@ -244,16 +243,23 @@ export default function ArticleView({ article, prev, next, categoryArticles, rel
                           <div className="flex items-center justify-between px-4 py-2 bg-slate-900 border-b border-slate-800">
                             <span className="text-[10px] font-mono text-slate-500 uppercase tracking-wider">{language}</span>
                           </div>
-                          <SyntaxHighlighter
-                            children={content}
-                            style={vscDarkPlus}
-                            language={language}
-                            PreTag="div"
-                            showLineNumbers={lineCount > 5}
-                            lineNumberStyle={{ minWidth: '2.25em', color: '#475569' }}
-                            customStyle={{ margin: 0, background: '#0d1117', padding: '1rem', fontSize: '0.8125rem', lineHeight: 1.6 }}
-                            codeTagProps={{ style: { fontFamily: 'var(--font-mono)' } }}
-                          />
+                          {/* Line numbers are one gutter column, not a styled span per line: a long article had 500+ of them */}
+                          <div className="code-highlight flex bg-[#0d1117] font-mono text-[0.8125rem] leading-[1.6]">
+                            {lineCount > 5 && (
+                              <pre aria-hidden="true" className="select-none py-4 pl-4 pr-3 text-right text-slate-600 border-r border-slate-800/60">
+                                {Array.from({ length: lineCount }, (_, i) => i + 1).join('\n')}
+                              </pre>
+                            )}
+                            <SyntaxHighlighter
+                              children={content}
+                              useInlineStyles={false}
+                              language={language}
+                              PreTag="div"
+                              // Without this the <code> keeps Prism's light default theme inline (black text, white shadow)
+                              codeTagProps={{ style: {} }}
+                              className="min-w-0 flex-1 overflow-x-auto whitespace-pre p-4"
+                            />
+                          </div>
                           <CopyButton text={content} variant="block" />
                         </div>
                       )
