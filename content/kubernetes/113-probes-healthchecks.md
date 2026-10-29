@@ -6,17 +6,17 @@ tags:
   - "kubernetes"
 keywords:
   - "health checks kubernetes"
-  - "- liveness probe kubernetes"
-  - "- readiness probe kubernetes"
-  - "- startup probe kubernetes"
-  - "- monitoring kubernetes pods"
-  - "- cómo configurar probes kubernetes"
-  - "- kubernetes auto-restart"
-  - "- disponibilidad aplicacion kubernetes"
-  - "- probes yaml kubernetes"
-  - "- httpGet probe"
-  - "- tcpSocket probe"
-  - "- exec probe kubernetes"
+  - "liveness probe kubernetes"
+  - "readiness probe kubernetes"
+  - "startup probe kubernetes"
+  - "monitoring kubernetes pods"
+  - "cómo configurar probes kubernetes"
+  - "kubernetes auto-restart"
+  - "disponibilidad aplicacion kubernetes"
+  - "probes yaml kubernetes"
+  - "httpGet probe"
+  - "tcpSocket probe"
+  - "exec probe kubernetes"
 ---
 
 # Probes, liveness y readiness en Kubernetes
@@ -67,7 +67,7 @@ Destacar que la **Startup Probe** se ejecuta al inicio del pod, y si falla, el p
 Lo normal es que Readiness y Liveness se ejecuten de forma continua, mientras que Startup solo se ejecuta una vez al inicio del pod. Además, esta última solo se suele utilizar en aplicaciones que tardan mucho en arrancar, como bases de datos o aplicaciones con dependencias pesadas, permitiendo poner comprobaciones de tiempo de espera más largas al principio y luego pasar a las comprobaciones más rápidas de Liveness y Readiness.
 
 ## Configuración de Probes
-Para configurar las probes, se añaden al contenedor del pod en el archivo de configuración YAML. Vamos a partir del ejemplo de la sección de [Deployments](./107.Deployments.md) y añadir las probes:
+Para configurar las probes, se añaden al contenedor del pod en el archivo de configuración YAML. Vamos a partir del ejemplo de la sección de [Deployments](/article/kubernetes/107-deployments/) y añadir las probes:
 
 ```yaml
 apiVersion: apps/v1

@@ -1,4 +1,4 @@
-import { getAllStaticParams, getArticle, getAdjacentArticles, getArticlesByCategory, getArticleLastModified, getRelatedArticles } from '@/lib/content'
+import { getAllStaticParams, getArticle, getAdjacentArticles, getArticlesByCategory, getArticleLastModified, getRelatedArticles, getToolsForArticle } from '@/lib/content'
 import { getCategoryLabel } from '@/lib/categories'
 import ArticleView from '@/components/ArticleView'
 import { notFound } from 'next/navigation'
@@ -97,6 +97,7 @@ export default function ArticlePage({ params }: Props) {
         next={next}
         categoryArticles={categoryArticles}
         related={related}
+        tools={getToolsForArticle(params.category, params.slug)}
       />
     </>
   )

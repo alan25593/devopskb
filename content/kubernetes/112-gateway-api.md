@@ -4,19 +4,19 @@ category: "kubernetes"
 description: "Aprende a configurar Gateway API en Kubernetes para gestionar tráfico externo de forma avanzada. Guía completa con ejemplos prácticos y mejores prácticas."
 tags:
   - "kubernetes"
-  - "- gateway"
-  - "- networking"
+  - "gateway"
+  - "networking"
 keywords:
   - "kubernetes gateway api"
-  - "- gateway api vs ingress"
-  - "- httproute kubernetes"
-  - "- migrar ingress a gateway"
-  - "- kubernetes networking avanzado"
-  - "- gateway controller kubernetes"
-  - "- grpcroute kubernetes"
-  - "- tcproute kubernetes"
-  - "- gateway api tutorial"
-  - "- kubernetes 2024 networking"
+  - "gateway api vs ingress"
+  - "httproute kubernetes"
+  - "migrar ingress a gateway"
+  - "kubernetes networking avanzado"
+  - "gateway controller kubernetes"
+  - "grpcroute kubernetes"
+  - "tcproute kubernetes"
+  - "gateway api tutorial"
+  - "kubernetes 2024 networking"
 ---
 
 # Gateway API en Kubernetes
@@ -342,8 +342,6 @@ spec:
 ```
 
 La diferencia estructural es clara: el TLS ya no es problema del desarrollador. El operador configura el certificado una vez en el Gateway y cualquier Route que se enganche lo hereda automáticamente.
-
-> Si tenemos ya un clúster con `ingress-nginx` en producción y queremos pasarnos a Gateway API sin reescribirlo todo a mano, en el blog tenemos una guía práctica: [Migrar de Ingress a Gateway API en Kubernetes](/blog/migrar_ingress_a_gateway_api_kubernetes).
 
 ## Balanceo de carga entre versiones (traffic splitting)
 

@@ -4,25 +4,25 @@ category: "kubernetes"
 description: "Aprende a depurar aplicaciones en Kubernetes - CrashLoopBackOff, ImagePullBackOff, pods Pending, OOMKilled, kubectl debug y problemas de services para la certificación CKAD."
 tags:
   - "kubernetes"
-  - "- troubleshooting"
-  - "- debugging"
-  - "- CKAD"
+  - "troubleshooting"
+  - "debugging"
+  - "CKAD"
 keywords:
   - "troubleshooting aplicaciones kubernetes"
-  - "- crashloopbackoff solucionar"
-  - "- imagepullbackoff kubernetes"
-  - "- pod pending kubernetes"
-  - "- oomkilled kubernetes"
-  - "- kubectl debug"
-  - "- ephemeral containers kubernetes"
-  - "- depurar pods kubernetes"
-  - "- service no responde kubernetes"
-  - "- CKAD troubleshooting"
+  - "crashloopbackoff solucionar"
+  - "imagepullbackoff kubernetes"
+  - "pod pending kubernetes"
+  - "oomkilled kubernetes"
+  - "kubectl debug"
+  - "ephemeral containers kubernetes"
+  - "depurar pods kubernetes"
+  - "service no responde kubernetes"
+  - "CKAD troubleshooting"
 ---
 
 # Troubleshooting de aplicaciones en Kubernetes
 
-Si el [troubleshooting del cluster](./202.Troubleshooting_cluster.md) era el pan de cada día del administrador, este capítulo es el del desarrollador: nuestra aplicación no arranca, se reinicia en bucle o no responde, y el cluster está perfectamente sano. Vamos a construir un método sistemático para no depurar a ciegas.
+Si el [troubleshooting del cluster](/article/kubernetes/202-troubleshooting-cluster/) era el pan de cada día del administrador, este capítulo es el del desarrollador: nuestra aplicación no arranca, se reinicia en bucle o no responde, y el cluster está perfectamente sano. Vamos a construir un método sistemático para no depurar a ciegas.
 
 ## El método: estado → describe → logs
 Ante cualquier problema, siempre la misma secuencia:
@@ -39,15 +39,15 @@ El campo `STATUS` de `kubectl get pods` ya nos dice dónde mirar. Vamos estado p
 El pod está aceptado pero el scheduler no consigue asignarle nodo. `kubectl describe pod` mostrará un evento `FailedScheduling` con el motivo exacto:
 
 - **`Insufficient cpu/memory`**: ningún nodo tiene los recursos que pide nuestro `requests`. Solución: bajar requests, escalar el cluster o liberar carga.
-- **Taints sin tolerar**: `node(s) had untolerated taint...` ([capítulo 123](./122.Taints_tolerations.md)).
-- **Selectores imposibles**: un `nodeSelector` o affinity que ningún nodo cumple ([capítulo 122](./121.Scheduling_labels.md)).
+- **Taints sin tolerar**: `node(s) had untolerated taint...` ([capítulo 123](/article/kubernetes/122-taints-y-tolerations/)).
+- **Selectores imposibles**: un `nodeSelector` o affinity que ningún nodo cumple ([capítulo 122](/article/kubernetes/121-scheduling-labels-affinity/)).
 - **PVC sin resolver**: el pod monta un PVC en `Pending` (revisemos la StorageClass y los PV disponibles).
 
 ## ImagePullBackOff / ErrImagePull: la imagen no llega
 Kubernetes no consigue descargar la imagen. Los eventos del describe nos dan la causa:
 
 - **Nombre o tag mal escritos**: `nginx:lastest` en lugar de `latest`. Más común de lo que parece.
-- **Imagen privada sin credenciales**: falta el `imagePullSecrets` con un secret de tipo [docker-registry](./114.Secrets_configmaps.md).
+- **Imagen privada sin credenciales**: falta el `imagePullSecrets` con un secret de tipo [docker-registry](/article/kubernetes/114-secrets-y-configmaps/).
 - **Registry inaccesible** desde los nodos (red, proxy, TLS).
 
 ```bash
@@ -68,7 +68,7 @@ kubectl logs <pod> --previous
 Causas típicas:
 - **Error de la aplicación al arrancar**: configuración que falta (revisa env, ConfigMaps y Secrets referenciados), conexión a base de datos imposible...
 - **El comando termina**: si el contenedor ejecuta algo que acaba (un script, un comando mal puesto en `command`), Kubernetes lo considera muerto y lo reinicia. Un contenedor "de servicio" debe quedarse en primer plano.
-- **Liveness probe demasiado agresiva**: la app tarda en arrancar más que el `initialDelaySeconds` y la probe la mata en bucle. El describe lo delata (`Liveness probe failed`). Solución: ajustar tiempos o añadir una [startup probe](./113.Probes_live_readiness.md).
+- **Liveness probe demasiado agresiva**: la app tarda en arrancar más que el `initialDelaySeconds` y la probe la mata en bucle. El describe lo delata (`Liveness probe failed`). Solución: ajustar tiempos o añadir una [startup probe](/article/kubernetes/113-probes-healthchecks/).
 
 ### OOMKilled: el caso especial
 Si en el describe vemos `Last State: Terminated, Reason: OOMKilled`, el contenedor superó su límite de memoria y el kernel lo mató. No habrá nada en los logs: la app no "falló", la fulminaron. Solución: subir el `limits.memory` (o arreglar la fuga de memoria, pero eso ya es nuestro código).
@@ -116,7 +116,7 @@ kubectl get pods --show-labels
 2. **El targetPort no es el puerto de la app**: el service apunta al 80 pero la app escucha en el 8080.
 3. **Los pods no están Ready**: una readiness probe fallando saca al pod de los endpoints silenciosamente.
 
-Y si el service tiene endpoints pero el nombre no resuelve, vuelve al [capítulo de DNS](./304.CoreDNS_DNS.md).
+Y si el service tiene endpoints pero el nombre no resuelve, vuelve al [capítulo de DNS](/article/kubernetes/304-coredns-resolucion-dns/).
 
 ## Chuleta de diagnóstico
 | Estado/Síntoma | Dónde mirar | Causa típica |

@@ -3,7 +3,7 @@ import Sidebar from '@/components/Sidebar'
 import YamlValidator from '@/components/tools/YamlValidator'
 import ToolSchema from '@/components/ToolSchema'
 import LearnMore from '@/components/LearnMore'
-import { getArticle } from '@/lib/content'
+import { getToolArticles } from '@/lib/content'
 import type { Metadata } from 'next'
 
 const TITLE = 'YAML Validator | WiresOps'
@@ -30,10 +30,7 @@ export const metadata: Metadata = {
 }
 
 export default function YamlPage() {
-  const relatedArticles = [
-    getArticle('docker', '03-compose'),
-    getArticle('kubernetes', '05-configuracion'),
-  ].filter(Boolean) as any[]
+  const relatedArticles = getToolArticles('yaml')
 
   return (
     <div className="flex h-dvh overflow-hidden">

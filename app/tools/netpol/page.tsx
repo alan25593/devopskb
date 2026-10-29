@@ -3,7 +3,7 @@ import Sidebar from '@/components/Sidebar'
 import NetpolVisualizer from '@/components/tools/NetpolVisualizer'
 import ToolSchema from '@/components/ToolSchema'
 import LearnMore from '@/components/LearnMore'
-import { getArticle } from '@/lib/content'
+import { getToolArticles } from '@/lib/content'
 import type { Metadata } from 'next'
 
 const TITLE = 'NetworkPolicy Visualizer | WiresOps'
@@ -30,10 +30,7 @@ export const metadata: Metadata = {
 }
 
 export default function NetpolPage() {
-  const relatedArticles = [
-    getArticle('kubernetes', '04-networking'),
-    getArticle('kubernetes', '08-rbac-y-seguridad'),
-  ].filter(Boolean) as any[]
+  const relatedArticles = getToolArticles('netpol')
 
   return (
     <div className="flex h-dvh overflow-hidden">

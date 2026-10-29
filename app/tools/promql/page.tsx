@@ -3,7 +3,7 @@ import Sidebar from '@/components/Sidebar'
 import PromqlBuilder from '@/components/tools/PromqlBuilder'
 import ToolSchema from '@/components/ToolSchema'
 import LearnMore from '@/components/LearnMore'
-import { getArticle } from '@/lib/content'
+import { getToolArticles } from '@/lib/content'
 import type { Metadata } from 'next'
 
 const TITLE = 'PromQL Builder | WiresOps'
@@ -30,10 +30,7 @@ export const metadata: Metadata = {
 }
 
 export default function PromqlPage() {
-  const relatedArticles = [
-    getArticle('kubernetes', '07-escalado-y-scheduling'),
-    getArticle('kubernetes', '09-troubleshooting'),
-  ].filter(Boolean) as any[]
+  const relatedArticles = getToolArticles('promql')
 
   return (
     <div className="flex h-dvh overflow-hidden">

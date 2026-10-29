@@ -4,25 +4,25 @@ category: "kubernetes"
 description: "Aprende a diagnosticar y reparar clusters de Kubernetes - nodos NotReady, kubelet, static pods, componentes del control plane y problemas de red para la certificación CKA."
 tags:
   - "kubernetes"
-  - "- troubleshooting"
-  - "- administración"
-  - "- CKA"
+  - "troubleshooting"
+  - "administración"
+  - "CKA"
 keywords:
   - "troubleshooting kubernetes"
-  - "- kubernetes nodo notready"
-  - "- kubelet no arranca"
-  - "- static pods kubernetes"
-  - "- depurar control plane kubernetes"
-  - "- kube-apiserver caido"
-  - "- CKA troubleshooting"
-  - "- journalctl kubelet"
-  - "- crictl kubernetes"
-  - "- diagnosticar cluster kubernetes"
+  - "kubernetes nodo notready"
+  - "kubelet no arranca"
+  - "static pods kubernetes"
+  - "depurar control plane kubernetes"
+  - "kube-apiserver caido"
+  - "CKA troubleshooting"
+  - "journalctl kubelet"
+  - "crictl kubernetes"
+  - "diagnosticar cluster kubernetes"
 ---
 
 # Troubleshooting del cluster de Kubernetes
 
-El troubleshooting es la sección con más peso del examen CKA (un 30%) y, casualmente, también lo que más haremos en la vida real. En este capítulo nos centramos en los problemas del **cluster** (nodos y control plane); la depuración de aplicaciones la veremos en la [especialización CKAD](./306.Troubleshooting_aplicaciones.md).
+El troubleshooting es la sección con más peso del examen CKA (un 30%) y, casualmente, también lo que más haremos en la vida real. En este capítulo nos centramos en los problemas del **cluster** (nodos y control plane); la depuración de aplicaciones la veremos en la [especialización CKAD](/article/kubernetes/306-troubleshooting-aplicaciones/).
 
 ## Metodología general
 Ante un cluster con problemas, seguimos siempre el mismo orden: de lo general a lo concreto.
@@ -78,7 +78,7 @@ ls /etc/kubernetes/manifests/
 ```
 
 Esto tiene tres consecuencias prácticas:
-1. Para **modificar** un componente del control plane, editamos su fichero en ese directorio y el kubelet lo recrea solo (lo hicimos al restaurar etcd en el [capítulo anterior](./201.Mantenimiento_backup.md)).
+1. Para **modificar** un componente del control plane, editamos su fichero en ese directorio y el kubelet lo recrea solo (lo hicimos al restaurar etcd en el [capítulo anterior](/article/kubernetes/201-mantenimiento-etcd-backup/)).
 2. Para **"reiniciar"** un componente, podemos mover su manifiesto fuera del directorio y devolverlo.
 3. Si rompemos la sintaxis de uno de estos YAML, el componente desaparece sin dejar rastro en `kubectl`... porque kubectl necesita el API server, que quizás acabamos de romper.
 
@@ -130,7 +130,7 @@ kubectl -n kube-system get pods -l k8s-app=kube-proxy
 kubectl -n kube-system logs <pod-de-kube-proxy>
 ```
 
-3. **CoreDNS**: si la resolución de nombres falla (`nslookup kubernetes.default` desde un pod no responde), revisamos los pods de CoreDNS y su service `kube-dns`. Profundizaremos en DNS en la [especialización CKAD](./304.CoreDNS_DNS.md).
+3. **CoreDNS**: si la resolución de nombres falla (`nslookup kubernetes.default` desde un pod no responde), revisamos los pods de CoreDNS y su service `kube-dns`. Profundizaremos en DNS en la [especialización CKAD](/article/kubernetes/304-coredns-resolucion-dns/).
 
 ## Chuleta de comandos
 | Síntoma | Primer comando |

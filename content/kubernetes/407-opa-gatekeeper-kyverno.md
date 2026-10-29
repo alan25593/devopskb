@@ -4,30 +4,30 @@ category: "kubernetes"
 description: "Aprende a imponer políticas en Kubernetes con OPA Gatekeeper - ConstraintTemplates, Constraints, lenguaje Rego, auditoría y comparación con Kyverno para la certificación CKS."
 tags:
   - "kubernetes"
-  - "- seguridad"
-  - "- OPA"
-  - "- gatekeeper"
-  - "- CKS"
+  - "seguridad"
+  - "OPA"
+  - "gatekeeper"
+  - "CKS"
 keywords:
   - "opa kubernetes"
-  - "- gatekeeper kubernetes"
-  - "- open policy agent"
-  - "- rego kubernetes"
-  - "- constrainttemplate gatekeeper"
-  - "- politicas como codigo kubernetes"
-  - "- CKS opa gatekeeper"
-  - "- kyverno vs gatekeeper"
-  - "- policy engine kubernetes"
-  - "- admission webhook politicas"
+  - "gatekeeper kubernetes"
+  - "open policy agent"
+  - "rego kubernetes"
+  - "constrainttemplate gatekeeper"
+  - "politicas como codigo kubernetes"
+  - "CKS opa gatekeeper"
+  - "kyverno vs gatekeeper"
+  - "policy engine kubernetes"
+  - "admission webhook politicas"
 ---
 
 # OPA Gatekeeper: políticas como código
 
-Los [Pod Security Standards](./118.Seguridad.md) cubren la seguridad de pods con tres niveles fijos. Pero, ¿y las reglas propias de nuestra organización? "Toda imagen viene de nuestro registry", "todo recurso lleva el label del equipo propietario", "prohibido el tag latest"... Para eso necesitamos un **motor de políticas**, y el de referencia en el ecosistema (y en el examen CKS) es **OPA Gatekeeper**.
+Los [Pod Security Standards](/article/kubernetes/118-seguridad-serviceaccounts/) cubren la seguridad de pods con tres niveles fijos. Pero, ¿y las reglas propias de nuestra organización? "Toda imagen viene de nuestro registry", "todo recurso lleva el label del equipo propietario", "prohibido el tag latest"... Para eso necesitamos un **motor de políticas**, y el de referencia en el ecosistema (y en el examen CKS) es **OPA Gatekeeper**.
 
 ## OPA y Gatekeeper: quién es quién
 - **OPA (Open Policy Agent)** es un motor de políticas de propósito general, graduado en la CNCF. Evalúa decisiones ("¿se permite esto?") escritas en su lenguaje **Rego**, y se usa mucho más allá de Kubernetes (APIs, CI/CD, Terraform).
-- **Gatekeeper** es la integración nativa de OPA con Kubernetes: un [validating admission webhook](./404.Admission_controllers.md) que evalúa cada petición contra nuestras políticas, definidas como recursos de Kubernetes (CRDs).
+- **Gatekeeper** es la integración nativa de OPA con Kubernetes: un [validating admission webhook](/article/kubernetes/404-admission-controllers-webhooks/) que evalúa cada petición contra nuestras políticas, definidas como recursos de Kubernetes (CRDs).
 
 ```mermaid
 flowchart LR
@@ -160,7 +160,7 @@ spec:
             equipo: "?*"
 ```
 
-Regla práctica: Gatekeeper si necesitamos la expresividad de Rego o ya usamos OPA en otros sitios; Kyverno si preferimos simplicidad YAML y las capacidades de mutación/generación. Para el CKS, el protagonista es Gatekeeper (entender template + constraint + Rego básico); y recordemos del [capítulo de admission](./404.Admission_controllers.md) que para validaciones simples el propio Kubernetes ya ofrece ValidatingAdmissionPolicy con CEL.
+Regla práctica: Gatekeeper si necesitamos la expresividad de Rego o ya usamos OPA en otros sitios; Kyverno si preferimos simplicidad YAML y las capacidades de mutación/generación. Para el CKS, el protagonista es Gatekeeper (entender template + constraint + Rego básico); y recordemos del [capítulo de admission](/article/kubernetes/404-admission-controllers-webhooks/) que para validaciones simples el propio Kubernetes ya ofrece ValidatingAdmissionPolicy con CEL.
 
 ## Resumen
 - Gatekeeper = OPA como admission webhook, con políticas definidas en CRDs.

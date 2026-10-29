@@ -4,23 +4,23 @@ category: "kubernetes"
 description: "Aprende a gestionar configuraciones y datos sensibles en Kubernetes con Secrets y ConfigMaps. Guía completa con ejemplos y mejores prácticas de seguridad."
 tags:
   - "kubernetes"
-  - "- secrets"
-  - "- configmaps"
-  - "- configuración"
-  - "- seguridad"
+  - "secrets"
+  - "configmaps"
+  - "configuración"
+  - "seguridad"
 keywords:
   - "kubernetes secrets"
-  - "- configmaps kubernetes"
-  - "- configuración kubernetes"
-  - "- datos sensibles kubernetes"
-  - "- variables entorno kubernetes"
-  - "- gestión configuración kubernetes"
-  - "- cómo usar secrets kubernetes"
-  - "- base64 secrets kubernetes"
-  - "- external secrets kubernetes"
-  - "- vault kubernetes"
-  - "- configmap vs secret"
-  - "- kubernetes buenas practicas seguridad"
+  - "configmaps kubernetes"
+  - "configuración kubernetes"
+  - "datos sensibles kubernetes"
+  - "variables entorno kubernetes"
+  - "gestión configuración kubernetes"
+  - "cómo usar secrets kubernetes"
+  - "base64 secrets kubernetes"
+  - "external secrets kubernetes"
+  - "vault kubernetes"
+  - "configmap vs secret"
+  - "kubernetes buenas practicas seguridad"
 ---
 
 # Secrets y ConfigMaps en Kubernetes
@@ -143,7 +143,7 @@ kubectl create secret docker-registry <nombre-secreto> \
 Después, lo referenciaríamos en el pod mediante el campo `imagePullSecrets`.
 
 ### Secretos de tipo tls
-Los secretos de tipo `tls` se utilizan para almacenar certificados TLS y claves privadas. Estos secretos son esenciales para habilitar conexiones seguras (HTTPS) en aplicaciones desplegadas en Kubernetes, como vimos en el [capítulo de Ingress](./111.Ingress_controller.md).
+Los secretos de tipo `tls` se utilizan para almacenar certificados TLS y claves privadas. Estos secretos son esenciales para habilitar conexiones seguras (HTTPS) en aplicaciones desplegadas en Kubernetes, como vimos en el [capítulo de Ingress](/article/kubernetes/111-ingress-controllers/).
 Para crear un secreto de tipo `tls`, podemos usar el siguiente comando:
 ```bash
 kubectl create secret tls <nombre-secreto> \

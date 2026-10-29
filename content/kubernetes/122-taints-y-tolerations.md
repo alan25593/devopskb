@@ -4,26 +4,26 @@ category: "kubernetes"
 description: "Domina Taints y Tolerations en Kubernetes para controlar dónde se ejecutan los pods. Aprende scheduling avanzado con ejemplos prácticos y casos de uso reales."
 tags:
   - "kubernetes"
-  - "- taints"
-  - "- tolerations"
-  - "- scheduling"
-  - "- CKA"
+  - "taints"
+  - "tolerations"
+  - "scheduling"
+  - "CKA"
 keywords:
   - "kubernetes taints"
-  - "- tolerations kubernetes"
-  - "- scheduling avanzado kubernetes"
-  - "- nodos especializados kubernetes"
-  - "- gpu kubernetes taint"
-  - "- taint effect NoSchedule"
-  - "- taint effect NoExecute"
-  - "- kubernetes avanzado scheduling"
-  - "- CKA scheduling"
-  - "- cómo usar taints y tolerations"
+  - "tolerations kubernetes"
+  - "scheduling avanzado kubernetes"
+  - "nodos especializados kubernetes"
+  - "gpu kubernetes taint"
+  - "taint effect NoSchedule"
+  - "taint effect NoExecute"
+  - "kubernetes avanzado scheduling"
+  - "CKA scheduling"
+  - "cómo usar taints y tolerations"
 ---
 
 # Taints y tolerations en Kubernetes
 
-En el [capítulo anterior](./121.Scheduling_labels.md) vimos cómo atraer pods hacia ciertos nodos con labels y affinity. Los taints y tolerations son el mecanismo opuesto: permiten que un **nodo repela pods**, salvo que estos declaren explícitamente que pueden tolerarlo.
+En el [capítulo anterior](/article/kubernetes/121-scheduling-labels-affinity/) vimos cómo atraer pods hacia ciertos nodos con labels y affinity. Los taints y tolerations son el mecanismo opuesto: permiten que un **nodo repela pods**, salvo que estos declaren explícitamente que pueden tolerarlo.
 
 La analogía clásica: un taint es como un cartel de "prohibido el paso" en la puerta del nodo, y la toleration es el pase VIP que permite a ciertos pods ignorar el cartel. Ojo: el pase no obliga al pod a ir a ese nodo, solo le permite entrar. Si queremos además **atraerlo** al nodo, tendremos que combinarlo con affinity.
 
@@ -33,7 +33,7 @@ flowchart LR
     B[Pod con toleration] --> N
 ```
 
-De hecho, ya los hemos usado: cuando en la [instalación](./103.Instalacion.md) quitamos el taint `node-role.kubernetes.io/control-plane` del nodo maestro para que pudiera ejecutar pods, estábamos gestionando taints.
+De hecho, ya los hemos usado: cuando en la [instalación](/article/kubernetes/103-instalacion/) quitamos el taint `node-role.kubernetes.io/control-plane` del nodo maestro para que pudiera ejecutar pods, estábamos gestionando taints.
 
 ## Anatomía de un taint
 Un taint tiene tres partes: una **clave**, un **valor** (opcional) y un **efecto**: `clave=valor:efecto`.

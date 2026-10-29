@@ -4,26 +4,26 @@ category: "kubernetes"
 description: "Guía completa y práctica sobre los conceptos de almacenamiento en Kubernetes aprovisionamiento estático y dinámico con PV, PVC, StorageClass y el ecosistema CSI. Incluye diagramas, ejemplos YAML y cuotas."
 tags:
   - "kubernetes"
-  - "- storage"
-  - "- volumes"
-  - "- csi"
+  - "storage"
+  - "volumes"
+  - "csi"
 keywords:
   - "kubernetes persistent volumes"
-  - "- kubernetes pv pvc"
-  - "- storageclass kubernetes"
-  - "- csi kubernetes"
-  - "- almacenamiento kubernetes"
-  - "- persistencia datos kubernetes"
-  - "- dynamic provisioning kubernetes"
-  - "- static provisioning kubernetes"
-  - "- reclaim policy kubernetes"
-  - "- access modes kubernetes"
-  - "- kubernetes storage tutorial"
+  - "kubernetes pv pvc"
+  - "storageclass kubernetes"
+  - "csi kubernetes"
+  - "almacenamiento kubernetes"
+  - "persistencia datos kubernetes"
+  - "dynamic provisioning kubernetes"
+  - "static provisioning kubernetes"
+  - "reclaim policy kubernetes"
+  - "access modes kubernetes"
+  - "kubernetes storage tutorial"
 ---
 
 # Almacenamiento persistente en Kubernetes
 
-La persistencia de datos es un pilar en cualquier plataforma de contenedores. Ya vimos los [volúmenes en Docker](../docker/110.Volumenes_y_archivos.md), aunque Kubernetes abstrae el almacenamiento mediante varios objetos que colaboran entre sí para desacoplar:
+La persistencia de datos es un pilar en cualquier plataforma de contenedores. Ya vimos los [volúmenes en Docker](/article/docker/04-redes-y-volumenes/), aunque Kubernetes abstrae el almacenamiento mediante varios objetos que colaboran entre sí para desacoplar:
 
 1. La infraestructura física o lógica (discos, NFS, Ceph, EBS, etc.)
 

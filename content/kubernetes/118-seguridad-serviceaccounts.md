@@ -4,23 +4,23 @@ category: "kubernetes"
 description: "Aprende seguridad en Kubernetes - RBAC, Service Accounts, Network Policies, Pod Security Standards, admission controllers y hardening para certificación CKS."
 tags:
   - "kubernetes"
-  - "- seguridad"
-  - "- RBAC"
-  - "- CKS"
-  - "- hardening"
+  - "seguridad"
+  - "RBAC"
+  - "CKS"
+  - "hardening"
 keywords:
   - "kubernetes seguridad"
-  - "- kubernetes RBAC"
-  - "- network policies kubernetes"
-  - "- pod security standards kubernetes"
-  - "- kubernetes CKS"
-  - "- kubernetes hardening"
-  - "- admission controllers kubernetes"
-  - "- security context kubernetes"
-  - "- privileged pods kubernetes"
-  - "- OPA gatekeeper kubernetes"
-  - "- falco kubernetes"
-  - "- devsecops kubernetes"
+  - "kubernetes RBAC"
+  - "network policies kubernetes"
+  - "pod security standards kubernetes"
+  - "kubernetes CKS"
+  - "kubernetes hardening"
+  - "admission controllers kubernetes"
+  - "security context kubernetes"
+  - "privileged pods kubernetes"
+  - "OPA gatekeeper kubernetes"
+  - "falco kubernetes"
+  - "devsecops kubernetes"
 ---
 
 # Seguridad en Kubernetes
@@ -50,7 +50,7 @@ La autenticación es el proceso de identificación de un usuario. Kubernetes sop
 ### Autorización
 La autorización es el proceso de determinar si un usuario, ya identificado, tiene permisos para realizar una acción. Kubernetes soporta varios modos de autorización, siendo RBAC el estándar de facto.
 
-Profundizaremos en esta parte en los capítulos de [usuarios](./119.Usuarios.md) y [roles](./120.Roles.md).
+Profundizaremos en esta parte en los capítulos de [usuarios](/article/kubernetes/119-usuarios-y-autenticacion/) y [roles](/article/kubernetes/120-roles-y-rbac/).
 
 #### RBAC (Role Based Access Control)
 RBAC es un método de autorización basado en roles. En este método definimos roles con permisos y luego asignamos esos roles a usuarios, grupos o service accounts.
@@ -67,7 +67,7 @@ Podemos ver los controladores de admisión habilitados en el fichero `/etc/kuber
 sudo grep admission /etc/kubernetes/manifests/kube-apiserver.yaml
 ```
 
-En la especialización CKS veremos los [admission controllers en profundidad](./404.Admission_controllers.md), incluyendo webhooks de validación y mutación personalizados.
+En la especialización CKS veremos los [admission controllers en profundidad](/article/kubernetes/404-admission-controllers-webhooks/), incluyendo webhooks de validación y mutación personalizados.
 
 ## Security Context
 Los pods y contenedores en Kubernetes pueden ejecutarse con un contexto de seguridad. Este contexto define los privilegios del contenedor: con qué usuario se ejecuta, qué capacidades del kernel tiene, si puede escalar privilegios, etc.
@@ -131,7 +131,7 @@ kubectl label namespace mi-app \
   pod-security.kubernetes.io/audit=restricted
 ```
 
-Para necesidades más avanzadas (políticas personalizadas, mutación), se utilizan motores de políticas como **OPA Gatekeeper** o **Kyverno**, que veremos en la [especialización CKS](./407.OPA.md).
+Para necesidades más avanzadas (políticas personalizadas, mutación), se utilizan motores de políticas como **OPA Gatekeeper** o **Kyverno**, que veremos en la [especialización CKS](/article/kubernetes/407-opa-gatekeeper-kyverno/).
 
 ## Network Policies
 Por defecto, los pods en Kubernetes pueden comunicarse con cualquier otro pod y todo el tráfico está permitido. Podemos configurar políticas de red para restringir este tráfico.
@@ -196,7 +196,7 @@ spec:
 ```
 Si no incluimos `Egress` en `policyTypes`, el tráfico de salida no se ve afectado por esta política.
 
-Veremos patrones más avanzados de políticas de red en la [especialización CKS](./403.Network_policies_avanzadas.md).
+Veremos patrones más avanzados de políticas de red en la [especialización CKS](/article/kubernetes/403-network-policies-avanzadas/).
 
 ## Resumen
 - Toda petición a la API pasa por autenticación, autorización (RBAC) y control de admisión.
@@ -204,6 +204,6 @@ Veremos patrones más avanzados de políticas de red en la [especialización CKS
 - Las **Pod Security Policies ya no existen**: el mecanismo actual son los **Pod Security Standards** aplicados con **Pod Security Admission** a nivel de namespace.
 - Las **NetworkPolicies** restringen el tráfico entre pods; sin ellas, todo está permitido.
 
-En los próximos capítulos profundizaremos en [usuarios y service accounts](./119.Usuarios.md) y en [roles y permisos RBAC](./120.Roles.md).
+En los próximos capítulos profundizaremos en [usuarios y service accounts](/article/kubernetes/119-usuarios-y-autenticacion/) y en [roles y permisos RBAC](/article/kubernetes/120-roles-y-rbac/).
 
 ---

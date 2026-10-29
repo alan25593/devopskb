@@ -4,30 +4,30 @@ category: "kubernetes"
 description: "Aprende Ingress Controllers en Kubernetes - instalación NGINX Ingress, configuración SSL/TLS, path-based routing y host-based routing con ejemplos prácticos."
 tags:
   - "kubernetes"
-  - "- ingress"
-  - "- nginx"
-  - "- load-balancer"
-  - "- CKAD"
+  - "ingress"
+  - "nginx"
+  - "load-balancer"
+  - "CKAD"
 keywords:
   - "kubernetes ingress controller"
-  - "- nginx ingress kubernetes"
-  - "- traefik kubernetes"
-  - "- SSL TLS kubernetes"
-  - "- load balancer kubernetes"
-  - "- ingress rules kubernetes"
-  - "- cert-manager kubernetes"
-  - "- configurar ingress kubernetes"
-  - "- https kubernetes"
-  - "- host-based routing kubernetes"
-  - "- path-based routing kubernetes"
-  - "- wildcard ingress kubernetes"
+  - "nginx ingress kubernetes"
+  - "traefik kubernetes"
+  - "SSL TLS kubernetes"
+  - "load balancer kubernetes"
+  - "ingress rules kubernetes"
+  - "cert-manager kubernetes"
+  - "configurar ingress kubernetes"
+  - "https kubernetes"
+  - "host-based routing kubernetes"
+  - "path-based routing kubernetes"
+  - "wildcard ingress kubernetes"
 ---
 
 # Ingress en Kubernetes
 
 En Kubernetes, exponer aplicaciones al exterior puede hacerse de varias formas. Los **Services** permiten exponer pods dentro o fuera del clúster, pero si necesitamos enrutar tráfico HTTP/HTTPS externo a diferentes servicios internos según el dominio o la ruta, necesitamos un recurso adicional: **Ingress**.
 
-Podemos repasar la parte de [Services](./110.Services.md) para refrescar conceptos.
+Podemos repasar la parte de [Services](/article/kubernetes/110-services/) para refrescar conceptos.
 
 ## ¿Cómo se relacionan Service, Ingress e Ingress Controller?
 
@@ -65,7 +65,7 @@ Cualquier tecnología que sirviera como proxy inverso se puede utilizar como `in
 
 ## Instalación de un ingress controller
 
-Podemos instalar el ingress controller basado en nginx con [Helm](./124.Helm.md).
+Podemos instalar el ingress controller basado en nginx con [Helm](/article/kubernetes/124-helm-package-manager/).
 
 Documentación oficial: [ingress-nginx](https://kubernetes.github.io/ingress-nginx/deploy/)
 

@@ -1,5 +1,6 @@
 import fs from 'fs'
 import { execFileSync } from 'child_process'
+import { TOOLS, type Tool } from './tools'
 import path from 'path'
 import matter from 'gray-matter'
 
@@ -165,6 +166,24 @@ export function getRelatedArticles(category: string, slug: string, exclude: stri
 }
 
 // Last commit date of the article file; falls back to mtime when git is unavailable (e.g. Docker build without .git)
+// Fails the build on a stale "category/slug" reference instead of silently dropping the link
+function resolveArticleRef(ref: string, owner: string): RelatedArticle {
+  const [category, slug] = ref.split('/')
+  const article = getArticle(category, slug)
+  if (!article) throw new Error(`${owner} references missing article "${ref}"`)
+  return { slug, category, title: article.title, description: article.description }
+}
+
+export function getToolArticles(toolId: string): RelatedArticle[] {
+  const tool = TOOLS.find(t => t.id === toolId)
+  if (!tool) throw new Error(`Unknown tool "${toolId}"`)
+  return tool.articles.map(ref => resolveArticleRef(ref, `Tool "${toolId}"`))
+}
+
+export function getToolsForArticle(category: string, slug: string): Tool[] {
+  return TOOLS.filter(t => t.articles.includes(`${category}/${slug}`))
+}
+
 let _gitDates: Map<string, Date> | null = null
 
 // "category/slug.md" -> date of the newest commit touching it, from a single git log over content/

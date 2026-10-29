@@ -4,27 +4,27 @@ category: "kubernetes"
 description: "Domina RBAC en Kubernetes con Roles, ClusterRoles y RoleBindings. Aprende control de acceso granular y permisos para certificación CKA y seguridad."
 tags:
   - "kubernetes"
-  - "- RBAC"
-  - "- roles"
-  - "- permisos"
-  - "- CKA"
+  - "RBAC"
+  - "roles"
+  - "permisos"
+  - "CKA"
 keywords:
   - "kubernetes RBAC"
-  - "- roles kubernetes"
-  - "- clusterroles kubernetes"
-  - "- rolebindings kubernetes"
-  - "- control acceso kubernetes"
-  - "- permisos kubernetes"
-  - "- kubernetes CKA RBAC"
-  - "- crear role kubernetes"
-  - "- kubectl create role"
-  - "- principio minimo privilegio kubernetes"
-  - "- RBAC buenas practicas"
+  - "roles kubernetes"
+  - "clusterroles kubernetes"
+  - "rolebindings kubernetes"
+  - "control acceso kubernetes"
+  - "permisos kubernetes"
+  - "kubernetes CKA RBAC"
+  - "crear role kubernetes"
+  - "kubectl create role"
+  - "principio minimo privilegio kubernetes"
+  - "RBAC buenas practicas"
 ---
 
 # RBAC en Kubernetes: Roles, ClusterRoles y Bindings
 
-En el [capítulo anterior](./119.Usuarios.md) creamos identidades (usuarios y service accounts), pero por sí solas no pueden hacer nada en el cluster. RBAC (Role Based Access Control) es el mecanismo de autorización con el que les damos permisos.
+En el [capítulo anterior](/article/kubernetes/119-usuarios-y-autenticacion/) creamos identidades (usuarios y service accounts), pero por sí solas no pueden hacer nada en el cluster. RBAC (Role Based Access Control) es el mecanismo de autorización con el que les damos permisos.
 
 RBAC se compone de cuatro objetos, que conviene entender como dos parejas:
 - **Role / ClusterRole**: definen **qué** se puede hacer (verbos sobre recursos).

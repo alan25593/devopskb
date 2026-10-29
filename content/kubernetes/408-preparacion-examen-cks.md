@@ -4,20 +4,20 @@ category: "kubernetes"
 description: "Guía definitiva para aprobar el examen CKS (Certified Kubernetes Security Specialist) - temario oficial, estrategia, herramientas (trivy, kube-bench, falco), simuladores y recursos de práctica."
 tags:
   - "kubernetes"
-  - "- CKS"
-  - "- certificación"
-  - "- examen"
+  - "CKS"
+  - "certificación"
+  - "examen"
 keywords:
   - "CKS examen"
-  - "- certified kubernetes security specialist"
-  - "- preparar CKS"
-  - "- aprobar CKS"
-  - "- CKS temario"
-  - "- killer.sh CKS"
-  - "- CKS consejos"
-  - "- trivy kube-bench falco"
-  - "- certificación seguridad kubernetes"
-  - "- CKS español"
+  - "certified kubernetes security specialist"
+  - "preparar CKS"
+  - "aprobar CKS"
+  - "CKS temario"
+  - "killer.sh CKS"
+  - "CKS consejos"
+  - "trivy kube-bench falco"
+  - "certificación seguridad kubernetes"
+  - "CKS español"
 ---
 
 # Preparación del examen CKS
@@ -35,12 +35,12 @@ La diferencia de carácter: el CKS mezcla ejercicios de Kubernetes con trabajo *
 ## Temario oficial y dónde lo hemos cubierto
 | Dominio | Peso | Capítulos del curso |
 |---------|------|---------------------|
-| Cluster setup | 15% | [401](./401.CIS_benchmarks.md), [403](./403.Network_policies_avanzadas.md), [112](./111.Ingress_controller.md), [203](./203.APIs_TLS_seguridad.md) |
-| Cluster hardening | 15% | [120](./119.Usuarios.md), [121](./120.Roles.md), [203](./203.APIs_TLS_seguridad.md), [204](./204.Certificados_autenticacion.md), [201](./201.Mantenimiento_backup.md) (upgrades) |
-| System hardening | 10% | [405](./405.Apparmor_seccomp.md), [402](./402.Runtime_class.md), [403](./403.Network_policies_avanzadas.md) |
-| Minimizar vulnerabilidades de microservicios | 20% | [119](./118.Seguridad.md), [404](./404.Admission_controllers.md), [407](./407.OPA.md), [115](./114.Secrets_configmaps.md), [305](./305.Service_mesh.md) (mTLS) |
-| Seguridad de la cadena de suministro | 20% | [401](./401.CIS_benchmarks.md) y este capítulo (trivy, validación de imágenes, SBOM) |
-| Monitorización, logging y seguridad en runtime | 20% | [406](./406.Falco.md), [124](./123.Logging.md), auditoría (este capítulo) |
+| Cluster setup | 15% | [401](/article/kubernetes/401-cis-benchmarks-kube-bench/), [403](/article/kubernetes/403-network-policies-avanzadas/), [112](/article/kubernetes/111-ingress-controllers/), [203](/article/kubernetes/203-apis-tls-seguridad-control-plane/) |
+| Cluster hardening | 15% | [120](/article/kubernetes/119-usuarios-y-autenticacion/), [121](/article/kubernetes/120-roles-y-rbac/), [203](/article/kubernetes/203-apis-tls-seguridad-control-plane/), [204](/article/kubernetes/204-certificados-pki-autenticacion/), [201](/article/kubernetes/201-mantenimiento-etcd-backup/) (upgrades) |
+| System hardening | 10% | [405](/article/kubernetes/405-apparmor-seccomp-capabilities/), [402](/article/kubernetes/402-runtime-class-gvisor-kata/), [403](/article/kubernetes/403-network-policies-avanzadas/) |
+| Minimizar vulnerabilidades de microservicios | 20% | [119](/article/kubernetes/118-seguridad-serviceaccounts/), [404](/article/kubernetes/404-admission-controllers-webhooks/), [407](/article/kubernetes/407-opa-gatekeeper-kyverno/), [115](/article/kubernetes/114-secrets-y-configmaps/), [305](/article/kubernetes/305-service-mesh-istio-linkerd/) (mTLS) |
+| Seguridad de la cadena de suministro | 20% | [401](/article/kubernetes/401-cis-benchmarks-kube-bench/) y este capítulo (trivy, validación de imágenes, SBOM) |
+| Monitorización, logging y seguridad en runtime | 20% | [406](/article/kubernetes/406-falco-runtime-security/), [124](/article/kubernetes/123-logging-y-monitoreo/), auditoría (este capítulo) |
 
 ## Las dos piezas que faltan
 Dos temas del examen que no tienen capítulo propio y cierran el temario:
@@ -55,7 +55,7 @@ trivy image --severity CRITICAL,HIGH nginx:1.19
 kubectl get pods -A -o jsonpath='{range .items[*]}{.spec.containers[*].image}{"\n"}{end}' | sort -u
 trivy image --severity CRITICAL <cada-imagen>
 ```
-Completa la foto de cadena de suministro: imágenes mínimas y de registries de confianza ([ImagePolicyWebhook](./404.Admission_controllers.md), políticas de [Gatekeeper](./407.OPA.md)), escaneadas (trivy) y, en entornos serios, firmadas (cosign/sigstore, de momento fuera del examen).
+Completa la foto de cadena de suministro: imágenes mínimas y de registries de confianza ([ImagePolicyWebhook](/article/kubernetes/404-admission-controllers-webhooks/), políticas de [Gatekeeper](/article/kubernetes/407-opa-gatekeeper-kyverno/)), escaneadas (trivy) y, en entornos serios, firmadas (cosign/sigstore, de momento fuera del examen).
 
 ### Audit logging del API server
 El registro de auditoría graba **quién hizo qué** en la API. Se configura con una *audit policy* y flags del API server:
@@ -78,36 +78,36 @@ rules:
 - --audit-log-maxage=30
 - --audit-log-maxbackup=10
 ```
-Recordemos (¡static pod!) montar los paths con volúmenes hostPath, igual que en [ImagePolicyWebhook](./404.Admission_controllers.md). Y practiquemos leer el log: es JSON por línea, `jq` es nuestro amigo.
+Recordemos (¡static pod!) montar los paths con volúmenes hostPath, igual que en [ImagePolicyWebhook](/article/kubernetes/404-admission-controllers-webhooks/). Y practiquemos leer el log: es JSON por línea, `jq` es nuestro amigo.
 
 ## Los clásicos que caen (casi) seguro
-1. **kube-bench**: ejecutar, interpretar y remediar (API server, kubelet) ([401](./401.CIS_benchmarks.md)).
-2. **RBAC de mínimo privilegio**: recortar un rol excesivo, service accounts sin automount ([121](./120.Roles.md), [120](./119.Usuarios.md)).
-3. **NetworkPolicies**: default-deny + excepciones, metadata service bloqueado ([403](./403.Network_policies_avanzadas.md)).
-4. **Pod Security Standards**: etiquetar namespaces con enforce/warn/audit ([119](./118.Seguridad.md)).
-5. **SecurityContext completo**: runAsNonRoot, readOnlyRootFilesystem, drop ALL ([119](./118.Seguridad.md)).
-6. **RuntimeClass con gVisor** y verificación con uname ([402](./402.Runtime_class.md)).
-7. **AppArmor/seccomp**: cargar perfil y aplicarlo a un pod ([405](./405.Apparmor_seccomp.md)).
-8. **Falco**: identificar el pod ruidoso y ajustar el output de una regla ([406](./406.Falco.md)).
+1. **kube-bench**: ejecutar, interpretar y remediar (API server, kubelet) ([401](/article/kubernetes/401-cis-benchmarks-kube-bench/)).
+2. **RBAC de mínimo privilegio**: recortar un rol excesivo, service accounts sin automount ([121](/article/kubernetes/120-roles-y-rbac/), [120](/article/kubernetes/119-usuarios-y-autenticacion/)).
+3. **NetworkPolicies**: default-deny + excepciones, metadata service bloqueado ([403](/article/kubernetes/403-network-policies-avanzadas/)).
+4. **Pod Security Standards**: etiquetar namespaces con enforce/warn/audit ([119](/article/kubernetes/118-seguridad-serviceaccounts/)).
+5. **SecurityContext completo**: runAsNonRoot, readOnlyRootFilesystem, drop ALL ([119](/article/kubernetes/118-seguridad-serviceaccounts/)).
+6. **RuntimeClass con gVisor** y verificación con uname ([402](/article/kubernetes/402-runtime-class-gvisor-kata/)).
+7. **AppArmor/seccomp**: cargar perfil y aplicarlo a un pod ([405](/article/kubernetes/405-apparmor-seccomp-capabilities/)).
+8. **Falco**: identificar el pod ruidoso y ajustar el output de una regla ([406](/article/kubernetes/406-falco-runtime-security/)).
 9. **Trivy**: escanear y eliminar/actualizar lo vulnerable (este capítulo).
 10. **Audit policy**: configurarla de cero (este capítulo).
-11. **Secrets**: leerlos/decodificarlos, cifrado en reposo con EncryptionConfiguration ([115](./114.Secrets_configmaps.md), [203](./203.APIs_TLS_seguridad.md)).
-12. **ImagePolicyWebhook**: la cadena completa de ficheros ([404](./404.Admission_controllers.md)).
-13. **Actualizar el cluster** a una versión parcheada ([201](./201.Mantenimiento_backup.md)).
-14. **Certificados y CSR**: firmar usuarios, revisar caducidades ([204](./204.Certificados_autenticacion.md)).
+11. **Secrets**: leerlos/decodificarlos, cifrado en reposo con EncryptionConfiguration ([115](/article/kubernetes/114-secrets-y-configmaps/), [203](/article/kubernetes/203-apis-tls-seguridad-control-plane/)).
+12. **ImagePolicyWebhook**: la cadena completa de ficheros ([404](/article/kubernetes/404-admission-controllers-webhooks/)).
+13. **Actualizar el cluster** a una versión parcheada ([201](/article/kubernetes/201-mantenimiento-etcd-backup/)).
+14. **Certificados y CSR**: firmar usuarios, revisar caducidades ([204](/article/kubernetes/204-certificados-pki-autenticacion/)).
 
 ## Estrategia específica del CKS
 - **El tiempo aprieta más que en la CKA**: los ejercicios tocan muchos ficheros del nodo. Memoricemos las rutas: `/etc/kubernetes/manifests/`, `/var/lib/kubelet/config.yaml`, `/etc/falco/`, `/var/lib/kubelet/seccomp/`, `/etc/apparmor.d/`.
 - **Cuando toquemos el API server, verifiquemos que vuelve**: tras editar su manifiesto, `watch crictl ps` hasta verlo arriba. Un API server roto nos bloquea el resto de la pregunta (y de las siguientes en ese cluster).
 - **Copias de seguridad antes de editar**: `cp kube-apiserver.yaml /tmp/` nos salva el examen cuando un cambio sale mal. Hábito innegociable.
 - **No reinventemos Rego ni perfiles**: en el examen, las políticas de Gatekeeper y los perfiles AppArmor vienen casi hechos; nuestro trabajo es completarlos o aplicarlos. Aprendamos a *leerlos* con soltura.
-- El resto de la liturgia (triaje, contextos, `$do`) es la misma de [CKA](./208.Preparacion_CKA.md) y [CKAD](./307.Preparacion_CKAD.md).
+- El resto de la liturgia (triaje, contextos, `$do`) es la misma de [CKA](/article/kubernetes/208-preparacion-examen-cka/) y [CKAD](/article/kubernetes/307-preparacion-examen-ckad/).
 
 ## Plan de entrenamiento
 1. **Repasemos la especialización entera ejecutando**: cada herramienta (kube-bench, trivy, falco, gatekeeper) instalada y usada al menos dos veces en nuestro laboratorio.
 2. **[Killercoda CKS](https://killercoda.com/killer-shell-cks)**: escenarios gratuitos por tema, imprescindibles aquí porque montan las herramientas por nosotros.
 3. **[killer.sh CKS](https://killer.sh/)**: las dos sesiones incluidas. En el CKS es especialmente valioso porque reproduce los ejercicios de nodos.
-4. **Leamos las guías oficiales**: el [CIS Benchmark](./401.CIS_benchmarks.md), la guía de hardening de la NSA/CISA y los security checklists de kubernetes.io alimentan directamente las preguntas.
+4. **Leamos las guías oficiales**: el [CIS Benchmark](/article/kubernetes/401-cis-benchmarks-kube-bench/), la guía de hardening de la NSA/CISA y los security checklists de kubernetes.io alimentan directamente las preguntas.
 
 ## El día del examen
 Misma logística que las anteriores (proctor, identificación, sala despejada). Específico del CKS: respiremos cuando entremos en los nodos por SSH; medio examen ocurre fuera de kubectl y es donde los nervios pierden exámenes. Ficheros → backup → editar → verificar → siguiente.

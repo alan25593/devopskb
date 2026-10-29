@@ -4,25 +4,25 @@ category: "kubernetes"
 description: "Guía definitiva para aprobar el examen CKAD (Certified Kubernetes Application Developer) - temario oficial, estrategia de examen, comandos imperativos, simuladores y recursos de práctica."
 tags:
   - "kubernetes"
-  - "- CKAD"
-  - "- certificación"
-  - "- examen"
+  - "CKAD"
+  - "certificación"
+  - "examen"
 keywords:
   - "CKAD examen"
-  - "- certified kubernetes application developer"
-  - "- preparar CKAD"
-  - "- aprobar CKAD"
-  - "- CKAD temario"
-  - "- killer.sh CKAD"
-  - "- CKAD consejos"
-  - "- CKAD simulacro"
-  - "- certificación kubernetes desarrolladores"
-  - "- CKAD español"
+  - "certified kubernetes application developer"
+  - "preparar CKAD"
+  - "aprobar CKAD"
+  - "CKAD temario"
+  - "killer.sh CKAD"
+  - "CKAD consejos"
+  - "CKAD simulacro"
+  - "certificación kubernetes desarrolladores"
+  - "CKAD español"
 ---
 
 # Preparación del examen CKAD
 
-Cierre de la especialización de desarrollo: el plan de ataque para el **CKAD (Certified Kubernetes Application Developer)**. Si venimos de leer la [guía del CKA](./208.Preparacion_CKA.md), buena parte de la logística es idéntica; aquí nos centramos en lo que hace al CKAD diferente: es el examen más **rápido** de los tres.
+Cierre de la especialización de desarrollo: el plan de ataque para el **CKAD (Certified Kubernetes Application Developer)**. Si venimos de leer la [guía del CKA](/article/kubernetes/208-preparacion-examen-cka/), buena parte de la logística es idéntica; aquí nos centramos en lo que hace al CKAD diferente: es el examen más **rápido** de los tres.
 
 ## Cómo es el examen
 - **Formato**: 100% práctico, 15-20 ejercicios en **2 horas**, sobre varios clusters reales.
@@ -36,11 +36,11 @@ La diferencia de carácter con el CKA: menos administración de cluster (no hay 
 ## Temario oficial y dónde lo hemos cubierto
 | Dominio | Peso | Capítulos del curso |
 |---------|------|---------------------|
-| Diseño y construcción de aplicaciones | 20% | [106](./105.Pods.md), [109](./108.DSySS.md), [110](./109.Jobs.md), [301](./301.Pods_initcontainers.md), [302](./302.Multicontainer_sidecars.md), [116](./115.Almacenamiento.md) |
-| Despliegue de aplicaciones | 20% | [108](./107.Deployments.md), [303](./303.Canary_bluegreen.md), [125](./124.Helm.md) |
-| Observabilidad y mantenimiento | 15% | [114](./113.Probes_live_readiness.md), [124](./123.Logging.md), [306](./306.Troubleshooting_aplicaciones.md), [203](./203.APIs_TLS_seguridad.md) (deprecaciones de API) |
-| Configuración y entorno de aplicaciones | 25% | [115](./114.Secrets_configmaps.md), [117](./116.Rangos_quotas.md), [118](./117.Autoscaling.md), [120](./119.Usuarios.md) (service accounts), [119](./118.Seguridad.md) (security context) |
-| Servicios y redes | 20% | [111](./110.Services.md), [112](./111.Ingress_controller.md), [304](./304.CoreDNS_DNS.md), [119](./118.Seguridad.md) (network policies) |
+| Diseño y construcción de aplicaciones | 20% | [106](/article/kubernetes/105-pods/), [109](/article/kubernetes/108-daemonsets-y-statefulsets/), [110](/article/kubernetes/109-jobs-y-cronjobs/), [301](/article/kubernetes/301-pods-initcontainers/), [302](/article/kubernetes/302-multicontainer-sidecars/), [116](/article/kubernetes/115-almacenamiento-pv-pvc/) |
+| Despliegue de aplicaciones | 20% | [108](/article/kubernetes/107-deployments/), [303](/article/kubernetes/303-canary-blue-green-deployments/), [125](/article/kubernetes/124-helm-package-manager/) |
+| Observabilidad y mantenimiento | 15% | [114](/article/kubernetes/113-probes-healthchecks/), [124](/article/kubernetes/123-logging-y-monitoreo/), [306](/article/kubernetes/306-troubleshooting-aplicaciones/), [203](/article/kubernetes/203-apis-tls-seguridad-control-plane/) (deprecaciones de API) |
+| Configuración y entorno de aplicaciones | 25% | [115](/article/kubernetes/114-secrets-y-configmaps/), [117](/article/kubernetes/116-limitranges-y-resourcequotas/), [118](/article/kubernetes/117-autoscaling-hpa-vpa/), [120](/article/kubernetes/119-usuarios-y-autenticacion/) (service accounts), [119](/article/kubernetes/118-seguridad-serviceaccounts/) (security context) |
+| Servicios y redes | 20% | [111](/article/kubernetes/110-services/), [112](/article/kubernetes/111-ingress-controllers/), [304](/article/kubernetes/304-coredns-resolucion-dns/), [119](/article/kubernetes/118-seguridad-serviceaccounts/) (network policies) |
 
 Fijémonos en que gran parte del CKAD vive en la **parte común** del curso: si la trabajamos bien, ya tenemos el 70% hecho.
 
@@ -80,19 +80,19 @@ k get pod x -o yaml | less                       # Qué hay realmente desplegado
 ```
 
 ## Los clásicos que caen (casi) seguro
-1. **Pod multi-contenedor con volumen compartido** ([302](./302.Multicontainer_sidecars.md)): app + sidecar sobre un `emptyDir`.
-2. **Init container** que prepara algo para el principal ([301](./301.Pods_initcontainers.md)).
-3. **ConfigMap/Secret consumido como env y como volumen** ([115](./114.Secrets_configmaps.md)).
-4. **Probes**: añadir liveness/readiness a un deployment existente ([114](./113.Probes_live_readiness.md)).
-5. **Arreglar un pod roto**: CrashLoopBackOff, imagen errónea, OOMKilled ([306](./306.Troubleshooting_aplicaciones.md)).
-6. **Canary con dos deployments** y reparto por réplicas ([303](./303.Canary_bluegreen.md)).
-7. **SecurityContext**: runAsUser, capabilities, readOnlyRootFilesystem ([119](./118.Seguridad.md)).
-8. **NetworkPolicy** que permita solo cierto tráfico ([119](./118.Seguridad.md)).
-9. **Ingress** para un service existente ([112](./111.Ingress_controller.md)).
-10. **Job/CronJob** con completions, parallelism o schedule ([110](./109.Jobs.md)).
-11. **Service account en un deployment** + RBAC básico ([120](./119.Usuarios.md), [121](./120.Roles.md)).
-12. **Helm**: instalar, actualizar o hacer rollback de una release ([125](./124.Helm.md)).
-13. **Deprecaciones de API**: actualizar un manifiesto con apiVersion antigua ([203](./203.APIs_TLS_seguridad.md)).
+1. **Pod multi-contenedor con volumen compartido** ([302](/article/kubernetes/302-multicontainer-sidecars/)): app + sidecar sobre un `emptyDir`.
+2. **Init container** que prepara algo para el principal ([301](/article/kubernetes/301-pods-initcontainers/)).
+3. **ConfigMap/Secret consumido como env y como volumen** ([115](/article/kubernetes/114-secrets-y-configmaps/)).
+4. **Probes**: añadir liveness/readiness a un deployment existente ([114](/article/kubernetes/113-probes-healthchecks/)).
+5. **Arreglar un pod roto**: CrashLoopBackOff, imagen errónea, OOMKilled ([306](/article/kubernetes/306-troubleshooting-aplicaciones/)).
+6. **Canary con dos deployments** y reparto por réplicas ([303](/article/kubernetes/303-canary-blue-green-deployments/)).
+7. **SecurityContext**: runAsUser, capabilities, readOnlyRootFilesystem ([119](/article/kubernetes/118-seguridad-serviceaccounts/)).
+8. **NetworkPolicy** que permita solo cierto tráfico ([119](/article/kubernetes/118-seguridad-serviceaccounts/)).
+9. **Ingress** para un service existente ([112](/article/kubernetes/111-ingress-controllers/)).
+10. **Job/CronJob** con completions, parallelism o schedule ([110](/article/kubernetes/109-jobs-y-cronjobs/)).
+11. **Service account en un deployment** + RBAC básico ([120](/article/kubernetes/119-usuarios-y-autenticacion/), [121](/article/kubernetes/120-roles-y-rbac/)).
+12. **Helm**: instalar, actualizar o hacer rollback de una release ([125](/article/kubernetes/124-helm-package-manager/)).
+13. **Deprecaciones de API**: actualizar un manifiesto con apiVersion antigua ([203](/article/kubernetes/203-apis-tls-seguridad-control-plane/)).
 
 ## Plan de entrenamiento
 1. **Práctica diaria corta**: el CKAD premia la memoria muscular. Mejor 30 minutos al día de ejercicios imperativos que un atracón semanal.
@@ -101,11 +101,11 @@ k get pod x -o yaml | less                       # Qué hay realmente desplegado
 4. **Cronometra todo**: si un ejercicio básico (deployment + service + probe) nos lleva más de 4-5 minutos, repitámoslo hasta que no.
 
 ## El día del examen
-Los mismos consejos logísticos del [CKA](./208.Preparacion_CKA.md) aplican (proctor, identificación, sala). Específicos del CKAD:
+Los mismos consejos logísticos del [CKA](/article/kubernetes/208-preparacion-examen-cka/) aplican (proctor, identificación, sala). Específicos del CKAD:
 - **Contexto y namespace**: cada pregunta indica ambos. `kubectl config set-context --current --namespace=<ns>` nada más empezar el ejercicio.
 - **Triaje agresivo**: con tantos ejercicios cortos, saltar rápido lo que se atasca es aún más rentable que en el CKA.
 - **Verifica el estado final**: pod `Running`, endpoints poblados, rollout completado. Es lo que puntúa.
 
-¡A por ello! Y si después queremos el cinturón completo: [CKA](./208.Preparacion_CKA.md) para administrar el cluster y [CKS](./408.Preparacion_CKS.md) para asegurarlo.
+¡A por ello! Y si después queremos el cinturón completo: [CKA](/article/kubernetes/208-preparacion-examen-cka/) para administrar el cluster y [CKS](/article/kubernetes/408-preparacion-examen-cks/) para asegurarlo.
 
 ---

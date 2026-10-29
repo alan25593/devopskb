@@ -4,23 +4,23 @@ category: "kubernetes"
 description: "Aprende Helm para Kubernetes - instalación, creación de charts, gestión de releases, valores y plantillas. Simplifica despliegues complejos con el gestor de paquetes."
 tags:
   - "kubernetes"
-  - "- helm"
-  - "- charts"
-  - "- package-manager"
+  - "helm"
+  - "charts"
+  - "package-manager"
 keywords:
   - "helm kubernetes"
-  - "- helm charts"
-  - "- kubernetes package manager"
-  - "- helm install"
-  - "- helm templates"
-  - "- helm values"
-  - "- gestión aplicaciones kubernetes"
-  - "- helm upgrade"
-  - "- helm rollback"
-  - "- helmfile"
-  - "- helm repository"
-  - "- crear helm chart"
-  - "- artifacthub helm"
+  - "helm charts"
+  - "kubernetes package manager"
+  - "helm install"
+  - "helm templates"
+  - "helm values"
+  - "gestión aplicaciones kubernetes"
+  - "helm upgrade"
+  - "helm rollback"
+  - "helmfile"
+  - "helm repository"
+  - "crear helm chart"
+  - "artifacthub helm"
 ---
 
 # Helm en Kubernetes
@@ -138,7 +138,7 @@ helm rollback mi-base-de-datos 1
 helm uninstall mi-base-de-datos
 ```
 
-¿Nos suena este flujo? Es el mismo concepto de revisiones y rollbacks que vimos en los [deployments](./107.Deployments.md), pero a nivel de aplicación completa.
+¿Nos suena este flujo? Es el mismo concepto de revisiones y rollbacks que vimos en los [deployments](/article/kubernetes/107-deployments/), pero a nivel de aplicación completa.
 
 ## Crear nuestro propio chart
 Para empaquetar nuestras propias aplicaciones, Helm genera un esqueleto de chart funcional con un solo comando:

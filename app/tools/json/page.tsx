@@ -3,7 +3,7 @@ import Sidebar from '@/components/Sidebar'
 import JsonFormatter from '@/components/tools/JsonFormatter'
 import ToolSchema from '@/components/ToolSchema'
 import LearnMore from '@/components/LearnMore'
-import { getArticle } from '@/lib/content'
+import { getToolArticles } from '@/lib/content'
 import type { Metadata } from 'next'
 
 const TITLE = 'JSON Formatter | WiresOps'
@@ -30,10 +30,7 @@ export const metadata: Metadata = {
 }
 
 export default function JsonPage() {
-  const relatedArticles = [
-    getArticle('linux', '03-procesamiento-de-texto'),
-    getArticle('kubernetes', '02-kubectl'),
-  ].filter(Boolean) as any[]
+  const relatedArticles = getToolArticles('json')
 
   return (
     <div className="flex h-dvh overflow-hidden">

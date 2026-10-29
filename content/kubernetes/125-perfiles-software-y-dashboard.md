@@ -4,23 +4,23 @@ category: "kubernetes"
 description: "Descubre las mejores herramientas visuales para Kubernetes - Dashboard oficial, k9s, Lens, kubectl plugins y herramientas de administración gráfica."
 tags:
   - "kubernetes"
-  - "- dashboard"
-  - "- herramientas"
-  - "- GUI"
-  - "- administración"
+  - "dashboard"
+  - "herramientas"
+  - "GUI"
+  - "administración"
 keywords:
   - "kubernetes dashboard"
-  - "- k9s kubernetes"
-  - "- lens kubernetes"
-  - "- herramientas kubernetes"
-  - "- kubectl plugins"
-  - "- administración visual kubernetes"
-  - "- GUI kubernetes"
-  - "- monitorizar kubernetes visual"
-  - "- k9s tutorial"
-  - "- kubernetes UI"
-  - "- krew kubectl"
-  - "- kubectx kubens"
+  - "k9s kubernetes"
+  - "lens kubernetes"
+  - "herramientas kubernetes"
+  - "kubectl plugins"
+  - "administración visual kubernetes"
+  - "GUI kubernetes"
+  - "monitorizar kubernetes visual"
+  - "k9s tutorial"
+  - "kubernetes UI"
+  - "krew kubectl"
+  - "kubectx kubens"
 ---
 
 # Perfiles, clientes y dashboards en Kubernetes
@@ -30,7 +30,7 @@ Para cerrar la parte común del curso, vamos a ver el ecosistema de herramientas
 > **Aviso para certificaciones:** en los exámenes CKA, CKAD y CKS solo tendremos `kubectl` (con autocompletado y el alias `k`). Estas herramientas son para nuestro día a día profesional; no nos apoyemos en ellas para preparar el examen.
 
 ## Perfiles y gestión de múltiples clusters
-En cuanto trabajemos en serio con Kubernetes, acabaremos teniendo varios clusters: el de desarrollo, el de producción, el minikube local... Como vimos en el [capítulo de manifiestos](./104.Conceptos.md), kubectl gestiona esto mediante **contextos** en el kubeconfig.
+En cuanto trabajemos en serio con Kubernetes, acabaremos teniendo varios clusters: el de desarrollo, el de producción, el minikube local... Como vimos en el [capítulo de manifiestos](/article/kubernetes/104-conceptos/), kubectl gestiona esto mediante **contextos** en el kubeconfig.
 
 Un truco muy útil es que la variable `KUBECONFIG` admite varios ficheros, y kubectl los fusiona:
 ```bash
@@ -69,7 +69,7 @@ Si pasamos muchas horas administrando clusters, k9s amortiza su curva de aprendi
 ## Lens y las GUIs de escritorio
 Si preferimos una aplicación gráfica de escritorio, [Lens](https://k8slens.dev/) es la más conocida: muestra múltiples clusters, métricas, logs y permite editar recursos desde una interfaz muy pulida. Existe también [OpenLens](https://github.com/MuhammedKalkan/OpenLens), su variante totalmente open source, y alternativas como [Headlamp](https://headlamp.dev/) (proyecto sandbox de la CNCF) o [Aptakube](https://aptakube.com/).
 
-Y recordemos que el [Dashboard oficial de Kubernetes](./123.Logging.md) que instalamos en el capítulo anterior cubre el caso de una interfaz web desplegada en el propio cluster.
+Y recordemos que el [Dashboard oficial de Kubernetes](/article/kubernetes/123-logging-y-monitoreo/) que instalamos en el capítulo anterior cubre el caso de una interfaz web desplegada en el propio cluster.
 
 ## Krew: plugins para kubectl
 [Krew](https://krew.sigs.k8s.io/) es el gestor de plugins de kubectl. Una vez instalado, da acceso a un catálogo de más de doscientos plugins que se integran como subcomandos de kubectl:
@@ -107,6 +107,6 @@ k delete pod nginx $now
 - **Krew** extiende kubectl con plugins como `tree`, `neat` o `access-matrix`.
 - Para los exámenes: alias `k`, autocompletado y `--dry-run=client -o yaml`. Nada más, pero tampoco nada menos.
 
-Con esto cerramos la parte común del curso. A partir de aquí, elijamos nuestra especialización: [CKA (administración)](./201.Mantenimiento_backup.md), [CKAD (desarrollo)](./301.Pods_initcontainers.md) o [CKS (seguridad)](./401.CIS_benchmarks.md).
+Con esto cerramos la parte común del curso. A partir de aquí, elijamos nuestra especialización: [CKA (administración)](/article/kubernetes/201-mantenimiento-etcd-backup/), [CKAD (desarrollo)](/article/kubernetes/301-pods-initcontainers/) o [CKS (seguridad)](/article/kubernetes/401-cis-benchmarks-kube-bench/).
 
 ---

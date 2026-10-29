@@ -4,29 +4,29 @@ category: "kubernetes"
 description: "Aprende a instalar Kubernetes en entornos locales y playgrounds gratuitos - Minikube, k3s, Docker Desktop, Rancher Desktop, Play with Kubernetes y más."
 tags:
   - "kubernetes"
-  - "- minikube"
-  - "- k3s"
-  - "- playground"
-  - "- desarrollo"
+  - "minikube"
+  - "k3s"
+  - "playground"
+  - "desarrollo"
 keywords:
   - "kubernetes minikube"
-  - "- k3s kubernetes"
-  - "- docker desktop kubernetes"
-  - "- rancher desktop kubernetes"
-  - "- play with kubernetes"
-  - "- kubernetes playground gratis"
-  - "- kubernetes local desarrollo"
-  - "- instalar minikube"
-  - "- k3s instalación"
-  - "- kind kubernetes"
-  - "- entorno kubernetes local"
-  - "- probar kubernetes gratis"
+  - "k3s kubernetes"
+  - "docker desktop kubernetes"
+  - "rancher desktop kubernetes"
+  - "play with kubernetes"
+  - "kubernetes playground gratis"
+  - "kubernetes local desarrollo"
+  - "instalar minikube"
+  - "k3s instalación"
+  - "kind kubernetes"
+  - "entorno kubernetes local"
+  - "probar kubernetes gratis"
 ---
 
 # Instalaciones para pocos recursos o entornos de pruebas gratuitos
 En este capítulo veremos opciones centradas en desplegar rápidamente clusters de Kubernetes, principalmente orientadas a entornos de pruebas o desarrollo.
 
-En el capítulo anterior está [la guía de instalación para entornos productivos y de mayor tamaño](./103.Instalacion.md).
+En el capítulo anterior está [la guía de instalación para entornos productivos y de mayor tamaño](/article/kubernetes/103-instalacion/).
 
 De todas las opciones que veremos, solo k3s es recomendable para entornos de producción (pequeños). Minikube, Docker Desktop y similares no están pensados para producción.
 

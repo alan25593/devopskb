@@ -4,21 +4,21 @@ category: "kubernetes"
 description: "Descubre qué es un service mesh y cuándo usarlo - Istio, Linkerd, sidecars, mTLS, traffic management y observabilidad entre microservicios en Kubernetes para la certificación CKAD."
 tags:
   - "kubernetes"
-  - "- service-mesh"
-  - "- istio"
-  - "- linkerd"
-  - "- CKAD"
+  - "service-mesh"
+  - "istio"
+  - "linkerd"
+  - "CKAD"
 keywords:
   - "service mesh kubernetes"
-  - "- istio kubernetes"
-  - "- linkerd kubernetes"
-  - "- mtls kubernetes"
-  - "- envoy proxy"
-  - "- sidecar proxy kubernetes"
-  - "- traffic management istio"
-  - "- ambient mesh istio"
-  - "- microservicios kubernetes"
-  - "- CKAD service mesh"
+  - "istio kubernetes"
+  - "linkerd kubernetes"
+  - "mtls kubernetes"
+  - "envoy proxy"
+  - "sidecar proxy kubernetes"
+  - "traffic management istio"
+  - "ambient mesh istio"
+  - "microservicios kubernetes"
+  - "CKAD service mesh"
 ---
 
 # Service mesh en Kubernetes
@@ -46,11 +46,11 @@ flowchart TD
     CP -.-> PB
 ```
 
-¿Nos suena el patrón? Es el [sidecar](./302.Multicontainer_sidecars.md) llevado al extremo: el mesh **inyecta automáticamente** un proxy en cada pod (normalmente con un mutating admission webhook al etiquetar el namespace), y la app habla con el mundo sin saber que todo pasa por él.
+¿Nos suena el patrón? Es el [sidecar](/article/kubernetes/302-multicontainer-sidecars/) llevado al extremo: el mesh **inyecta automáticamente** un proxy en cada pod (normalmente con un mutating admission webhook al etiquetar el namespace), y la app habla con el mundo sin saber que todo pasa por él.
 
 ## Qué nos da un service mesh
-- **mTLS automático**: todo el tráfico entre pods se cifra y autentica mutuamente, con certificados rotados por el mesh. Es la implementación práctica del *zero trust* dentro del cluster (y complementa a las [NetworkPolicies](./118.Seguridad.md): estas deciden *quién puede hablar con quién*, el mesh asegura *cómo* hablan).
-- **Gestión de tráfico**: reintentos, timeouts, circuit breaking y repartos por porcentaje mucho más finos que los de un Service. Los [canary](./303.Canary_bluegreen.md) con métricas automáticas suelen apoyarse en un mesh.
+- **mTLS automático**: todo el tráfico entre pods se cifra y autentica mutuamente, con certificados rotados por el mesh. Es la implementación práctica del *zero trust* dentro del cluster (y complementa a las [NetworkPolicies](/article/kubernetes/118-seguridad-serviceaccounts/): estas deciden *quién puede hablar con quién*, el mesh asegura *cómo* hablan).
+- **Gestión de tráfico**: reintentos, timeouts, circuit breaking y repartos por porcentaje mucho más finos que los de un Service. Los [canary](/article/kubernetes/303-canary-blue-green-deployments/) con métricas automáticas suelen apoyarse en un mesh.
 - **Observabilidad**: métricas uniformes (latencia, tasa de error, throughput) y trazas distribuidas de **todos** los servicios sin instrumentar el código.
 - **Políticas de autorización**: reglas del tipo "solo `frontend` puede llamar al `POST /pagos` de `backend`", a nivel de identidad de servicio, no de IP.
 

@@ -4,26 +4,26 @@ category: "kubernetes"
 description: "Aprende a gestionar la PKI de Kubernetes - certificados de kubeadm, renovación, caducidades, CSR API y autenticación de usuarios y componentes para la certificación CKA."
 tags:
   - "kubernetes"
-  - "- certificados"
-  - "- PKI"
-  - "- autenticación"
-  - "- CKA"
+  - "certificados"
+  - "PKI"
+  - "autenticación"
+  - "CKA"
 keywords:
   - "kubernetes certificados"
-  - "- kubeadm certs"
-  - "- renovar certificados kubernetes"
-  - "- pki kubernetes"
-  - "- certificados caducados kubernetes"
-  - "- certificatesigningrequest"
-  - "- kubeconfig certificados"
-  - "- CA kubernetes"
-  - "- autenticación kubernetes"
-  - "- CKA certificados"
+  - "kubeadm certs"
+  - "renovar certificados kubernetes"
+  - "pki kubernetes"
+  - "certificados caducados kubernetes"
+  - "certificatesigningrequest"
+  - "kubeconfig certificados"
+  - "CA kubernetes"
+  - "autenticación kubernetes"
+  - "CKA certificados"
 ---
 
 # Certificados y autenticación en Kubernetes
 
-En el [capítulo anterior](./203.APIs_TLS_seguridad.md) vimos que toda la comunicación del cluster va cifrada con TLS y firmada por la CA de `/etc/kubernetes/pki/`. Ahora toca gestionarla: entender qué certificado usa cada componente, comprobar caducidades, renovarlos y diagnosticar el clásico "certificado caducado" que deja el cluster inservible una mañana cualquiera.
+En el [capítulo anterior](/article/kubernetes/203-apis-tls-seguridad-control-plane/) vimos que toda la comunicación del cluster va cifrada con TLS y firmada por la CA de `/etc/kubernetes/pki/`. Ahora toca gestionarla: entender qué certificado usa cada componente, comprobar caducidades, renovarlos y diagnosticar el clásico "certificado caducado" que deja el cluster inservible una mañana cualquiera.
 
 ## La PKI del cluster, pieza a pieza
 Un cluster de kubeadm mantiene, en realidad, **tres CAs distintas**:
@@ -76,7 +76,7 @@ sudo cp /etc/kubernetes/admin.conf ~/.kube/config
 Los kubelets rotan su certificado automáticamente si tienen `rotateCertificates: true` en su configuración (`/var/lib/kubelet/config.yaml`), que es el valor por defecto con kubeadm. Cuando les toca renovar, generan un CSR que el controller manager aprueba automáticamente.
 
 ## La API CertificateSigningRequest
-Ya la usamos para [crear usuarios](./119.Usuarios.md), pero es importante entender el flujo completo porque el examen CKA lo pide tal cual:
+Ya la usamos para [crear usuarios](/article/kubernetes/119-usuarios-y-autenticacion/), pero es importante entender el flujo completo porque el examen CKA lo pide tal cual:
 
 1. El solicitante genera su clave y su CSR con openssl:
 ```bash
@@ -113,7 +113,7 @@ kubectl config set-credentials maria --client-certificate=maria.crt --client-key
 kubectl config set-context maria@kubernetes --cluster=kubernetes --user=maria
 ```
 
-5. Y se le dan permisos con RBAC, como vimos en el [capítulo de roles](./120.Roles.md). Sin el binding, maria se autentica pero no puede hacer nada.
+5. Y se le dan permisos con RBAC, como vimos en el [capítulo de roles](/article/kubernetes/120-roles-y-rbac/). Sin el binding, maria se autentica pero no puede hacer nada.
 
 Los `signerName` que debemos reconocer: `kubernetes.io/kube-apiserver-client` (usuarios), `kubernetes.io/kube-apiserver-client-kubelet` (kubelets) y `kubernetes.io/kubelet-serving` (certificado de servidor del kubelet).
 

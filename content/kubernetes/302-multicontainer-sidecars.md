@@ -4,23 +4,23 @@ category: "kubernetes"
 description: "Domina los patrones multi-container en Kubernetes con Pods y Sidecars. Aprende sidecars nativos, ambassador y adapter patterns para aplicaciones avanzadas."
 tags:
   - "kubernetes"
-  - "- pods"
-  - "- sidecars"
-  - "- multi-container"
-  - "- CKAD"
+  - "pods"
+  - "sidecars"
+  - "multi-container"
+  - "CKAD"
 keywords:
   - "kubernetes pods avanzados"
-  - "- sidecars kubernetes"
-  - "- multi-container pods kubernetes"
-  - "- sidecar nativo kubernetes"
-  - "- ambassador pattern kubernetes"
-  - "- adapter pattern kubernetes"
-  - "- CKAD patrones"
-  - "- contenedores auxiliares kubernetes"
-  - "- proxy sidecar kubernetes"
-  - "- service mesh sidecar"
-  - "- istio sidecar"
-  - "- logging sidecar kubernetes"
+  - "sidecars kubernetes"
+  - "multi-container pods kubernetes"
+  - "sidecar nativo kubernetes"
+  - "ambassador pattern kubernetes"
+  - "adapter pattern kubernetes"
+  - "CKAD patrones"
+  - "contenedores auxiliares kubernetes"
+  - "proxy sidecar kubernetes"
+  - "service mesh sidecar"
+  - "istio sidecar"
+  - "logging sidecar kubernetes"
 ---
 
 # Pods multi-contenedor: sidecars, ambassador y adapter
@@ -138,7 +138,7 @@ El caso típico: una aplicación legacy escribe métricas en un formato propio, 
 | Ambassador | Salida | Simplificar conexiones hacia fuera | Proxy a base de datos, TLS |
 | Adapter | Entrada | Estandarizar lo que se expone | Exporter de métricas Prometheus |
 
-Los tres son, técnicamente, sidecars; el nombre describe su papel. Y los service mesh como Istio o Linkerd, que veremos [más adelante](./305.Service_mesh.md), llevan el patrón al extremo: inyectan automáticamente un proxy sidecar en **todos** los pods.
+Los tres son, técnicamente, sidecars; el nombre describe su papel. Y los service mesh como Istio o Linkerd, que veremos [más adelante](/article/kubernetes/305-service-mesh-istio-linkerd/), llevan el patrón al extremo: inyectan automáticamente un proxy sidecar en **todos** los pods.
 
 ## Comandos para pods multi-contenedor
 Con varios contenedores, el flag `-c` se vuelve imprescindible:

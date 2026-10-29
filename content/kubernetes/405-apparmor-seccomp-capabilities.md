@@ -4,26 +4,26 @@ category: "kubernetes"
 description: "Aprende a restringir contenedores con AppArmor y Seccomp en Kubernetes - perfiles de seguridad, RuntimeDefault, syscalls, capabilities y hardening de pods para la certificación CKS."
 tags:
   - "kubernetes"
-  - "- seguridad"
-  - "- apparmor"
-  - "- seccomp"
-  - "- CKS"
+  - "seguridad"
+  - "apparmor"
+  - "seccomp"
+  - "CKS"
 keywords:
   - "apparmor kubernetes"
-  - "- seccomp kubernetes"
-  - "- perfiles seguridad kubernetes"
-  - "- runtimedefault seccomp"
-  - "- syscalls contenedores"
-  - "- capabilities linux kubernetes"
-  - "- CKS apparmor seccomp"
-  - "- hardening contenedores"
-  - "- securitycontext seccompprofile"
-  - "- kernel seguridad contenedores"
+  - "seccomp kubernetes"
+  - "perfiles seguridad kubernetes"
+  - "runtimedefault seccomp"
+  - "syscalls contenedores"
+  - "capabilities linux kubernetes"
+  - "CKS apparmor seccomp"
+  - "hardening contenedores"
+  - "securitycontext seccompprofile"
+  - "kernel seguridad contenedores"
 ---
 
 # AppArmor y Seccomp: perfiles de seguridad del kernel
 
-En el [capítulo de RuntimeClass](./402.Runtime_class.md) vimos que el riesgo de fondo de los contenedores es el kernel compartido. Antes de llegar al extremo de los sandboxes, Linux trae de serie dos mecanismos para **reducir lo que un contenedor puede pedirle al kernel**: seccomp (filtra syscalls) y AppArmor (control de acceso obligatorio). Kubernetes los integra en el `securityContext`, y el CKS los pregunta sí o sí.
+En el [capítulo de RuntimeClass](/article/kubernetes/402-runtime-class-gvisor-kata/) vimos que el riesgo de fondo de los contenedores es el kernel compartido. Antes de llegar al extremo de los sandboxes, Linux trae de serie dos mecanismos para **reducir lo que un contenedor puede pedirle al kernel**: seccomp (filtra syscalls) y AppArmor (control de acceso obligatorio). Kubernetes los integra en el `securityContext`, y el CKS los pregunta sí o sí.
 
 La foto completa de capas, de dentro hacia fuera:
 
@@ -36,7 +36,7 @@ flowchart LR
 ```
 
 ## Capabilities: el repaso necesario
-Las capabilities trocean los privilegios de root en piezas (CAP_NET_ADMIN, CAP_SYS_TIME, CAP_CHOWN...). Ya las vimos en el [securityContext](./118.Seguridad.md); la doctrina es simple y cae en todos los exámenes:
+Las capabilities trocean los privilegios de root en piezas (CAP_NET_ADMIN, CAP_SYS_TIME, CAP_CHOWN...). Ya las vimos en el [securityContext](/article/kubernetes/118-seguridad-serviceaccounts/); la doctrina es simple y cae en todos los exámenes:
 
 ```yaml
     securityContext:
@@ -67,7 +67,7 @@ spec:
     image: nginx
 ```
 
-Esto debería ser el mínimo de **todos** nuestros pods (el nivel `restricted` de los [Pod Security Standards](./118.Seguridad.md) lo exige). Los tres tipos posibles:
+Esto debería ser el mínimo de **todos** nuestros pods (el nivel `restricted` de los [Pod Security Standards](/article/kubernetes/118-seguridad-serviceaccounts/) lo exige). Los tres tipos posibles:
 - `RuntimeDefault`: el perfil del runtime. Nuestro valor por defecto.
 - `Unconfined`: sin filtro (el comportamiento histórico, evitar).
 - `Localhost`: un perfil personalizado cargado desde el nodo.
@@ -159,8 +159,8 @@ Mismo gotcha que seccomp: si el perfil no está cargado en el nodo, el pod se qu
 
 ## Estrategia práctica
 1. **Base universal**: `seccompProfile: RuntimeDefault` + `capabilities: drop ALL` + `runAsNonRoot` + `allowPrivilegeEscalation: false`. Esto es el nivel `restricted` de PSS y no rompe el 95% de las aplicaciones.
-2. **Cargas sensibles**: perfiles seccomp/AppArmor personalizados, generados a partir de observar la app (herramientas como `inspektor-gadget` o el propio [Falco](./406.Falco.md) ayudan a ver qué syscalls usa realmente).
-3. **Hagámoslo obligatorio**: con Pod Security Admission o las [políticas de admisión](./404.Admission_controllers.md), para que nadie despliegue sin perfil.
+2. **Cargas sensibles**: perfiles seccomp/AppArmor personalizados, generados a partir de observar la app (herramientas como `inspektor-gadget` o el propio [Falco](/article/kubernetes/406-falco-runtime-security/) ayudan a ver qué syscalls usa realmente).
+3. **Hagámoslo obligatorio**: con Pod Security Admission o las [políticas de admisión](/article/kubernetes/404-admission-controllers-webhooks/), para que nadie despliegue sin perfil.
 
 ## Resumen
 - Capas complementarias: capabilities (privilegios) → seccomp (syscalls) → AppArmor (recursos). Defensa en profundidad, no alternativas.

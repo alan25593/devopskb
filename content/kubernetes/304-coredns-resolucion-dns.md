@@ -4,21 +4,21 @@ category: "kubernetes"
 description: "Entiende el DNS de Kubernetes a fondo - CoreDNS, nombres de servicios y pods, resolución entre namespaces, headless services, dnsPolicy y troubleshooting de DNS para la certificación CKAD."
 tags:
   - "kubernetes"
-  - "- dns"
-  - "- coredns"
-  - "- networking"
-  - "- CKAD"
+  - "dns"
+  - "coredns"
+  - "networking"
+  - "CKAD"
 keywords:
   - "coredns kubernetes"
-  - "- dns kubernetes"
-  - "- resolución nombres kubernetes"
-  - "- service discovery kubernetes"
-  - "- headless service dns"
-  - "- nslookup kubernetes"
-  - "- dnspolicy kubernetes"
-  - "- corefile kubernetes"
-  - "- troubleshooting dns kubernetes"
-  - "- CKAD networking"
+  - "dns kubernetes"
+  - "resolución nombres kubernetes"
+  - "service discovery kubernetes"
+  - "headless service dns"
+  - "nslookup kubernetes"
+  - "dnspolicy kubernetes"
+  - "corefile kubernetes"
+  - "troubleshooting dns kubernetes"
+  - "CKAD networking"
 ---
 
 # CoreDNS, servicios y DNS en Kubernetes
@@ -62,10 +62,10 @@ curl http://mydb.production.svc.cluster.local     # FQDN completo
 
 La regla práctica: **dentro del mismo namespace basta el nombre corto; entre namespaces, añade el namespace**. Este detalle cae constantemente en los exámenes ("¿por qué la app del namespace `frontend` no resuelve `mydb`?" — porque mydb vive en otro namespace).
 
-Lo que resuelve ese nombre es la **ClusterIP** del service. A partir de ahí, kube-proxy hace el resto, como vimos en [services](./110.Services.md).
+Lo que resuelve ese nombre es la **ClusterIP** del service. A partir de ahí, kube-proxy hace el resto, como vimos en [services](/article/kubernetes/110-services/).
 
 ## DNS de los headless services
-Los services *headless* (`clusterIP: None`), que conocimos con los [StatefulSets](./108.DSySS.md), no tienen ClusterIP: su nombre DNS devuelve directamente **las IPs de todos los pods**:
+Los services *headless* (`clusterIP: None`), que conocimos con los [StatefulSets](/article/kubernetes/108-daemonsets-y-statefulsets/), no tienen ClusterIP: su nombre DNS devuelve directamente **las IPs de todos los pods**:
 
 ```bash
 nslookup mongo.default.svc.cluster.local

@@ -4,26 +4,26 @@ category: "kubernetes"
 description: "Aprende estrategias de despliegue avanzadas en Kubernetes - canary releases, blue-green deployments, rolling updates y despliegue progresivo con ejemplos prácticos para la certificación CKAD."
 tags:
   - "kubernetes"
-  - "- deployments"
-  - "- canary"
-  - "- blue-green"
-  - "- CKAD"
+  - "deployments"
+  - "canary"
+  - "blue-green"
+  - "CKAD"
 keywords:
   - "canary deployment kubernetes"
-  - "- blue green deployment kubernetes"
-  - "- estrategias despliegue kubernetes"
-  - "- rolling update kubernetes"
-  - "- despliegue progresivo kubernetes"
-  - "- canary release tutorial"
-  - "- argo rollouts"
-  - "- flagger kubernetes"
-  - "- CKAD deployments"
-  - "- zero downtime deployment"
+  - "blue green deployment kubernetes"
+  - "estrategias despliegue kubernetes"
+  - "rolling update kubernetes"
+  - "despliegue progresivo kubernetes"
+  - "canary release tutorial"
+  - "argo rollouts"
+  - "flagger kubernetes"
+  - "CKAD deployments"
+  - "zero downtime deployment"
 ---
 
 # Canary y blue-green deployments en Kubernetes
 
-En el [capítulo de deployments](./107.Deployments.md) vimos las estrategias nativas: `RollingUpdate` y `Recreate`. Funcionan, pero comparten una limitación: la nueva versión se va liberando a **todos** los usuarios a la vez, sin fase de prueba con tráfico real. En este capítulo veremos las dos estrategias que resuelven eso, y cómo implementarlas con los recursos que ya conocemos.
+En el [capítulo de deployments](/article/kubernetes/107-deployments/) vimos las estrategias nativas: `RollingUpdate` y `Recreate`. Funcionan, pero comparten una limitación: la nueva versión se va liberando a **todos** los usuarios a la vez, sin fase de prueba con tráfico real. En este capítulo veremos las dos estrategias que resuelven eso, y cómo implementarlas con los recursos que ya conocemos.
 
 ## Recapitulando: el problema
 Un rolling update sustituye pods viejos por nuevos progresivamente. Si la versión nueva tiene un bug que solo aparece con tráfico real, lo descubriremos cuando ya esté sirviendo a buena parte de nuestros usuarios. Las estrategias avanzadas atacan ese hueco:
@@ -133,7 +133,7 @@ kubectl scale deployment app-stable --replicas=0   # 100% canary
 Es la implementación que pide el examen CKAD: dos deployments + un service, controlando el reparto con las réplicas. Su limitación obvia: el porcentaje va atado al número de pods (para un 1% necesitamos 99+1 réplicas).
 
 ### Canary con pesos: Gateway API
-Como vimos en el [capítulo de Gateway API](./112.Gateway.md), el reparto por pesos es parte del estándar y desacopla el tráfico del número de réplicas:
+Como vimos en el [capítulo de Gateway API](/article/kubernetes/112-gateway-api/), el reparto por pesos es parte del estándar y desacopla el tráfico del número de réplicas:
 
 ```yaml
   rules:

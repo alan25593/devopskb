@@ -3,7 +3,7 @@ import Sidebar from '@/components/Sidebar'
 import DnsToolkit from '@/components/tools/DnsToolkit'
 import ToolSchema from '@/components/ToolSchema'
 import LearnMore from '@/components/LearnMore'
-import { getArticle } from '@/lib/content'
+import { getToolArticles } from '@/lib/content'
 import type { Metadata } from 'next'
 
 const TITLE = 'DNS Toolkit | WiresOps'
@@ -30,10 +30,7 @@ export const metadata: Metadata = {
 }
 
 export default function DnsPage() {
-  const relatedArticles = [
-    getArticle('linux', '08-redes-y-dns'),
-    getArticle('windows', '04-redes-y-firewall'),
-  ].filter(Boolean) as any[]
+  const relatedArticles = getToolArticles('dns')
 
   return (
     <div className="flex h-dvh overflow-hidden">

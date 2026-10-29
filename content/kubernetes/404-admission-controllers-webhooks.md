@@ -4,25 +4,25 @@ category: "kubernetes"
 description: "Domina los admission controllers de Kubernetes - validating y mutating webhooks, ImagePolicyWebhook, Pod Security Admission y ValidatingAdmissionPolicy para la certificación CKS."
 tags:
   - "kubernetes"
-  - "- seguridad"
-  - "- admission-controllers"
-  - "- CKS"
+  - "seguridad"
+  - "admission-controllers"
+  - "CKS"
 keywords:
   - "admission controllers kubernetes"
-  - "- validating webhook kubernetes"
-  - "- mutating webhook kubernetes"
-  - "- imagepolicywebhook kubernetes"
-  - "- pod security admission"
-  - "- validatingadmissionpolicy"
-  - "- CKS admission controllers"
-  - "- control admision kubernetes"
-  - "- noderestriction kubernetes"
-  - "- webhooks kubernetes seguridad"
+  - "validating webhook kubernetes"
+  - "mutating webhook kubernetes"
+  - "imagepolicywebhook kubernetes"
+  - "pod security admission"
+  - "validatingadmissionpolicy"
+  - "CKS admission controllers"
+  - "control admision kubernetes"
+  - "noderestriction kubernetes"
+  - "webhooks kubernetes seguridad"
 ---
 
 # Admission controllers: validación y mutación de recursos
 
-Ya conocemos el viaje de toda petición a la API: autenticación → autorización → **control de admisión** ([capítulo 119](./118.Seguridad.md)). Esta tercera fase es donde un cluster bien asegurado impone sus reglas de juego: "aquí no entra ningún pod privilegiado", "todas las imágenes vienen de mi registry", "todo namespace lleva sus labels". En este capítulo desmontamos la maquinaria.
+Ya conocemos el viaje de toda petición a la API: autenticación → autorización → **control de admisión** ([capítulo 119](/article/kubernetes/118-seguridad-serviceaccounts/)). Esta tercera fase es donde un cluster bien asegurado impone sus reglas de juego: "aquí no entra ningún pod privilegiado", "todas las imágenes vienen de mi registry", "todo namespace lleva sus labels". En este capítulo desmontamos la maquinaria.
 
 ## Las dos familias: mutar y validar
 Los admission controllers procesan la petición **después de autorizarla y antes de persistirla en etcd**, en dos oleadas:
@@ -35,8 +35,8 @@ flowchart LR
     V --> E[(etcd)]
 ```
 
-- **Mutating**: pueden **modificar** el objeto. Ya hemos visto varios sin saberlo: el que inyecta la service account `default`, el que aplica los valores de un [LimitRange](./116.Rangos_quotas.md) o el que inyecta el sidecar de [Istio](./305.Service_mesh.md).
-- **Validating**: solo pueden **aceptar o rechazar**. Como los [Pod Security Standards](./118.Seguridad.md) o las [ResourceQuotas](./116.Rangos_quotas.md).
+- **Mutating**: pueden **modificar** el objeto. Ya hemos visto varios sin saberlo: el que inyecta la service account `default`, el que aplica los valores de un [LimitRange](/article/kubernetes/116-limitranges-y-resourcequotas/) o el que inyecta el sidecar de [Istio](/article/kubernetes/305-service-mesh-istio-linkerd/).
+- **Validating**: solo pueden **aceptar o rechazar**. Como los [Pod Security Standards](/article/kubernetes/118-seguridad-serviceaccounts/) o las [ResourceQuotas](/article/kubernetes/116-limitranges-y-resourcequotas/).
 
 El orden importa y es un detalle de examen: primero **todas** las mutaciones, después **todas** las validaciones. Así nadie valida un objeto que luego otro va a cambiar.
 
@@ -51,7 +51,7 @@ El API server trae decenas compilados. Se gestionan con flags en `/etc/kubernete
 
 Los que debemos conocer para el CKS:
 - **NodeRestriction**: limita cada kubelet a modificar solo su nodo y sus pods. Evita que un nodo comprometido sabotee a los demás. Debe estar siempre activo.
-- **PodSecurity**: aplica los Pod Security Standards por namespace (ya lo vimos en la [119](./118.Seguridad.md)).
+- **PodSecurity**: aplica los Pod Security Standards por namespace (ya lo vimos en la [119](/article/kubernetes/118-seguridad-serviceaccounts/)).
 - **AlwaysPullImages**: fuerza `imagePullPolicy: Always`; en clusters multi-tenant evita que un pod use la imagen privada cacheada de otro.
 - **EventRateLimit** e **LimitRanger**, **ResourceQuota**: protección frente a abusos de recursos.
 - **ImagePolicyWebhook**: delega la decisión sobre imágenes en un servicio externo (lo vemos ahora).
@@ -93,7 +93,7 @@ El campo más delicado es **`failurePolicy`**:
 - `Fail`: si el webhook no responde, la petición **se rechaza**. Máxima seguridad... y un webhook caído puede dejar el cluster sin poder crear pods.
 - `Ignore`: si no responde, la petición pasa. Disponibilidad a cambio de una vía de escape para un atacante (tumbar el webhook para saltarse el control).
 
-Es el trade-off clásico de seguridad vs disponibilidad, y pregunta habitual de examen. Sobre esta maquinaria de webhooks se construyen [OPA Gatekeeper y Kyverno](./407.OPA.md), que veremos en su propio capítulo.
+Es el trade-off clásico de seguridad vs disponibilidad, y pregunta habitual de examen. Sobre esta maquinaria de webhooks se construyen [OPA Gatekeeper y Kyverno](/article/kubernetes/407-opa-gatekeeper-kyverno/), que veremos en su propio capítulo.
 
 ## ImagePolicyWebhook: el ejercicio estrella del CKS
 Controlador integrado que consulta a un servicio externo si las imágenes de un pod están permitidas. El ejercicio típico del examen es **configurarlo**, y tiene su miga porque encadena tres ficheros:

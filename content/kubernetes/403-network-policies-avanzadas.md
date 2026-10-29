@@ -4,26 +4,26 @@ category: "kubernetes"
 description: "Domina las Network Policies avanzadas en Kubernetes - default deny, egress, combinación de selectores, políticas de DNS, CiliumNetworkPolicy y patrones de microsegmentación para la certificación CKS."
 tags:
   - "kubernetes"
-  - "- seguridad"
-  - "- network-policies"
-  - "- networking"
-  - "- CKS"
+  - "seguridad"
+  - "network-policies"
+  - "networking"
+  - "CKS"
 keywords:
   - "network policies avanzadas kubernetes"
-  - "- microsegmentación kubernetes"
-  - "- default deny kubernetes"
-  - "- egress network policy"
-  - "- cilium network policy"
-  - "- calico network policy"
-  - "- zero trust kubernetes"
-  - "- CKS network policies"
-  - "- aislar namespaces kubernetes"
-  - "- seguridad red kubernetes"
+  - "microsegmentación kubernetes"
+  - "default deny kubernetes"
+  - "egress network policy"
+  - "cilium network policy"
+  - "calico network policy"
+  - "zero trust kubernetes"
+  - "CKS network policies"
+  - "aislar namespaces kubernetes"
+  - "seguridad red kubernetes"
 ---
 
 # Network Policies avanzadas: microsegmentación
 
-En el [capítulo de seguridad](./118.Seguridad.md) vimos los fundamentos de las NetworkPolicies. Ahora toca pensar como un atacante: si compromete un pod, ¿hasta dónde puede llegar moviéndose lateralmente por la red? En un cluster sin políticas, la respuesta es "a todas partes". La microsegmentación consiste en que la respuesta sea "a ningún sitio que no necesite".
+En el [capítulo de seguridad](/article/kubernetes/118-seguridad-serviceaccounts/) vimos los fundamentos de las NetworkPolicies. Ahora toca pensar como un atacante: si compromete un pod, ¿hasta dónde puede llegar moviéndose lateralmente por la red? En un cluster sin políticas, la respuesta es "a todas partes". La microsegmentación consiste en que la respuesta sea "a ningún sitio que no necesite".
 
 ## Repaso exprés de la semántica
 Tres reglas mentales que evitan el 90% de los errores:
@@ -227,7 +227,7 @@ spec:
           path: "/api/v1/.*"
 ```
 
-Para el examen CKS basta el estándar, pero en el mundo real estas extensiones son las que permiten un zero trust de verdad (junto al [mTLS del service mesh](./305.Service_mesh.md), que asegura el *cómo* mientras las políticas deciden el *quién*).
+Para el examen CKS basta el estándar, pero en el mundo real estas extensiones son las que permiten un zero trust de verdad (junto al [mTLS del service mesh](/article/kubernetes/305-service-mesh-istio-linkerd/), que asegura el *cómo* mientras las políticas deciden el *quién*).
 
 ## Probar y depurar políticas
 ```bash

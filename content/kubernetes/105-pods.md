@@ -4,21 +4,21 @@ category: "kubernetes"
 description: "Aprende todo sobre Pods en Kubernetes - la unidad básica de ejecución. Cómo crear, gestionar y eliminar pods con ejemplos prácticos y mejores prácticas."
 tags:
   - "kubernetes"
-  - "- pods"
-  - "- contenedores"
+  - "pods"
+  - "contenedores"
 keywords:
   - "kubernetes pods"
-  - "- qué es un pod kubernetes"
-  - "- pods tutorial"
-  - "- crear pods kubernetes"
-  - "- gestionar pods kubernetes"
-  - "- contenedores kubernetes"
-  - "- pods ejemplos yaml"
-  - "- ciclo de vida pod"
-  - "- pod lifecycle kubernetes"
-  - "- kubectl exec pod"
-  - "- logs pod kubernetes"
-  - "- kubernetes principiantes"
+  - "qué es un pod kubernetes"
+  - "pods tutorial"
+  - "crear pods kubernetes"
+  - "gestionar pods kubernetes"
+  - "contenedores kubernetes"
+  - "pods ejemplos yaml"
+  - "ciclo de vida pod"
+  - "pod lifecycle kubernetes"
+  - "kubectl exec pod"
+  - "logs pod kubernetes"
+  - "kubernetes principiantes"
 ---
 
 # Pods
@@ -123,6 +123,6 @@ kubectl delete pod nginx
 ```
 
 ## Problemas de los pods
-Los pods no saben restaurarse ni replicarse a sí mismos: necesitan algo que gestione estos procesos por ellos. Para eso se utilizan otros tipos de objetos, como los [ReplicaSets y Deployments](./107.Deployments.md) que veremos en los próximos capítulos.
+Los pods no saben restaurarse ni replicarse a sí mismos: necesitan algo que gestione estos procesos por ellos. Para eso se utilizan otros tipos de objetos, como los [ReplicaSets y Deployments](/article/kubernetes/107-deployments/) que veremos en los próximos capítulos.
 
 ---

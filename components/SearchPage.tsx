@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useMemo } from 'react'
 import Link from 'next/link'
 import type { SearchArticle } from '@/lib/content'
 import { CATEGORIES } from '@/lib/categories'
+import { TOOLS, groupTools } from '@/lib/tools'
 import Sidebar from './Sidebar'
 import CategoryTag from './CategoryTag'
 
@@ -93,6 +94,17 @@ export default function SearchPage({ articles }: SearchPageProps) {
 
     return idx
   }, [articles])
+
+  // Tools are few: plain accent-insensitive substring match on every word is enough
+  const matchingTools = useMemo(() => {
+    const norm = (s: string) => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
+    const words = norm(query.trim()).split(/\s+/).filter(w => w.length >= 2)
+    if (words.length === 0 || activeCategory) return []
+    return TOOLS.filter(t => {
+      const haystack = norm(`${t.id} ${t.label} ${t.description} ${t.group}`)
+      return words.every(w => haystack.includes(w))
+    })
+  }, [query, activeCategory])
 
   const { results, isFuzzy } = useMemo(() => {
     let filtered = articles
@@ -184,29 +196,6 @@ export default function SearchPage({ articles }: SearchPageProps) {
           {!isFiltering && (
             <div className="space-y-16 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-150 fill-mode-both">
               
-              <section>
-                <h2 className="text-sm font-semibold text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-cyan-500"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
-                  Quick Access
-                </h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-                  {[
-                    { name: 'Password Generator', path: '/tools/password', icon: <><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></> },
-                    { name: 'JWT Decoder', path: '/tools/jwt', icon: <><path d="M15 7a2 2 0 0 1 2 2m4 0a6 6 0 0 1-7.743 5.743L11 17H9v2H7v2H4a1 1 0 0 1-1-1v-2.586a1 1 0 0 1 .293-.707l5.964-5.964A6 6 0 1 1 21 9z"></path></> },
-                    { name: 'Subnet Calculator', path: '/tools/subnet', icon: <><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18"></path></> },
-                    { name: 'JSON Formatter', path: '/tools/json', icon: <><path d="M4 6h16M4 12h16M4 18h7"></path></> }
-                  ].map(tool => (
-                    <Link key={tool.path} href={tool.path} className="group relative overflow-hidden bg-slate-900/40 backdrop-blur-sm border border-slate-800 rounded-xl p-4 hover:border-cyan-500/50 hover:bg-slate-800/50 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-cyan-900/20 flex items-center md:items-start md:flex-col gap-3 md:gap-0">
-                      <div className="text-cyan-400 md:mb-3 opacity-70 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300 transform origin-left shrink-0">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          {tool.icon}
-                        </svg>
-                      </div>
-                      <h3 className="text-sm font-medium text-slate-200 group-hover:text-cyan-300 transition-colors">{tool.name}</h3>
-                    </Link>
-                  ))}
-                </div>
-              </section>
 
               <section>
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-2 sm:gap-0">
@@ -234,9 +223,37 @@ export default function SearchPage({ articles }: SearchPageProps) {
               </section>
 
               <section>
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-sm font-semibold text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-cyan-500"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" /></svg>
+                    Herramientas
+                  </h2>
+                  <Link href="/tools/" className="text-xs text-slate-500 hover:text-cyan-400 transition-colors">
+                    {TOOLS.length} herramientas · ver todas →
+                  </Link>
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+                  {groupTools(TOOLS).flatMap(g => g.tools).map(tool => (
+                    <Link
+                      key={tool.id}
+                      href={`${tool.href}/`}
+                      title={tool.description}
+                      className="group flex flex-col gap-2 bg-slate-900/40 border border-slate-800 rounded-xl p-3.5 hover:border-cyan-500/50 hover:bg-slate-800/50 transition-all duration-300 hover:-translate-y-0.5"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" className="text-cyan-400 opacity-70 group-hover:opacity-100 transition-opacity" aria-hidden="true">
+                        <path d={tool.iconPath} />
+                      </svg>
+                      <span className="text-[13px] font-medium leading-snug text-slate-200 group-hover:text-cyan-300 transition-colors">{tool.label}</span>
+                      <span className="text-[10px] uppercase tracking-wider text-slate-600">{tool.group}</span>
+                    </Link>
+                  ))}
+                </div>
+              </section>
+
+              <section>
                 <h2 className="text-sm font-semibold text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-purple-500"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-                  Últimos Artículos
+                  Novedades
                 </h2>
                 <div className="grid md:grid-cols-2 gap-4">
                   {latest.map(article => (
@@ -297,6 +314,25 @@ export default function SearchPage({ articles }: SearchPageProps) {
                 )}
               </div>
 
+              {matchingTools.length > 0 && (
+                <div className="mb-6">
+                  <p className="text-xs text-slate-500 mb-2">Herramientas</p>
+                  <div className="flex flex-wrap gap-2">
+                    {matchingTools.map(tool => (
+                      <Link
+                        key={tool.id}
+                        href={`${tool.href}/`}
+                        title={tool.description}
+                        className="inline-flex items-center gap-2 rounded-lg border border-cyan-900/60 bg-cyan-950/20 px-3 py-2 text-sm text-slate-200 hover:border-cyan-500 hover:text-cyan-300 transition-colors"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-cyan-400" aria-hidden="true"><path d={tool.iconPath} /></svg>
+                        {tool.label}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {query && (
                 <p className="text-xs text-slate-500 mb-4 flex items-center gap-2">
                   <span>
@@ -312,7 +348,7 @@ export default function SearchPage({ articles }: SearchPageProps) {
               )}
 
               <div className="space-y-3">
-                {results.length === 0 && query && (
+                {results.length === 0 && query && matchingTools.length === 0 && (
                   <div className="text-center py-16 bg-slate-900/20 rounded-xl border border-slate-800/50 border-dashed">
                     <p className="text-slate-400 text-sm">Sin resultados para <span className="text-slate-300 font-medium">"{query}"</span></p>
                     <p className="text-slate-600 text-xs mt-2">

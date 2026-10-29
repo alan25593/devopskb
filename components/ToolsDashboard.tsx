@@ -2,15 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { Tool } from '@/lib/tools'
-
-const CATEGORY_ORDER = [
-  'Kubernetes',
-  'Networking',
-  'Seguridad & Crypto',
-  'Data & Dev',
-  'Utilidades'
-]
+import { Tool, groupTools } from '@/lib/tools'
 
 export default function ToolsDashboard({ tools }: { tools: Tool[] }) {
   const [search, setSearch] = useState('')
@@ -21,20 +13,9 @@ export default function ToolsDashboard({ tools }: { tools: Tool[] }) {
     tool.group.toLowerCase().includes(search.toLowerCase())
   )
 
-  const groupedTools = filteredTools.reduce((acc, tool) => {
-    const g = tool.group || 'Otros'
-    if (!acc[g]) acc[g] = []
-    acc[g].push(tool)
-    return acc
-  }, {} as Record<string, Tool[]>)
-
-  const sortedGroups = Object.keys(groupedTools).sort((a, b) => {
-    const idxA = CATEGORY_ORDER.indexOf(a)
-    const idxB = CATEGORY_ORDER.indexOf(b)
-    if (idxA === -1) return 1
-    if (idxB === -1) return -1
-    return idxA - idxB
-  })
+  const grouped = groupTools(filteredTools)
+  const groupedTools = Object.fromEntries(grouped.map(g => [g.group, g.tools]))
+  const sortedGroups = grouped.map(g => g.group)
 
   return (
     <div>
@@ -44,7 +25,7 @@ export default function ToolsDashboard({ tools }: { tools: Tool[] }) {
             <span className="text-gray-100">{tools.length}</span> Herramientas
           </span>
           <span className="bg-gray-900 border border-gray-800 px-3 py-1.5 rounded-md flex items-center gap-1.5">
-            <span className="text-gray-100">{CATEGORY_ORDER.length}</span> Categorías
+            <span className="text-gray-100">{groupTools(tools).length}</span> Categorías
           </span>
           <span className="bg-gray-900 border border-green-900/50 text-green-400 px-3 py-1.5 rounded-md">
             100% Gratuitas

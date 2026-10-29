@@ -4,21 +4,21 @@ category: "kubernetes"
 description: "Aprende a diseñar clusters de Kubernetes en alta disponibilidad - control plane multi-master, etcd stacked vs external, balanceadores, PodDisruptionBudgets y estrategias de disaster recovery para la certificación CKA."
 tags:
   - "kubernetes"
-  - "- alta-disponibilidad"
-  - "- disaster-recovery"
-  - "- administración"
-  - "- CKA"
+  - "alta-disponibilidad"
+  - "disaster-recovery"
+  - "administración"
+  - "CKA"
 keywords:
   - "kubernetes alta disponibilidad"
-  - "- kubernetes HA"
-  - "- control plane HA kubernetes"
-  - "- etcd stacked external"
-  - "- kubeadm HA cluster"
-  - "- disaster recovery kubernetes"
-  - "- poddisruptionbudget"
-  - "- multi master kubernetes"
-  - "- quorum etcd"
-  - "- CKA high availability"
+  - "kubernetes HA"
+  - "control plane HA kubernetes"
+  - "etcd stacked external"
+  - "kubeadm HA cluster"
+  - "disaster recovery kubernetes"
+  - "poddisruptionbudget"
+  - "multi master kubernetes"
+  - "quorum etcd"
+  - "CKA high availability"
 ---
 
 # High Availability y Disaster Recovery en Kubernetes
@@ -67,7 +67,7 @@ Dos detalles que pregunta el examen y que sorprenden:
 Si etcd pierde el quórum, el cluster entero pasa a **solo lectura**: los pods siguen corriendo, pero nada puede cambiar hasta recuperar la mayoría o restaurar de backup.
 
 ## Montar un control plane HA con kubeadm
-El proceso es el mismo que vimos en la [instalación](./103.Instalacion.md), con dos diferencias clave.
+El proceso es el mismo que vimos en la [instalación](/article/kubernetes/103-instalacion/), con dos diferencias clave.
 
 1. **Necesitamos un balanceador** delante de los API servers (HAProxy, keepalived, o el balanceador de nuestra nube) escuchando en el puerto 6443. El `--control-plane-endpoint` que ya usamos apunta a él, no a un nodo concreto. Esta es la razón por la que siempre lo configuramos como un nombre DNS: nos permite pasar de 1 a N masters sin regenerar el cluster.
 
@@ -83,15 +83,15 @@ sudo kubeadm join k8s-lb:6443 --token <token> \
   --control-plane --certificate-key <clave>
 ```
 
-Con tres masters unidos, podemos verificar el estado de los miembros de etcd como vimos en el [capítulo de mantenimiento](./201.Mantenimiento_backup.md) (`etcdctl member list`).
+Con tres masters unidos, podemos verificar el estado de los miembros de etcd como vimos en el [capítulo de mantenimiento](/article/kubernetes/201-mantenimiento-etcd-backup/) (`etcdctl member list`).
 
 > Los componentes replicados no pisan unos a otros: el API server es stateless (pueden trabajar los tres a la vez), mientras que el scheduler y el controller manager usan **elección de líder**: solo uno está activo y el resto espera en standby.
 
 ## Alta disponibilidad de las aplicaciones
 De nada sirve un control plane redundante si la aplicación vive en un solo pod. Las piezas, casi todas ya vistas en el curso, son:
 
-- **Réplicas repartidas**: varios replicas con [anti-affinity o topology spread constraints](./121.Scheduling_labels.md) para que no compartan nodo o zona.
-- **Probes**: [liveness y readiness](./113.Probes_live_readiness.md) para que el tráfico solo llegue a pods sanos.
+- **Réplicas repartidas**: varios replicas con [anti-affinity o topology spread constraints](/article/kubernetes/121-scheduling-labels-affinity/) para que no compartan nodo o zona.
+- **Probes**: [liveness y readiness](/article/kubernetes/113-probes-healthchecks/) para que el tráfico solo llegue a pods sanos.
 - **PodDisruptionBudgets (PDB)**: la pieza nueva. Limitan cuántos pods de una aplicación pueden estar caídos **a la vez** durante interrupciones voluntarias (un `kubectl drain`, una actualización de nodos):
 
 ```yaml
@@ -117,7 +117,7 @@ kubectl create pdb web-pdb --selector=app=web --min-available=2 # Forma imperati
 La alta disponibilidad protege contra fallos de componentes; el disaster recovery (DR) protege contra catástrofes: pérdida del datacenter, corrupción de etcd, un borrado accidental masivo.
 
 El plan de DR mínimo de un cluster de Kubernetes:
-1. **Backups automáticos de etcd** (lo vimos en [mantenimiento](./201.Mantenimiento_backup.md)): un snapshot periódico via cronjob del sistema, almacenado **fuera** del cluster.
+1. **Backups automáticos de etcd** (lo vimos en [mantenimiento](/article/kubernetes/201-mantenimiento-etcd-backup/)): un snapshot periódico via cronjob del sistema, almacenado **fuera** del cluster.
 2. **Copia de `/etc/kubernetes/pki`**: sin la CA, un snapshot de etcd no basta para reconstruir el control plane.
 3. **Manifiestos como código (GitOps)**: si todo lo desplegado vive en git, reconstruir un cluster es reinstalar + reaplicar. Es la mejor herramienta de DR que existe.
 4. **Backup de volúmenes de aplicaciones**: snapshots CSI o [Velero](https://velero.io/), que orquesta backup de recursos + volúmenes hacia un almacenamiento de objetos.

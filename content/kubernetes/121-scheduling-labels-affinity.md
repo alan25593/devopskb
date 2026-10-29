@@ -4,22 +4,22 @@ category: "kubernetes"
 description: "Aprende scheduling avanzado en Kubernetes con NodeSelector, Node Affinity, Pod Affinity y Anti-Affinity. Controla la ubicación de pods con labels y selectores."
 tags:
   - "kubernetes"
-  - "- scheduling"
-  - "- affinity"
-  - "- labels"
-  - "- CKA"
+  - "scheduling"
+  - "affinity"
+  - "labels"
+  - "CKA"
 keywords:
   - "kubernetes scheduling"
-  - "- node affinity kubernetes"
-  - "- pod affinity kubernetes"
-  - "- nodeSelector kubernetes"
-  - "- anti-affinity kubernetes"
-  - "- scheduling constraints kubernetes"
-  - "- kubernetes labels"
-  - "- topology spread constraints"
-  - "- required vs preferred affinity"
-  - "- cómo asignar pods a nodos kubernetes"
-  - "- labels selectors kubernetes"
+  - "node affinity kubernetes"
+  - "pod affinity kubernetes"
+  - "nodeSelector kubernetes"
+  - "anti-affinity kubernetes"
+  - "scheduling constraints kubernetes"
+  - "kubernetes labels"
+  - "topology spread constraints"
+  - "required vs preferred affinity"
+  - "cómo asignar pods a nodos kubernetes"
+  - "labels selectors kubernetes"
 ---
 
 # Scheduling en Kubernetes
@@ -27,7 +27,7 @@ keywords:
 El scheduler es el componente que decide en qué nodo se ejecuta cada pod. Por defecto lo hace en base a los recursos disponibles, pero podemos influir en su decisión con varios mecanismos:
 * **Labels y nodeSelector**: la forma más simple de fijar pods a nodos.
 * **Affinity y anti-affinity**: reglas más expresivas y flexibles.
-* **Taints y tolerations**: restricciones desde el punto de vista del nodo (las veremos en el [siguiente capítulo](./122.Taints_tolerations.md)).
+* **Taints y tolerations**: restricciones desde el punto de vista del nodo (las veremos en el [siguiente capítulo](/article/kubernetes/122-taints-y-tolerations/)).
 
 ## Labels en nodos
 Los labels son una forma de identificar y agrupar nodos por un criterio: por ejemplo, por zona geográfica, por tipo de hardware (`disktype=ssd`, `gpu=true`) o por entorno.
@@ -177,6 +177,6 @@ Esto garantiza que la diferencia de réplicas entre zonas nunca supere 1. Es el 
 - **Pod affinity/anti-affinity** posiciona pods en relación a otros pods (clave para alta disponibilidad).
 - **Topology spread constraints** reparte réplicas de forma equilibrada entre dominios de fallo.
 
-En el siguiente capítulo veremos la otra cara de la moneda: los [taints y tolerations](./122.Taints_tolerations.md), donde es el nodo quien repele a los pods.
+En el siguiente capítulo veremos la otra cara de la moneda: los [taints y tolerations](/article/kubernetes/122-taints-y-tolerations/), donde es el nodo quien repele a los pods.
 
 ---

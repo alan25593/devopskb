@@ -4,23 +4,23 @@ category: "kubernetes"
 description: "Aprende a gestionar usuarios, Service Accounts y autenticación en Kubernetes. Configura certificados, tokens y contextos para acceso seguro al cluster."
 tags:
   - "kubernetes"
-  - "- usuarios"
-  - "- service-accounts"
-  - "- autenticación"
-  - "- CKA"
+  - "usuarios"
+  - "service-accounts"
+  - "autenticación"
+  - "CKA"
 keywords:
   - "kubernetes usuarios"
-  - "- service accounts kubernetes"
-  - "- autenticación kubernetes"
-  - "- certificados kubernetes"
-  - "- kubeconfig contexts"
-  - "- kubernetes identidades"
-  - "- crear usuario kubernetes"
-  - "- kubectl create serviceaccount"
-  - "- RBAC service account"
-  - "- token service account kubernetes"
-  - "- certificatesigningrequest kubernetes"
-  - "- kubernetes access control"
+  - "service accounts kubernetes"
+  - "autenticación kubernetes"
+  - "certificados kubernetes"
+  - "kubeconfig contexts"
+  - "kubernetes identidades"
+  - "crear usuario kubernetes"
+  - "kubectl create serviceaccount"
+  - "RBAC service account"
+  - "token service account kubernetes"
+  - "certificatesigningrequest kubernetes"
+  - "kubernetes access control"
 ---
 
 # Usuarios y Service Accounts en Kubernetes
@@ -29,7 +29,7 @@ En Kubernetes existen dos tipos de identidades:
 - **Usuarios**: personas (administradores, desarrolladores...). Kubernetes **no** tiene un objeto "User" en su API: los usuarios se gestionan fuera del cluster.
 - **Service Accounts**: identidades para procesos. Sí son objetos de la API y se usan para que los pods (u otras herramientas) se autentiquen contra el API server.
 
-En este capítulo veremos cómo crear ambos tipos. En el [siguiente](./120.Roles.md) veremos cómo darles permisos con RBAC.
+En este capítulo veremos cómo crear ambos tipos. En el [siguiente](/article/kubernetes/120-roles-y-rbac/) veremos cómo darles permisos con RBAC.
 
 ## Usuarios
 Normalmente los usuarios se definen en un sistema de autenticación externo, como un proveedor OIDC (OpenID Connect), LDAP o Active Directory. Kubernetes no tiene un sistema de usuarios propio, pero puede integrarse con estos sistemas mediante [estrategias de autenticación](https://kubernetes.io/docs/reference/access-authn-authz/authentication/#authentication-strategies).
@@ -89,7 +89,7 @@ kubectl config set-context user-context --cluster=kubernetes --user=user
 kubectl config use-context user-context
 ```
 
-Por defecto, este usuario carecerá de permisos para realizar ninguna acción en el cluster. Para asignárselos, tendremos que vincularlo a un `Role` (a nivel de namespace) o a un `ClusterRole` (a nivel de cluster) mediante un `RoleBinding` o `ClusterRoleBinding`, como veremos en el [capítulo de RBAC](./120.Roles.md).
+Por defecto, este usuario carecerá de permisos para realizar ninguna acción en el cluster. Para asignárselos, tendremos que vincularlo a un `Role` (a nivel de namespace) o a un `ClusterRole` (a nivel de cluster) mediante un `RoleBinding` o `ClusterRoleBinding`, como veremos en el [capítulo de RBAC](/article/kubernetes/120-roles-y-rbac/).
 
 > **Importante:** Kubernetes no permite "revocar" certificados x509. Si una clave se ve comprometida, la única solución práctica es rotar la CA o apoyarse en RBAC para retirar los permisos de ese usuario. Por eso, en producción, se recomienda autenticación vía OIDC con tokens de corta duración.
 
@@ -147,6 +147,6 @@ spec:
 - Los usuarios humanos no existen como objeto en Kubernetes: se autentican con certificados x509 (CN=usuario, O=grupo) o sistemas externos (OIDC).
 - La API `CertificateSigningRequest` permite firmar certificados de usuario desde el propio cluster (`kubectl certificate approve`).
 - Las Service Accounts son las identidades de los procesos y sus tokens son efímeros desde la 1.24 (`kubectl create token`).
-- Ninguna identidad tiene permisos por sí sola: estos se asignan con RBAC, que vemos en el [siguiente capítulo](./120.Roles.md).
+- Ninguna identidad tiene permisos por sí sola: estos se asignan con RBAC, que vemos en el [siguiente capítulo](/article/kubernetes/120-roles-y-rbac/).
 
 ---

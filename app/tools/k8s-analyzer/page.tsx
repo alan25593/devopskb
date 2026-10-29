@@ -3,7 +3,7 @@ import Sidebar from '@/components/Sidebar'
 import K8sAnalyzer from '@/components/tools/K8sAnalyzer'
 import ToolSchema from '@/components/ToolSchema'
 import LearnMore from '@/components/LearnMore'
-import { getArticle } from '@/lib/content'
+import { getToolArticles } from '@/lib/content'
 import type { Metadata } from 'next'
 
 const TITLE = 'Kubernetes Manifest Analyzer | WiresOps'
@@ -30,11 +30,7 @@ export const metadata: Metadata = {
 }
 
 export default function K8sAnalyzerPage() {
-  const relatedArticles = [
-    getArticle('kubernetes', '03-workloads'),
-    getArticle('kubernetes', '08-rbac-y-seguridad'),
-    getArticle('kubernetes', '09-troubleshooting'),
-  ].filter(Boolean) as any[]
+  const relatedArticles = getToolArticles('k8s-analyzer')
 
   return (
     <div className="flex h-dvh overflow-hidden">

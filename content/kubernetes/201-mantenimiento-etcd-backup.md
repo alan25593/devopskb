@@ -4,23 +4,23 @@ category: "kubernetes"
 description: "Guía completa de mantenimiento de clusters Kubernetes. Aprende backup y restauración de etcd, actualización de versiones con kubeadm y operaciones críticas para administradores."
 tags:
   - "kubernetes"
-  - "- mantenimiento"
-  - "- backup"
-  - "- administración"
-  - "- CKA"
+  - "mantenimiento"
+  - "backup"
+  - "administración"
+  - "CKA"
 keywords:
   - "kubernetes mantenimiento"
-  - "- backup etcd kubernetes"
-  - "- restaurar etcd kubernetes"
-  - "- actualizar kubernetes"
-  - "- kubeadm upgrade"
-  - "- administración kubernetes"
-  - "- CKA"
-  - "- kubectl drain"
-  - "- kubectl cordon"
-  - "- velero backup kubernetes"
-  - "- cluster upgrade kubernetes"
-  - "- recuperar cluster kubernetes"
+  - "backup etcd kubernetes"
+  - "restaurar etcd kubernetes"
+  - "actualizar kubernetes"
+  - "kubeadm upgrade"
+  - "administración kubernetes"
+  - "CKA"
+  - "kubectl drain"
+  - "kubectl cordon"
+  - "velero backup kubernetes"
+  - "cluster upgrade kubernetes"
+  - "recuperar cluster kubernetes"
 ---
 
 # Mantenimiento de Kubernetes: backup, actualización y restauración
@@ -92,7 +92,7 @@ sudo etcdutl snapshot restore /var/lib/etcd/snapshot.db --data-dir /var/lib/etcd
     name: etcd-data
 ```
 
-3. Al guardar el fichero, el kubelet detectará el cambio y recreará el pod de etcd automáticamente (es un *static pod*, concepto que veremos en [troubleshooting](./202.Troubleshooting_cluster.md)). Puede tardar un par de minutos. Verificamos:
+3. Al guardar el fichero, el kubelet detectará el cambio y recreará el pod de etcd automáticamente (es un *static pod*, concepto que veremos en [troubleshooting](/article/kubernetes/202-troubleshooting-cluster/)). Puede tardar un par de minutos. Verificamos:
 ```bash
 kubectl -n kube-system get pods
 kubectl get nodes

@@ -3,7 +3,7 @@ import Sidebar from '@/components/Sidebar'
 import CronExplainer from '@/components/tools/CronExplainer'
 import ToolSchema from '@/components/ToolSchema'
 import LearnMore from '@/components/LearnMore'
-import { getArticle } from '@/lib/content'
+import { getToolArticles } from '@/lib/content'
 import type { Metadata } from 'next'
 
 const TITLE = 'Cron Explainer | WiresOps'
@@ -30,10 +30,7 @@ export const metadata: Metadata = {
 }
 
 export default function CronPage() {
-  const relatedArticles = [
-    getArticle('linux', '05-systemd-y-servicios'),
-    getArticle('kubernetes', '03-workloads'),
-  ].filter(Boolean) as any[]
+  const relatedArticles = getToolArticles('cron')
 
   return (
     <div className="flex h-dvh overflow-hidden">

@@ -4,20 +4,20 @@ category: "kubernetes"
 description: "Guía definitiva para aprobar el examen CKA (Certified Kubernetes Administrator) - temario oficial, estrategia de examen, trucos de kubectl, simuladores y recursos de práctica."
 tags:
   - "kubernetes"
-  - "- CKA"
-  - "- certificación"
-  - "- examen"
+  - "CKA"
+  - "certificación"
+  - "examen"
 keywords:
   - "CKA examen"
-  - "- certified kubernetes administrator"
-  - "- preparar CKA"
-  - "- aprobar CKA"
-  - "- CKA temario"
-  - "- killer.sh CKA"
-  - "- CKA consejos"
-  - "- CKA simulacro"
-  - "- certificación kubernetes"
-  - "- CKA español"
+  - "certified kubernetes administrator"
+  - "preparar CKA"
+  - "aprobar CKA"
+  - "CKA temario"
+  - "killer.sh CKA"
+  - "CKA consejos"
+  - "CKA simulacro"
+  - "certificación kubernetes"
+  - "CKA español"
 ---
 
 # Preparación del examen CKA
@@ -35,11 +35,11 @@ Hemos llegado al final de la especialización de administración. Este capítulo
 ## Temario oficial y dónde lo hemos cubierto
 | Dominio | Peso | Capítulos del curso |
 |---------|------|---------------------|
-| Troubleshooting | 30% | [202](./202.Troubleshooting_cluster.md), [124](./123.Logging.md), [114](./113.Probes_live_readiness.md) |
-| Arquitectura, instalación y configuración del cluster | 25% | [102](./102.Arquitectura.md), [103](./103.Instalacion.md), [201](./201.Mantenimiento_backup.md), [204](./204.Certificados_autenticacion.md), [207](./207.HA_disaster_recovery.md) |
-| Servicios y redes | 20% | [111](./110.Services.md), [112](./111.Ingress_controller.md), [113](./112.Gateway.md), [119](./118.Seguridad.md) |
-| Workloads y scheduling | 15% | [106](./105.Pods.md), [108](./107.Deployments.md), [117](./116.Rangos_quotas.md), [118](./117.Autoscaling.md), [122](./121.Scheduling_labels.md), [123](./122.Taints_tolerations.md) |
-| Almacenamiento | 10% | [116](./115.Almacenamiento.md), [205](./205.Almacenamiento_avanzado.md) |
+| Troubleshooting | 30% | [202](/article/kubernetes/202-troubleshooting-cluster/), [124](/article/kubernetes/123-logging-y-monitoreo/), [114](/article/kubernetes/113-probes-healthchecks/) |
+| Arquitectura, instalación y configuración del cluster | 25% | [102](/article/kubernetes/102-arquitectura/), [103](/article/kubernetes/103-instalacion/), [201](/article/kubernetes/201-mantenimiento-etcd-backup/), [204](/article/kubernetes/204-certificados-pki-autenticacion/), [207](/article/kubernetes/207-alta-disponibilidad-ha-dr/) |
+| Servicios y redes | 20% | [111](/article/kubernetes/110-services/), [112](/article/kubernetes/111-ingress-controllers/), [113](/article/kubernetes/112-gateway-api/), [119](/article/kubernetes/118-seguridad-serviceaccounts/) |
+| Workloads y scheduling | 15% | [106](/article/kubernetes/105-pods/), [108](/article/kubernetes/107-deployments/), [117](/article/kubernetes/116-limitranges-y-resourcequotas/), [118](/article/kubernetes/117-autoscaling-hpa-vpa/), [122](/article/kubernetes/121-scheduling-labels-affinity/), [123](/article/kubernetes/122-taints-y-tolerations/) |
+| Almacenamiento | 10% | [116](/article/kubernetes/115-almacenamiento-pv-pvc/), [205](/article/kubernetes/205-almacenamiento-avanzado-csi/) |
 
 ## La estrategia: velocidad y triaje
 El CKA no se suspende por falta de conocimiento, se suspende por falta de **tiempo**. Toda la preparación debe orientarse a resolver rápido.
@@ -81,19 +81,19 @@ Practicamos navegar kubernetes.io/docs hasta que encontremos cualquier plantilla
 ## Los clásicos que caen (casi) seguro
 Si dominamos esta lista con los ojos cerrados, el aprobado está cerca. Todos están desarrollados en los capítulos de la especialización:
 
-1. **Backup y restore de etcd** ([201](./201.Mantenimiento_backup.md)): el clásico entre los clásicos.
-2. **Upgrade de un nodo con kubeadm** ([201](./201.Mantenimiento_backup.md)): drain → upgrade → uncordon.
-3. **Nodo NotReady** ([202](./202.Troubleshooting_cluster.md)): SSH, `journalctl -u kubelet`, arreglar, verificar.
-4. **Crear usuario con CSR + RBAC** ([204](./204.Certificados_autenticacion.md) y [121](./120.Roles.md)).
-5. **PV + PVC + pod que lo monta** ([116](./115.Almacenamiento.md)): cuidado con accessModes y storageClassName.
-6. **NetworkPolicy** ([119](./118.Seguridad.md)): default-deny + permitir un origen concreto.
-7. **Service + Ingress** ([111](./110.Services.md), [112](./111.Ingress_controller.md)): exponer un deployment existente.
-8. **Scheduling**: nodeSelector, taints/tolerations, pods en Pending por recursos ([122](./121.Scheduling_labels.md), [123](./122.Taints_tolerations.md)).
-9. **Static pods** ([202](./202.Troubleshooting_cluster.md)): crear uno o arreglar un manifiesto roto en `/etc/kubernetes/manifests/`.
-10. **Componentes del control plane caídos** ([202](./202.Troubleshooting_cluster.md)): API server que no responde, scheduler parado.
+1. **Backup y restore de etcd** ([201](/article/kubernetes/201-mantenimiento-etcd-backup/)): el clásico entre los clásicos.
+2. **Upgrade de un nodo con kubeadm** ([201](/article/kubernetes/201-mantenimiento-etcd-backup/)): drain → upgrade → uncordon.
+3. **Nodo NotReady** ([202](/article/kubernetes/202-troubleshooting-cluster/)): SSH, `journalctl -u kubelet`, arreglar, verificar.
+4. **Crear usuario con CSR + RBAC** ([204](/article/kubernetes/204-certificados-pki-autenticacion/) y [121](/article/kubernetes/120-roles-y-rbac/)).
+5. **PV + PVC + pod que lo monta** ([116](/article/kubernetes/115-almacenamiento-pv-pvc/)): cuidado con accessModes y storageClassName.
+6. **NetworkPolicy** ([119](/article/kubernetes/118-seguridad-serviceaccounts/)): default-deny + permitir un origen concreto.
+7. **Service + Ingress** ([111](/article/kubernetes/110-services/), [112](/article/kubernetes/111-ingress-controllers/)): exponer un deployment existente.
+8. **Scheduling**: nodeSelector, taints/tolerations, pods en Pending por recursos ([122](/article/kubernetes/121-scheduling-labels-affinity/), [123](/article/kubernetes/122-taints-y-tolerations/)).
+9. **Static pods** ([202](/article/kubernetes/202-troubleshooting-cluster/)): crear uno o arreglar un manifiesto roto en `/etc/kubernetes/manifests/`.
+10. **Componentes del control plane caídos** ([202](/article/kubernetes/202-troubleshooting-cluster/)): API server que no responde, scheduler parado.
 
 ## Plan de entrenamiento
-1. **Repasamos haciendo**: montamos y rompemos nuestro propio cluster con kubeadm ([103](./103.Instalacion.md)). Cada concepto del curso, ejecutado al menos una vez.
+1. **Repasamos haciendo**: montamos y rompemos nuestro propio cluster con kubeadm ([103](/article/kubernetes/103-instalacion/)). Cada concepto del curso, ejecutado al menos una vez.
 2. **[Killercoda](https://killercoda.com/killer-shell-cka)**: escenarios gratuitos de práctica por tema, en el mismo tipo de entorno del examen.
 3. **[killer.sh](https://killer.sh/)**: el simulador oficial incluido con el examen. Es deliberadamente **más difícil** que el examen real: si lo terminamos con un 60-70%, vamos sobrados. Usamos la primera sesión 2-3 semanas antes y la segunda en la última semana.
 4. **Cronometrémonos**: resolvemos series de ejercicios contrarreloj. La técnica sin velocidad no aprueba.
@@ -104,6 +104,6 @@ Si dominamos esta lista con los ojos cerrados, el aprobado está cerca. Todos es
 - Si algo no sale, flag y siguiente. La pasada final recupera más puntos que el orgullo.
 - Respiramos: con el retake incluido, el primer intento nos lo podemos tomar como el mejor simulacro posible.
 
-¡Mucha suerte, almirante! Y cuando la tengamos: la CKA es requisito para presentarse a la [CKS](./401.CIS_benchmarks.md), por si nos quedamos con ganas de más.
+¡Mucha suerte, almirante! Y cuando la tengamos: la CKA es requisito para presentarse a la [CKS](/article/kubernetes/401-cis-benchmarks-kube-bench/), por si nos quedamos con ganas de más.
 
 ---

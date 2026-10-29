@@ -7,6 +7,23 @@ export interface Tool {
   group: string
   badges?: string[]
   status?: 'Stable' | 'Beta' | 'Nuevo'
+  /** Guides shown as "Aprendé más" on the tool and that link back to it, as "category/slug" */
+  articles: string[]
+}
+
+export const TOOL_GROUP_ORDER = ['Kubernetes', 'Networking', 'Seguridad & Crypto', 'Data & Dev', 'Utilidades']
+
+// Tools grouped in display order (unknown groups go last, in first-seen order)
+export function groupTools(tools: Tool[]): { group: string; tools: Tool[] }[] {
+  const groups = new Map<string, Tool[]>()
+  for (const tool of tools) {
+    const g = tool.group || 'Otros'
+    groups.set(g, [...(groups.get(g) ?? []), tool])
+  }
+  const rank = (g: string) => (TOOL_GROUP_ORDER.indexOf(g) + 1) || TOOL_GROUP_ORDER.length + 1
+  return [...groups.entries()]
+    .sort(([a], [b]) => rank(a) - rank(b))
+    .map(([group, tools]) => ({ group, tools }))
 }
 
 export const TOOLS: Tool[] = [
@@ -18,7 +35,8 @@ export const TOOLS: Tool[] = [
     iconPath: 'M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18',
     group: 'Networking',
     badges: ['Offline', 'Browser Only', 'Instantáneo'],
-    status: 'Stable'
+    status: 'Stable',
+    articles: ['linux/08-redes-y-dns', 'windows/04-redes-y-firewall', 'docker/15-networking-avanzado-vpn-host', 'terraform/17-oci-provider-y-red'],
   },
   {
     id: 'cidr',
@@ -28,7 +46,8 @@ export const TOOLS: Tool[] = [
     iconPath: 'M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z',
     group: 'Networking',
     badges: ['Offline', 'Browser Only'],
-    status: 'Nuevo'
+    status: 'Nuevo',
+    articles: ['linux/08-redes-y-dns', 'terraform/17-oci-provider-y-red', 'docker/08-daemon-json', 'kubernetes/110-services'],
   },
   {
     id: 'dns',
@@ -38,7 +57,8 @@ export const TOOLS: Tool[] = [
     iconPath: 'M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9',
     group: 'Networking',
     badges: ['Hybrid'],
-    status: 'Stable'
+    status: 'Stable',
+    articles: ['linux/08-redes-y-dns', 'kubernetes/304-coredns-resolucion-dns', 'docker/16-dns-interno-coredns', 'windows/04-redes-y-firewall'],
   },
   {
     id: 'k8s-analyzer',
@@ -48,7 +68,8 @@ export const TOOLS: Tool[] = [
     iconPath: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z',
     group: 'Kubernetes',
     badges: ['Browser Only', 'Offline'],
-    status: 'Stable'
+    status: 'Stable',
+    articles: ['kubernetes/107-deployments', 'kubernetes/113-probes-healthchecks', 'kubernetes/116-limitranges-y-resourcequotas', 'kubernetes/306-troubleshooting-aplicaciones'],
   },
   {
     id: 'k8s-resources',
@@ -58,7 +79,8 @@ export const TOOLS: Tool[] = [
     iconPath: 'M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z',
     group: 'Kubernetes',
     badges: ['Browser Only', 'Offline'],
-    status: 'Nuevo'
+    status: 'Nuevo',
+    articles: ['kubernetes/116-limitranges-y-resourcequotas', 'kubernetes/117-autoscaling-hpa-vpa', 'kubernetes/121-scheduling-labels-affinity'],
   },
   {
     id: 'rbac',
@@ -68,7 +90,8 @@ export const TOOLS: Tool[] = [
     iconPath: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z',
     group: 'Kubernetes',
     badges: ['Offline', 'Browser Only'],
-    status: 'Beta'
+    status: 'Beta',
+    articles: ['kubernetes/120-roles-y-rbac', 'kubernetes/118-seguridad-serviceaccounts', 'kubernetes/119-usuarios-y-autenticacion'],
   },
   {
     id: 'netpol',
@@ -78,7 +101,8 @@ export const TOOLS: Tool[] = [
     iconPath: 'M13 10V3L4 14h7v7l9-11h-7z',
     group: 'Kubernetes',
     badges: ['Offline', 'Browser Only'],
-    status: 'Nuevo'
+    status: 'Nuevo',
+    articles: ['kubernetes/403-network-policies-avanzadas', 'kubernetes/110-services'],
   },
   {
     id: 'jwt',
@@ -88,7 +112,8 @@ export const TOOLS: Tool[] = [
     iconPath: 'M15 7a2 2 0 0 1 2 2m4 0a6 6 0 0 1-7.743 5.743L11 17H9v2H7v2H4a1 1 0 0 1-1-1v-2.586a1 1 0 0 1 .293-.707l5.964-5.964A6 6 0 1 1 21 9z',
     group: 'Seguridad & Crypto',
     badges: ['Browser Only', 'Offline'],
-    status: 'Stable'
+    status: 'Stable',
+    articles: ['kubernetes/119-usuarios-y-autenticacion', 'jenkins/05-credenciales-y-secretos', 'linux/07-seguridad-y-hardening'],
   },
   {
     id: 'hash',
@@ -98,7 +123,8 @@ export const TOOLS: Tool[] = [
     iconPath: 'M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z',
     group: 'Seguridad & Crypto',
     badges: ['Instantáneo', 'Offline', 'Browser Only'],
-    status: 'Stable'
+    status: 'Stable',
+    articles: ['git/08-firmado-de-commits', 'linux/15-certificados-y-pki', 'linux/07-seguridad-y-hardening'],
   },
   {
     id: 'certificate',
@@ -108,7 +134,8 @@ export const TOOLS: Tool[] = [
     iconPath: 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z',
     group: 'Seguridad & Crypto',
     badges: ['Hybrid'],
-    status: 'Stable'
+    status: 'Stable',
+    articles: ['linux/15-certificados-y-pki', 'windows/16-certificados-y-ssl', 'kubernetes/204-certificados-pki-autenticacion', 'docker/11-standalone-deployments'],
   },
   {
     id: 'yaml',
@@ -118,7 +145,8 @@ export const TOOLS: Tool[] = [
     iconPath: 'M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4',
     group: 'Data & Dev',
     badges: ['Browser Only', 'Offline'],
-    status: 'Stable'
+    status: 'Stable',
+    articles: ['docker/03-compose', 'kubernetes/104-conceptos', 'kubernetes/114-secrets-y-configmaps'],
   },
   {
     id: 'json',
@@ -128,7 +156,8 @@ export const TOOLS: Tool[] = [
     iconPath: 'M4 6h16M4 12h16M4 18h7',
     group: 'Data & Dev',
     badges: ['Offline', 'Instantáneo', 'Browser Only'],
-    status: 'Stable'
+    status: 'Stable',
+    articles: ['linux/03-procesamiento-de-texto', 'kubernetes/102b-kubectl-cheatsheet', 'docker/08-daemon-json'],
   },
   {
     id: 'regex',
@@ -138,7 +167,8 @@ export const TOOLS: Tool[] = [
     iconPath: 'M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4',
     group: 'Data & Dev',
     badges: ['Offline', 'Browser Only'],
-    status: 'Stable'
+    status: 'Stable',
+    articles: ['linux/03-procesamiento-de-texto', 'linux/04-shell-scripting'],
   },
   {
 
@@ -149,7 +179,8 @@ export const TOOLS: Tool[] = [
     iconPath: 'M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z',
     group: 'Data & Dev',
     badges: ['Browser Only', 'Offline'],
-    status: 'Nuevo'
+    status: 'Nuevo',
+    articles: ['kubernetes/309-observabilidad-prometheus-grafana', 'docker/17-stack-monitoreo', 'kubernetes/123-logging-y-monitoreo'],
   },
   {
     id: 'cron',
@@ -159,7 +190,8 @@ export const TOOLS: Tool[] = [
     iconPath: 'M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0z',
     group: 'Utilidades',
     badges: ['Offline', 'Browser Only'],
-    status: 'Stable'
+    status: 'Stable',
+    articles: ['linux/17-cron-clasico', 'kubernetes/109-jobs-y-cronjobs', 'windows/14-tareas-programadas', 'jenkins/02-pipelines-declarativos-y-scripted'],
   },
   {
     id: 'timestamp',
@@ -169,7 +201,8 @@ export const TOOLS: Tool[] = [
     iconPath: 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z',
     group: 'Utilidades',
     badges: ['Offline', 'Instantáneo', 'Browser Only'],
-    status: 'Stable'
+    status: 'Stable',
+    articles: ['linux/13-gestion-logs-logrotate', 'windows/07-event-logs-y-monitoreo'],
   },
   {
     id: 'password',
@@ -179,7 +212,8 @@ export const TOOLS: Tool[] = [
     iconPath: 'M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z',
     group: 'Seguridad & Crypto',
     badges: ['Offline', 'Browser Only', 'Instantáneo'],
-    status: 'Nuevo'
+    status: 'Nuevo',
+    articles: ['jenkins/05-credenciales-y-secretos', 'terraform/13-seguridad-state-vault', 'linux/07-seguridad-y-hardening', 'windows/10-seguridad-y-hardening'],
   },
   {
     id: 'qr',
@@ -189,6 +223,7 @@ export const TOOLS: Tool[] = [
     iconPath: 'M3 3h6v6H3zM15 3h6v6h-6zM3 15h6v6H3zM15 15h1.5v1.5H15zM18.5 15H21v1.5h-2.5zM15 18.5h1.5V21H15zM18.5 18.5H21V21h-2.5z',
     group: 'Utilidades',
     badges: ['Offline', 'Browser Only', 'Instantáneo'],
-    status: 'Nuevo'
+    status: 'Nuevo',
+    articles: [],
   }
 ]

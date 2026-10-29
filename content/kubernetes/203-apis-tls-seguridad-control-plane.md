@@ -4,21 +4,21 @@ category: "kubernetes"
 description: "Aprende a asegurar el API server de Kubernetes - TLS, puertos y flags críticos, acceso a la API, versionado de APIs y deprecaciones para la certificación CKA."
 tags:
   - "kubernetes"
-  - "- api"
-  - "- TLS"
-  - "- seguridad"
-  - "- CKA"
+  - "api"
+  - "TLS"
+  - "seguridad"
+  - "CKA"
 keywords:
   - "kubernetes api server seguridad"
-  - "- TLS kubernetes"
-  - "- kube-apiserver flags"
-  - "- api groups kubernetes"
-  - "- versionado api kubernetes"
-  - "- deprecated apis kubernetes"
-  - "- kubernetes api access"
-  - "- anonymous auth kubernetes"
-  - "- kubectl proxy"
-  - "- CKA seguridad"
+  - "TLS kubernetes"
+  - "kube-apiserver flags"
+  - "api groups kubernetes"
+  - "versionado api kubernetes"
+  - "deprecated apis kubernetes"
+  - "kubernetes api access"
+  - "anonymous auth kubernetes"
+  - "kubectl proxy"
+  - "CKA seguridad"
 ---
 
 # APIs, TLS y seguridad avanzada en Kubernetes
@@ -28,7 +28,7 @@ Todo en Kubernetes pasa por el API server: kubectl, los kubelets, los controlado
 ## Anatomía de la API de Kubernetes
 La API es una API REST: cada recurso tiene su ruta. Cuando ejecutamos `kubectl get pods`, en realidad se hace una petición `GET https://<api-server>:6443/api/v1/namespaces/default/pods`.
 
-Los recursos se organizan en **grupos de API** (los `apiGroups` que ya vimos en [RBAC](./120.Roles.md)):
+Los recursos se organizan en **grupos de API** (los `apiGroups` que ya vimos en [RBAC](/article/kubernetes/120-roles-y-rbac/)):
 - `/api/v1`: el grupo *core* (pods, services, configmaps, secrets...).
 - `/apis/<grupo>/<versión>`: el resto, por ejemplo `/apis/apps/v1` (deployments) o `/apis/batch/v1` (jobs).
 
@@ -47,7 +47,7 @@ kubectl explain pod.spec.containers
 ### Versionado y deprecaciones
 Las versiones de API siguen una progresión: `v1alpha1` → `v1beta1` → `v1` (estable). Las versiones alpha están desactivadas por defecto y las beta pueden cambiar; cuando un recurso se gradúa, las versiones antiguas se marcan como *deprecated* y acaban eliminándose.
 
-Esto importa porque las actualizaciones de cluster **rompen manifiestos antiguos**: si nuestros YAML usan una API eliminada (como `extensions/v1beta1` para deployments, o las PodSecurityPolicies que vimos en [seguridad](./118.Seguridad.md)), dejarán de aplicar. Antes de actualizar, revisamos la [guía de APIs deprecadas](https://kubernetes.io/docs/reference/using-api/deprecation-guide/) y comprobamos qué usa nuestro cluster:
+Esto importa porque las actualizaciones de cluster **rompen manifiestos antiguos**: si nuestros YAML usan una API eliminada (como `extensions/v1beta1` para deployments, o las PodSecurityPolicies que vimos en [seguridad](/article/kubernetes/118-seguridad-serviceaccounts/)), dejarán de aplicar. Antes de actualizar, revisamos la [guía de APIs deprecadas](https://kubernetes.io/docs/reference/using-api/deprecation-guide/) y comprobamos qué usa nuestro cluster:
 ```bash
 # ¿Qué versión estoy usando para cada recurso?
 kubectl get deployments.v1.apps -o yaml | head
@@ -96,10 +96,10 @@ ls /etc/kubernetes/pki/
 # sa.key, sa.pub                        -> firma de tokens de service accounts
 ```
 
-En el [próximo capítulo](./204.Certificados_autenticacion.md) gestionaremos estos certificados en detalle (caducidades, renovaciones, kubeadm certs). De momento, quedémonos con la foto: **una CA raíz firma la identidad de cada componente**, y cualquier petición se valida contra ella.
+En el [próximo capítulo](/article/kubernetes/204-certificados-pki-autenticacion/) gestionaremos estos certificados en detalle (caducidades, renovaciones, kubeadm certs). De momento, quedémonos con la foto: **una CA raíz firma la identidad de cada componente**, y cualquier petición se valida contra ella.
 
 ## Flags de seguridad del API server
-La configuración del API server vive en `/etc/kubernetes/manifests/kube-apiserver.yaml` (es un static pod, como vimos en [troubleshooting](./202.Troubleshooting_cluster.md)). Estos son los flags que debemos conocer y auditar:
+La configuración del API server vive en `/etc/kubernetes/manifests/kube-apiserver.yaml` (es un static pod, como vimos en [troubleshooting](/article/kubernetes/202-troubleshooting-cluster/)). Estos son los flags que debemos conocer y auditar:
 
 ```yaml
 spec:

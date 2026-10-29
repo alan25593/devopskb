@@ -4,24 +4,24 @@ category: "kubernetes"
 description: "Domina los init containers en Kubernetes para inicializar aplicaciones - orden de ejecución, casos de uso, espera de dependencias y diferencias con contenedores normales para la certificación CKAD."
 tags:
   - "kubernetes"
-  - "- pods"
-  - "- init-containers"
-  - "- CKAD"
+  - "pods"
+  - "init-containers"
+  - "CKAD"
 keywords:
   - "init containers kubernetes"
-  - "- initcontainers tutorial"
-  - "- inicializacion pods kubernetes"
-  - "- esperar dependencias kubernetes"
-  - "- orden arranque contenedores kubernetes"
-  - "- CKAD pods"
-  - "- pod lifecycle kubernetes"
-  - "- postStart preStop hooks"
-  - "- kubernetes application developer"
+  - "initcontainers tutorial"
+  - "inicializacion pods kubernetes"
+  - "esperar dependencias kubernetes"
+  - "orden arranque contenedores kubernetes"
+  - "CKAD pods"
+  - "pod lifecycle kubernetes"
+  - "postStart preStop hooks"
+  - "kubernetes application developer"
 ---
 
 # Pods e init containers en Kubernetes
 
-Bienvenido a la especialización CKAD del curso, la del desarrollador de aplicaciones. Empezamos retomando los [pods](./105.Pods.md) desde la perspectiva de quien construye la aplicación: ¿cómo preparo el terreno antes de que arranque mi contenedor principal? La respuesta son los **init containers**.
+Bienvenido a la especialización CKAD del curso, la del desarrollador de aplicaciones. Empezamos retomando los [pods](/article/kubernetes/105-pods/) desde la perspectiva de quien construye la aplicación: ¿cómo preparo el terreno antes de que arranque mi contenedor principal? La respuesta son los **init containers**.
 
 ## ¿Qué es un init container?
 Un init container es un contenedor que se ejecuta **antes** que los contenedores principales del pod, y que debe **terminar con éxito** para que estos arranquen. Si definimos varios, se ejecutan **en orden, de uno en uno**.
@@ -121,6 +121,6 @@ El pod tiene un periodo de gracia (`terminationGracePeriodSeconds`, 30s por defe
 - Sus recursos no se suman (corren secuencialmente) y deben ser idempotentes.
 - `postStart`/`preStop` completan el ciclo de vida; preStop + grace period = apagado ordenado.
 
-En el [siguiente capítulo](./302.Multicontainer_sidecars.md) veremos la otra forma de componer pods: varios contenedores conviviendo a la vez, con los patrones sidecar, ambassador y adapter.
+En el [siguiente capítulo](/article/kubernetes/302-multicontainer-sidecars/) veremos la otra forma de componer pods: varios contenedores conviviendo a la vez, con los patrones sidecar, ambassador y adapter.
 
 ---

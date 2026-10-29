@@ -3,7 +3,7 @@ import Sidebar from '@/components/Sidebar'
 import RegexTester from '@/components/tools/RegexTester'
 import ToolSchema from '@/components/ToolSchema'
 import LearnMore from '@/components/LearnMore'
-import { getArticle } from '@/lib/content'
+import { getToolArticles } from '@/lib/content'
 import type { Metadata } from 'next'
 
 const TITLE = 'Regex Tester | WiresOps'
@@ -30,10 +30,7 @@ export const metadata: Metadata = {
 }
 
 export default function RegexPage() {
-  const relatedArticles = [
-    getArticle('linux', '03-procesamiento-de-texto'),
-    getArticle('linux', '04-shell-scripting'),
-  ].filter(Boolean) as any[]
+  const relatedArticles = getToolArticles('regex')
 
   return (
     <div className="flex h-dvh overflow-hidden">

@@ -3,7 +3,7 @@ import Sidebar from '@/components/Sidebar'
 import TimestampConverter from '@/components/tools/TimestampConverter'
 import ToolSchema from '@/components/ToolSchema'
 import LearnMore from '@/components/LearnMore'
-import { getArticle } from '@/lib/content'
+import { getToolArticles } from '@/lib/content'
 import type { Metadata } from 'next'
 
 const TITLE = 'Unix Timestamp Converter | WiresOps'
@@ -30,10 +30,7 @@ export const metadata: Metadata = {
 }
 
 export default function TimestampPage() {
-  const relatedArticles = [
-    getArticle('linux', '02-debugging-y-performance'),
-    getArticle('windows', '07-event-logs-y-monitoreo'),
-  ].filter(Boolean) as any[]
+  const relatedArticles = getToolArticles('timestamp')
 
   return (
     <div className="flex h-dvh overflow-hidden">

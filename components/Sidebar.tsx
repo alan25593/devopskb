@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { CATEGORIES, groupByTrack } from '@/lib/categories'
-import { TOOLS } from '@/lib/tools'
+import { TOOLS, groupTools } from '@/lib/tools'
 
 const SHORT_TITLE_RE = new RegExp(`^(${CATEGORIES.map(c => c.label).join('|')})[\\s:—–-]+`, 'i')
 
@@ -88,6 +88,11 @@ interface SidebarProps {
 export default function Sidebar({ activeCategory, activeSlug, activeToolSlug, onCategoryChange, mode = 'filter', categoryArticles }: SidebarProps) {
   const [open, setOpen] = useState(false)
   const [isCollapsed, setIsCollapsed] = useState(false)
+
+  // Only the group of the tool being viewed starts expanded
+  const [openToolGroups, setOpenToolGroups] = useState<string[]>(
+    () => TOOLS.filter(t => t.id === activeToolSlug).map(t => t.group)
+  )
 
   // Long categories push the current article below the fold: bring it into view
   useEffect(() => {
@@ -271,8 +276,43 @@ export default function Sidebar({ activeCategory, activeSlug, activeToolSlug, on
               <rect x="14" y="14" width="7" height="7"></rect>
               <rect x="3" y="14" width="7" height="7"></rect>
             </svg>
-            {!isCollapsed && <span>Dashboard Herramientas</span>}
+            {!isCollapsed && <span>Todas las herramientas</span>}
           </Link>
+
+          {!isCollapsed && groupTools(TOOLS).map(({ group, tools }) => {
+            const isOpen = openToolGroups.includes(group)
+            return (
+              <div key={group}>
+                <button
+                  onClick={() => setOpenToolGroups(isOpen ? openToolGroups.filter(g => g !== group) : [...openToolGroups, group])}
+                  aria-expanded={isOpen}
+                  className="w-full flex items-center justify-between px-3 py-1.5 rounded-md text-xs text-slate-500 hover:text-slate-300 hover:bg-slate-800/60 transition-colors"
+                >
+                  <span>{group} <span className="text-slate-600">· {tools.length}</span></span>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`transition-transform ${isOpen ? 'rotate-90' : ''}`} aria-hidden="true"><polyline points="9 18 15 12 9 6" /></svg>
+                </button>
+                {isOpen && (
+                  <div className="ml-5 mt-0.5 mb-1.5 border-l border-slate-800 pl-3 space-y-0.5">
+                    {tools.map(t => (
+                      <Link
+                        key={t.id}
+                        href={`${t.href}/`}
+                        onClick={close}
+                        title={t.description}
+                        className={`block text-xs py-1 px-2 rounded truncate transition-colors ${
+                          activeToolSlug === t.id
+                            ? 'text-cyan-400 bg-cyan-900/20 font-medium'
+                            : 'text-slate-600 hover:text-slate-200 hover:bg-slate-800/60'
+                        }`}
+                      >
+                        {t.label}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )
+          })}
         </nav>
 
         {isCollapsed ? (

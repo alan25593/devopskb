@@ -3,7 +3,7 @@ import Sidebar from '@/components/Sidebar'
 import CertificateInspector from '@/components/tools/CertificateInspector'
 import ToolSchema from '@/components/ToolSchema'
 import LearnMore from '@/components/LearnMore'
-import { getArticle } from '@/lib/content'
+import { getToolArticles } from '@/lib/content'
 import type { Metadata } from 'next'
 
 const TITLE = 'Certificate Inspector | WiresOps'
@@ -30,10 +30,7 @@ export const metadata: Metadata = {
 }
 
 export default function CertificatePage() {
-  const relatedArticles = [
-    getArticle('linux', '07-seguridad-y-hardening'),
-    getArticle('windows', '06-iis'),
-  ].filter(Boolean) as any[]
+  const relatedArticles = getToolArticles('certificate')
 
   return (
     <div className="flex h-dvh overflow-hidden">

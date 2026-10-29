@@ -4,30 +4,30 @@ category: "kubernetes"
 description: "Aprende a crear y gestionar Custom Resource Definitions (CRD) y Operators en Kubernetes para extender la funcionalidad del cluster con recursos personalizados y automatización."
 tags:
   - "kubernetes"
-  - "- CRD"
-  - "- operators"
-  - "- recursos-personalizados"
-  - "- CKA"
+  - "CRD"
+  - "operators"
+  - "recursos-personalizados"
+  - "CKA"
 keywords:
   - "kubernetes CRD"
-  - "- custom resource definitions kubernetes"
-  - "- recursos personalizados kubernetes"
-  - "- extender kubernetes"
-  - "- CRD tutorial"
-  - "- kubernetes avanzado"
-  - "- operadores kubernetes"
-  - "- operator pattern kubernetes"
-  - "- operator framework"
-  - "- kubebuilder"
-  - "- controller kubernetes"
-  - "- custom controller kubernetes"
+  - "custom resource definitions kubernetes"
+  - "recursos personalizados kubernetes"
+  - "extender kubernetes"
+  - "CRD tutorial"
+  - "kubernetes avanzado"
+  - "operadores kubernetes"
+  - "operator pattern kubernetes"
+  - "operator framework"
+  - "kubebuilder"
+  - "controller kubernetes"
+  - "custom controller kubernetes"
 ---
 
 # CRDs y Operators en Kubernetes
 
 La definición de recursos personalizados (CRD, Custom Resource Definition) es una de las características más potentes de Kubernetes. Nos permite extender la API añadiendo nuestros propios tipos de recursos, que se comportan como cualquier recurso nativo: se crean con manifiestos, se consultan con kubectl y se protegen con RBAC.
 
-De hecho, ya hemos usado CRDs sin saberlo: los recursos de [Gateway API](./112.Gateway.md) (`Gateway`, `HTTPRoute`), los `NetworkPolicies` de Calico o los `VolumeSnapshots` del [capítulo de almacenamiento](./205.Almacenamiento_avanzado.md) son recursos personalizados.
+De hecho, ya hemos usado CRDs sin saberlo: los recursos de [Gateway API](/article/kubernetes/112-gateway-api/) (`Gateway`, `HTTPRoute`), los `NetworkPolicies` de Calico o los `VolumeSnapshots` del [capítulo de almacenamiento](/article/kubernetes/205-almacenamiento-avanzado-csi/) son recursos personalizados.
 
 ## Consultar recursos personalizados
 Podemos consultar las CRDs instaladas en el cluster con el comando `kubectl get` (son recursos de ámbito de cluster, sin namespace):

@@ -3,7 +3,7 @@ import Sidebar from '@/components/Sidebar'
 import SubnetCalculator from '@/components/tools/SubnetCalculator'
 import ToolSchema from '@/components/ToolSchema'
 import LearnMore from '@/components/LearnMore'
-import { getArticle } from '@/lib/content'
+import { getToolArticles } from '@/lib/content'
 import type { Metadata } from 'next'
 
 const TITLE = 'Subnet Calculator | WiresOps'
@@ -30,10 +30,7 @@ export const metadata: Metadata = {
 }
 
 export default function SubnetPage() {
-  const relatedArticles = [
-    getArticle('linux', '08-redes-y-dns'),
-    getArticle('windows', '04-redes-y-firewall'),
-  ].filter(Boolean) as any[]
+  const relatedArticles = getToolArticles('subnet')
 
   return (
     <div className="flex h-dvh overflow-hidden">

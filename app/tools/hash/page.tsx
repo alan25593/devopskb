@@ -3,7 +3,7 @@ import Sidebar from '@/components/Sidebar'
 import HashToolkit from '@/components/tools/HashToolkit'
 import ToolSchema from '@/components/ToolSchema'
 import LearnMore from '@/components/LearnMore'
-import { getArticle } from '@/lib/content'
+import { getToolArticles } from '@/lib/content'
 import type { Metadata } from 'next'
 
 const TITLE = 'Hash & Base64 Toolkit | WiresOps'
@@ -30,10 +30,7 @@ export const metadata: Metadata = {
 }
 
 export default function HashPage() {
-  const relatedArticles = [
-    getArticle('git', '01-fundamentos-y-flujo'),
-    getArticle('linux', '07-seguridad-y-hardening'),
-  ].filter(Boolean) as any[]
+  const relatedArticles = getToolArticles('hash')
 
   return (
     <div className="flex h-dvh overflow-hidden">

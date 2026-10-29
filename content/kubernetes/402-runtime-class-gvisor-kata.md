@@ -4,21 +4,21 @@ category: "kubernetes"
 description: "Aprende a aislar cargas de trabajo sensibles en Kubernetes con RuntimeClass - gVisor (runsc), Kata Containers, sandboxing de contenedores y cuándo usar cada runtime para la certificación CKS."
 tags:
   - "kubernetes"
-  - "- seguridad"
-  - "- runtime"
-  - "- gvisor"
-  - "- CKS"
+  - "seguridad"
+  - "runtime"
+  - "gvisor"
+  - "CKS"
 keywords:
   - "runtimeclass kubernetes"
-  - "- gvisor kubernetes"
-  - "- kata containers kubernetes"
-  - "- runsc kubernetes"
-  - "- sandbox contenedores"
-  - "- aislamiento contenedores kubernetes"
-  - "- container runtime seguridad"
-  - "- CKS runtime class"
-  - "- containerd runtime handlers"
-  - "- escape de contenedor"
+  - "gvisor kubernetes"
+  - "kata containers kubernetes"
+  - "runsc kubernetes"
+  - "sandbox contenedores"
+  - "aislamiento contenedores kubernetes"
+  - "container runtime seguridad"
+  - "CKS runtime class"
+  - "containerd runtime handlers"
+  - "escape de contenedor"
 ---
 
 # RuntimeClass: sandboxing de contenedores
@@ -38,7 +38,7 @@ flowchart TD
     K -. acceso total .-> C1
 ```
 
-Las syscalls son la puerta: un contenedor habla directamente con el kernel del host. [Seccomp y AppArmor](./405.Apparmor_seccomp.md) reducen qué puede pedirle, pero la superficie sigue siendo el kernel real. Los **runtimes sandboxed** van un paso más allá: ponen una barrera entre el contenedor y ese kernel.
+Las syscalls son la puerta: un contenedor habla directamente con el kernel del host. [Seccomp y AppArmor](/article/kubernetes/405-apparmor-seccomp-capabilities/) reducen qué puede pedirle, pero la superficie sigue siendo el kernel real. Los **runtimes sandboxed** van un paso más allá: ponen una barrera entre el contenedor y ese kernel.
 
 ## Los runtimes sandboxed
 ### gVisor (runsc)
@@ -110,10 +110,10 @@ kubectl exec pod-sandboxed -- dmesg | head -2
 # [    0.000000] Starting gVisor...
 ```
 
-Si el RuntimeClass apunta a un handler que no existe en el nodo, el pod se quedará en `ContainerCreating` con un evento `FailedCreatePodSandBox`: directo a nuestra [metodología de troubleshooting](./306.Troubleshooting_aplicaciones.md).
+Si el RuntimeClass apunta a un handler que no existe en el nodo, el pod se quedará en `ContainerCreating` con un evento `FailedCreatePodSandBox`: directo a nuestra [metodología de troubleshooting](/article/kubernetes/306-troubleshooting-aplicaciones/).
 
 ## Detalles operativos
-- **Scheduling**: si solo algunos nodos tienen el runtime instalado, el RuntimeClass admite un campo `scheduling.nodeSelector` para que los pods caigan donde toca (combinado con labels en los nodos, como vimos en [scheduling](./121.Scheduling_labels.md)).
+- **Scheduling**: si solo algunos nodos tienen el runtime instalado, el RuntimeClass admite un campo `scheduling.nodeSelector` para que los pods caigan donde toca (combinado con labels en los nodos, como vimos en [scheduling](/article/kubernetes/121-scheduling-labels-affinity/)).
 - **Overhead**: el campo `overhead` permite declarar el coste extra de recursos del sandbox, que el scheduler suma a los requests del pod:
 ```yaml
 overhead:

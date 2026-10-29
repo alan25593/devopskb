@@ -6,6 +6,7 @@ import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism'
 import { slugify } from '@/lib/content'
 import type { Article, Heading as HeadingType, RelatedArticle } from '@/lib/content'
 import { getCategoryLabel } from '@/lib/categories'
+import type { Tool } from '@/lib/tools'
 import Sidebar from './Sidebar'
 import CategoryTag from './CategoryTag'
 import MermaidDiagram from './MermaidDiagram'
@@ -85,9 +86,10 @@ interface Props {
   next?: Article | null
   categoryArticles?: NavArticle[]
   related?: RelatedArticle[]
+  tools?: Tool[]
 }
 
-export default function ArticleView({ article, prev, next, categoryArticles, related = [] }: Props) {
+export default function ArticleView({ article, prev, next, categoryArticles, related = [], tools = [] }: Props) {
   const categoryLabel = getCategoryLabel(article.category)
 
   return (
@@ -132,6 +134,22 @@ export default function ArticleView({ article, prev, next, categoryArticles, rel
                   <p className="text-lg text-slate-400 leading-relaxed">{article.description}</p>
                 )}
               </header>
+
+              {tools.length > 0 && (
+                <aside className="mb-10 flex flex-wrap items-center gap-2 rounded-lg border border-emerald-900/50 bg-emerald-950/20 px-4 py-3">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-emerald-400 mr-1">Probalo con</span>
+                  {tools.map(t => (
+                    <Link
+                      key={t.id}
+                      href={`${t.href}/`}
+                      className="inline-flex items-center gap-1.5 rounded-md border border-slate-700 bg-slate-900 px-2.5 py-1 text-xs text-slate-300 hover:border-emerald-600 hover:text-emerald-300 transition-colors"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d={t.iconPath} /></svg>
+                      {t.label}
+                    </Link>
+                  ))}
+                </aside>
+              )}
 
               <TableOfContents 
                 headings={article.headings} 

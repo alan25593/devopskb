@@ -3,7 +3,7 @@ import Sidebar from '@/components/Sidebar'
 import RbacViewer from '@/components/tools/RbacViewer'
 import ToolSchema from '@/components/ToolSchema'
 import LearnMore from '@/components/LearnMore'
-import { getArticle } from '@/lib/content'
+import { getToolArticles } from '@/lib/content'
 import type { Metadata } from 'next'
 
 const TITLE = 'RBAC Viewer | WiresOps'
@@ -30,10 +30,7 @@ export const metadata: Metadata = {
 }
 
 export default function RbacPage() {
-  const relatedArticles = [
-    getArticle('kubernetes', '02-kubectl'),
-    getArticle('kubernetes', '08-rbac-y-seguridad'),
-  ].filter(Boolean) as any[]
+  const relatedArticles = getToolArticles('rbac')
 
   return (
     <div className="flex h-dvh overflow-hidden">

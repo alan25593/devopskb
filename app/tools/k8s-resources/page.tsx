@@ -3,7 +3,7 @@ import Sidebar from '@/components/Sidebar'
 import K8sResourceCalculator from '@/components/tools/K8sResourceCalculator'
 import ToolSchema from '@/components/ToolSchema'
 import LearnMore from '@/components/LearnMore'
-import { getArticle } from '@/lib/content'
+import { getToolArticles } from '@/lib/content'
 import type { Metadata } from 'next'
 
 const TITLE = 'Kubernetes Resource Calculator | WiresOps'
@@ -30,10 +30,7 @@ export const metadata: Metadata = {
 }
 
 export default function K8sResourcesPage() {
-  const relatedArticles = [
-    getArticle('kubernetes', '03-workloads'),
-    getArticle('kubernetes', '07-escalado-y-scheduling'),
-  ].filter(Boolean) as any[]
+  const relatedArticles = getToolArticles('k8s-resources')
 
   return (
     <div className="flex h-dvh overflow-hidden">

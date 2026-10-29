@@ -6,24 +6,24 @@ tags:
   - "kubernetes"
 keywords:
   - "kubernetes almacenamiento"
-  - "- pv pvc kubernetes"
-  - "- storageclass kubernetes"
-  - "- csi drivers kubernetes"
-  - "- longhorn kubernetes"
-  - "- rook ceph kubernetes"
-  - "- nfs kubernetes"
-  - "- snapshot kubernetes"
-  - "- clone volumen kubernetes"
-  - "- aprovisionamiento dinamico kubernetes"
-  - "- almacenamiento cloud kubernetes"
-  - "- aws ebs kubernetes"
-  - "- azure disk kubernetes"
+  - "pv pvc kubernetes"
+  - "storageclass kubernetes"
+  - "csi drivers kubernetes"
+  - "longhorn kubernetes"
+  - "rook ceph kubernetes"
+  - "nfs kubernetes"
+  - "snapshot kubernetes"
+  - "clone volumen kubernetes"
+  - "aprovisionamiento dinamico kubernetes"
+  - "almacenamiento cloud kubernetes"
+  - "aws ebs kubernetes"
+  - "azure disk kubernetes"
 ---
 
 # Volúmenes y almacenamiento avanzado en Kubernetes
 
 ## Introducción
-En la parte común del curso ya vimos los [fundamentos del almacenamiento persistente](./115.Almacenamiento.md) (PV, PVC, StorageClass). En esta lección, orientada a administradores, profundizaremos en cómo elegir la opción adecuada según el tamaño del clúster y nuestros SLOs (Service Level Objectives, los objetivos de nivel de servicio). Veremos en profundidad la diferencia entre aprovisionamiento **estático** y **dinámico**, el ciclo de vida de PV/PVC/StorageClass y cómo se relaciona con backends: almacenamiento nativo de nube, **Longhorn** (entornos pequeños), **Rook‑Ceph** (entornos medianos), además de **NFS** y almacenamiento **local**.
+En la parte común del curso ya vimos los [fundamentos del almacenamiento persistente](/article/kubernetes/115-almacenamiento-pv-pvc/) (PV, PVC, StorageClass). En esta lección, orientada a administradores, profundizaremos en cómo elegir la opción adecuada según el tamaño del clúster y nuestros SLOs (Service Level Objectives, los objetivos de nivel de servicio). Veremos en profundidad la diferencia entre aprovisionamiento **estático** y **dinámico**, el ciclo de vida de PV/PVC/StorageClass y cómo se relaciona con backends: almacenamiento nativo de nube, **Longhorn** (entornos pequeños), **Rook‑Ceph** (entornos medianos), además de **NFS** y almacenamiento **local**.
 
 Objetivos:
 - Comprender PV, PVC, StorageClass y CSI a nivel conceptual y operativo.

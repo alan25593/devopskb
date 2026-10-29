@@ -4,20 +4,20 @@ category: "kubernetes"
 description: "Aprende a gestionar DaemonSets y StatefulSets en Kubernetes para crear aplicaciones persistentes y distribuidas. Guía completa con ejemplos prácticos."
 tags:
   - "kubernetes"
-  - "- daemonset"
-  - "- statefulset"
+  - "daemonset"
+  - "statefulset"
 keywords:
   - "kubernetes daemonset"
-  - "- kubernetes statefulset"
-  - "- diferencia daemonset statefulset"
-  - "- aplicaciones persistentes kubernetes"
-  - "- bases de datos kubernetes"
-  - "- statefulset yaml"
-  - "- daemonset yaml"
-  - "- headless service kubernetes"
-  - "- volumenes statefulset"
-  - "- pods con identidad estable"
-  - "- escalado stateful kubernetes"
+  - "kubernetes statefulset"
+  - "diferencia daemonset statefulset"
+  - "aplicaciones persistentes kubernetes"
+  - "bases de datos kubernetes"
+  - "statefulset yaml"
+  - "daemonset yaml"
+  - "headless service kubernetes"
+  - "volumenes statefulset"
+  - "pods con identidad estable"
+  - "escalado stateful kubernetes"
 ---
 
 # DaemonSets y StatefulSets en Kubernetes
@@ -119,9 +119,9 @@ spec:
           name: mongo
 ```
 
-Fijémonos en el campo `serviceName`: los StatefulSets necesitan un servicio "headless" asociado, que es el que proporciona a cada pod su nombre DNS estable. Veremos los servicios en detalle en el [capítulo de Services](./110.Services.md).
+Fijémonos en el campo `serviceName`: los StatefulSets necesitan un servicio "headless" asociado, que es el que proporciona a cada pod su nombre DNS estable. Veremos los servicios en detalle en el [capítulo de Services](/article/kubernetes/110-services/).
 
-Este ejemplo estaría incompleto, ya que los volúmenes los veremos en capítulos posteriores ([Almacenamiento y volúmenes en Kubernetes](./115.Almacenamiento.md)), pero sirve para que veamos la estructura básica de un StatefulSet.
+Este ejemplo estaría incompleto, ya que los volúmenes los veremos en capítulos posteriores ([Almacenamiento y volúmenes en Kubernetes](/article/kubernetes/115-almacenamiento-pv-pvc/)), pero sirve para que veamos la estructura básica de un StatefulSet.
 
 Para aplicar la configuración anterior, usaríamos el siguiente comando:
 ```shell

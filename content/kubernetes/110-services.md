@@ -4,21 +4,21 @@ category: "kubernetes"
 description: "Aprende a exponer aplicaciones en Kubernetes con Services. Domina ClusterIP, NodePort, LoadBalancer y endpoints con ejemplos prácticos."
 tags:
   - "kubernetes"
-  - "- services"
-  - "- networking"
-  - "- exposición"
+  - "services"
+  - "networking"
+  - "exposición"
 keywords:
   - "kubernetes services"
-  - "- servicios kubernetes"
-  - "- clusterip kubernetes"
-  - "- nodeport kubernetes"
-  - "- loadbalancer kubernetes"
-  - "- exponer aplicaciones kubernetes"
-  - "- networking kubernetes"
-  - "- cómo exponer un pod kubernetes"
-  - "- service discovery kubernetes"
-  - "- endpoints kubernetes"
-  - "- external service kubernetes"
+  - "servicios kubernetes"
+  - "clusterip kubernetes"
+  - "nodeport kubernetes"
+  - "loadbalancer kubernetes"
+  - "exponer aplicaciones kubernetes"
+  - "networking kubernetes"
+  - "cómo exponer un pod kubernetes"
+  - "service discovery kubernetes"
+  - "endpoints kubernetes"
+  - "external service kubernetes"
 ---
 
 # Servicios en Kubernetes
@@ -87,7 +87,7 @@ spec:
 
 Ya hemos visto lo sencillo que es definir estos objetos y exponer nuestras aplicaciones. Pero, ¿cómo sabe el service a qué pods debe redirigir el tráfico?
 
-Esto es posible gracias a los `selectores` y los `endpoints`. Los `selectores` simplemente definen qué pods deben ser parte del servicio, basándose en etiquetas (labels) que se asignan a los pods. Recordad el apartado de [conceptos básicos](./104.Conceptos.md) y la importancia de las etiquetas en Kubernetes.
+Esto es posible gracias a los `selectores` y los `endpoints`. Los `selectores` simplemente definen qué pods deben ser parte del servicio, basándose en etiquetas (labels) que se asignan a los pods. Recordad el apartado de [conceptos básicos](/article/kubernetes/104-conceptos/) y la importancia de las etiquetas en Kubernetes.
 
 Los `endpoints`, por otra parte, son un objeto que mantiene una lista actualizada de las IPs de los pods que cumplen con el selector del servicio. Así, el Service puede redirigir el tráfico a los pods correctos, incluso si estos cambian de IP o se reemplazan. Recordemos que cada pod tiene una IP única asignada por el clúster, y los pods pueden ser efímeros, es decir, pueden aparecer y desaparecer con frecuencia.
 

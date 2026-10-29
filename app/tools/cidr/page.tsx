@@ -3,7 +3,7 @@ import Sidebar from '@/components/Sidebar'
 import CidrVisualizer from '@/components/tools/CidrVisualizer'
 import ToolSchema from '@/components/ToolSchema'
 import LearnMore from '@/components/LearnMore'
-import { getArticle } from '@/lib/content'
+import { getToolArticles } from '@/lib/content'
 import type { Metadata } from 'next'
 
 const TITLE = 'CIDR Visualizer | WiresOps'
@@ -30,10 +30,7 @@ export const metadata: Metadata = {
 }
 
 export default function CidrPage() {
-  const relatedArticles = [
-    getArticle('linux', '08-redes-y-dns'),
-    getArticle('kubernetes', '04-networking'),
-  ].filter(Boolean) as any[]
+  const relatedArticles = getToolArticles('cidr')
 
   return (
     <div className="flex h-dvh overflow-hidden">

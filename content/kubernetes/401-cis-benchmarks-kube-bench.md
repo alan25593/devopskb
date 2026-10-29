@@ -4,28 +4,28 @@ category: "kubernetes"
 description: "Aprende a auditar la seguridad de tu cluster de Kubernetes con los CIS Benchmarks y kube-bench - hardening del API server, kubelet, etcd y remediación de hallazgos para la certificación CKS."
 tags:
   - "kubernetes"
-  - "- seguridad"
-  - "- CIS"
-  - "- hardening"
-  - "- CKS"
+  - "seguridad"
+  - "CIS"
+  - "hardening"
+  - "CKS"
 keywords:
   - "cis benchmark kubernetes"
-  - "- kube-bench tutorial"
-  - "- hardening kubernetes"
-  - "- auditoria seguridad kubernetes"
-  - "- CKS cis benchmarks"
-  - "- kubelet hardening"
-  - "- api server hardening"
-  - "- etcd seguridad"
-  - "- center for internet security"
-  - "- kubernetes security checklist"
+  - "kube-bench tutorial"
+  - "hardening kubernetes"
+  - "auditoria seguridad kubernetes"
+  - "CKS cis benchmarks"
+  - "kubelet hardening"
+  - "api server hardening"
+  - "etcd seguridad"
+  - "center for internet security"
+  - "kubernetes security checklist"
 ---
 
 # CIS Benchmarks: auditando la seguridad del cluster
 
 Empezamos la especialización CKS, la de seguridad, por la pregunta obligada de todo auditor: ¿cómo sabemos si nuestro cluster está bien configurado? La respuesta estándar de la industria son los **CIS Benchmarks**, y su herramienta de cabecera, **kube-bench**.
 
-> **Requisito de contexto:** la certificación CKS exige tener la [CKA](./208.Preparacion_CKA.md) en vigor. Esta especialización asume que dominamos la administración del cluster: static pods, certificados, RBAC y troubleshooting.
+> **Requisito de contexto:** la certificación CKS exige tener la [CKA](/article/kubernetes/208-preparacion-examen-cka/) en vigor. Esta especialización asume que dominamos la administración del cluster: static pods, certificados, RBAC y troubleshooting.
 
 ## ¿Qué son los CIS Benchmarks?
 El **CIS (Center for Internet Security)** es una organización sin ánimo de lucro que publica guías de configuración segura (benchmarks) para todo tipo de tecnologías: sistemas operativos, bases de datos, nubes... y Kubernetes.
@@ -72,7 +72,7 @@ on the control plane node and set the below parameter.
 ```
 
 ## Remediando hallazgos: los clásicos del examen
-En el examen CKS, el ejercicio típico es: "ejecuta kube-bench, encuentra el fallo X y corrígelo". Las remediaciones más frecuentes tocan exactamente lo que ya conocemos de la [especialización CKA](./203.APIs_TLS_seguridad.md):
+En el examen CKS, el ejercicio típico es: "ejecuta kube-bench, encuentra el fallo X y corrígelo". Las remediaciones más frecuentes tocan exactamente lo que ya conocemos de la [especialización CKA](/article/kubernetes/203-apis-tls-seguridad-control-plane/):
 
 ### En el API server (`/etc/kubernetes/manifests/kube-apiserver.yaml`)
 ```yaml
@@ -82,7 +82,7 @@ En el examen CKS, el ejercicio típico es: "ejecuta kube-bench, encuentra el fal
 - --enable-admission-plugins=NodeRestriction
 ```
 
-Recordemos: es un static pod, el kubelet lo recrea al guardar. Si no vuelve, `crictl ps -a` y los logs, como vimos en [troubleshooting](./202.Troubleshooting_cluster.md).
+Recordemos: es un static pod, el kubelet lo recrea al guardar. Si no vuelve, `crictl ps -a` y los logs, como vimos en [troubleshooting](/article/kubernetes/202-troubleshooting-cluster/).
 
 ### En el kubelet (`/var/lib/kubelet/config.yaml`)
 El benchmark insiste especialmente en el kubelet, porque su API (puerto 10250) permite ejecutar comandos en los pods:
@@ -99,7 +99,7 @@ readOnlyPort: 0             # Deshabilitar el puerto de solo lectura (10255)
 Tras editar: `sudo systemctl restart kubelet`.
 
 ### En etcd
-Verificar que usa TLS y autenticación de clientes (flags `--cert-file`, `--key-file`, `--client-cert-auth=true`, `--peer-client-cert-auth=true` en su manifiesto). Un etcd accesible sin certificados regala el cluster entero: recordemos que [los secrets se guardan ahí sin cifrar](./114.Secrets_configmaps.md) por defecto.
+Verificar que usa TLS y autenticación de clientes (flags `--cert-file`, `--key-file`, `--client-cert-auth=true`, `--peer-client-cert-auth=true` en su manifiesto). Un etcd accesible sin certificados regala el cluster entero: recordemos que [los secrets se guardan ahí sin cifrar](/article/kubernetes/114-secrets-y-configmaps/) por defecto.
 
 ### Permisos de ficheros
 Muchos controles son simples permisos:

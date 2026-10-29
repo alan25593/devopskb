@@ -3,7 +3,7 @@ import Sidebar from '@/components/Sidebar'
 import PasswordGenerator from '@/components/tools/PasswordGenerator'
 import ToolSchema from '@/components/ToolSchema'
 import LearnMore from '@/components/LearnMore'
-import { getArticle } from '@/lib/content'
+import { getToolArticles } from '@/lib/content'
 import type { Metadata } from 'next'
 
 const TITLE = 'Password Generator | WiresOps'
@@ -30,10 +30,7 @@ export const metadata: Metadata = {
 }
 
 export default function PasswordPage() {
-  const relatedArticles = [
-    getArticle('linux', '07-seguridad-y-hardening'),
-    getArticle('windows', '10-seguridad-y-hardening'),
-  ].filter(Boolean) as any[]
+  const relatedArticles = getToolArticles('password')
 
   return (
     <div className="flex h-dvh overflow-hidden bg-slate-950">

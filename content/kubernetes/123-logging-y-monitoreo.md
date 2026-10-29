@@ -4,23 +4,23 @@ category: "kubernetes"
 description: "Aprende gestión completa de logs en Kubernetes - kubectl logs, agregación con ELK Stack, Fluentd, troubleshooting y debugging de aplicaciones en producción."
 tags:
   - "kubernetes"
-  - "- logs"
-  - "- troubleshooting"
-  - "- monitoring"
-  - "- CKA"
+  - "logs"
+  - "troubleshooting"
+  - "monitoring"
+  - "CKA"
 keywords:
   - "kubernetes logs"
-  - "- kubectl logs"
-  - "- logging kubernetes"
-  - "- ELK stack kubernetes"
-  - "- fluentd kubernetes"
-  - "- troubleshooting kubernetes"
-  - "- debugging pods kubernetes"
-  - "- loki kubernetes"
-  - "- centralized logging kubernetes"
-  - "- kubectl describe pod"
-  - "- kubernetes events"
-  - "- errores pods kubernetes"
+  - "kubectl logs"
+  - "logging kubernetes"
+  - "ELK stack kubernetes"
+  - "fluentd kubernetes"
+  - "troubleshooting kubernetes"
+  - "debugging pods kubernetes"
+  - "loki kubernetes"
+  - "centralized logging kubernetes"
+  - "kubectl describe pod"
+  - "kubernetes events"
+  - "errores pods kubernetes"
 ---
 
 # Logs en Kubernetes
@@ -81,7 +81,7 @@ Documentación oficial de Kubernetes:
 * [Entender errores de un pod](https://kubernetes.io/docs/tasks/debug/debug-application/determine-reason-pod-failure/)
 
 ## Logging centralizado
-Los logs de un pod desaparecen con él, así que en producción es imprescindible agregarlos en un sistema centralizado. El patrón habitual es un agente desplegado como DaemonSet (como vimos en el [capítulo de DaemonSets](./108.DSySS.md)) que recolecta los logs de cada nodo y los envía a un backend:
+Los logs de un pod desaparecen con él, así que en producción es imprescindible agregarlos en un sistema centralizado. El patrón habitual es un agente desplegado como DaemonSet (como vimos en el [capítulo de DaemonSets](/article/kubernetes/108-daemonsets-y-statefulsets/)) que recolecta los logs de cada nodo y los envía a un backend:
 - **Grafana Loki** + Promtail/Alloy: ligero y muy popular en la comunidad.
 - **Stack EFK**: Elasticsearch + Fluentd/Fluent Bit + Kibana, el clásico para grandes volúmenes.
 
@@ -151,7 +151,7 @@ kubectl get serviceaccounts
 ```
 Debería ser algo similar a `<nombre del despliegue>-kubernetes-dashboard`.
 
-Para autenticarnos en el dashboard, generamos un token de esa cuenta de servicio (recordemos del [capítulo de usuarios](./119.Usuarios.md) que los tokens ahora son efímeros y se crean bajo demanda):
+Para autenticarnos en el dashboard, generamos un token de esa cuenta de servicio (recordemos del [capítulo de usuarios](/article/kubernetes/119-usuarios-y-autenticacion/) que los tokens ahora son efímeros y se crean bajo demanda):
 ```bash
 kubectl create token <nombre de la service account>
 ```
