@@ -8,6 +8,7 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism'
 import { slugify } from '@/lib/content'
 import type { Article, Heading as HeadingType } from '@/lib/content'
+import { getCategoryLabel } from '@/lib/categories'
 import Sidebar from './Sidebar'
 import CategoryTag from './CategoryTag'
 import MermaidDiagram from './MermaidDiagram'
@@ -163,11 +164,6 @@ function TableOfContents({ headings, className = "hidden xl:block w-64 shrink-0 
   )
 }
 
-const CATEGORY_LABELS: Record<string, string> = {
-  docker: 'Docker', git: 'Git', jenkins: 'Jenkins', kubernetes: 'Kubernetes',
-  linux: 'Linux', terraform: 'Terraform', windows: 'Windows',
-}
-
 interface NavArticle {
   slug: string
   category: string
@@ -183,7 +179,7 @@ interface Props {
 
 export default function ArticleView({ article, prev, next, categoryArticles }: Props) {
   const mainRef = useRef<HTMLElement>(null)
-  const categoryLabel = CATEGORY_LABELS[article.category] ?? article.category
+  const categoryLabel = getCategoryLabel(article.category)
 
   return (
     <div className="flex h-dvh overflow-hidden">

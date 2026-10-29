@@ -1,4 +1,5 @@
 import { getAllStaticParams, getArticle, getAdjacentArticles, getArticlesByCategory } from '@/lib/content'
+import { getCategoryLabel } from '@/lib/categories'
 import ArticleView from '@/components/ArticleView'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
@@ -15,7 +16,7 @@ export function generateMetadata({ params }: Props): Metadata {
   const article = getArticle(params.category, params.slug)
   if (!article) return {}
 
-  const categoryLabel = params.category.charAt(0).toUpperCase() + params.category.slice(1)
+  const categoryLabel = getCategoryLabel(params.category)
   const keywords = [...new Set([...article.keywords, ...article.tags, categoryLabel, 'DevOps', 'SRE'])]
   const description = article.description || `Guía de ${article.title} — DevOps KB`
   const canonicalUrl = `/article/${params.category}/${params.slug}/`
@@ -44,11 +45,6 @@ export function generateMetadata({ params }: Props): Metadata {
 
 const BASE_URL = 'https://kb.wiresops.com'
 
-const CATEGORY_LABELS: Record<string, string> = {
-  docker: 'Docker', git: 'Git', jenkins: 'Jenkins', kubernetes: 'Kubernetes',
-  linux: 'Linux', terraform: 'Terraform', windows: 'Windows',
-}
-
 export default function ArticlePage({ params }: Props) {
   const article = getArticle(params.category, params.slug)
   if (!article) notFound()
@@ -56,7 +52,7 @@ export default function ArticlePage({ params }: Props) {
   const { prev, next } = getAdjacentArticles(params.category, params.slug)
   const categoryArticles = getArticlesByCategory(params.category)
 
-  const categoryLabel = CATEGORY_LABELS[params.category] ?? params.category
+  const categoryLabel = getCategoryLabel(params.category)
   const articleUrl = `${BASE_URL}/article/${params.category}/${params.slug}/`
 
   const jsonLd = {

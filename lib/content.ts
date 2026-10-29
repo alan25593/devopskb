@@ -55,52 +55,22 @@ function calculateReadingTime(content: string): number {
   return Math.max(1, Math.ceil(wordCount / 200))
 }
 
-export function getAllArticles(): Article[] {
-  if (_cache) return _cache
-
-  const articles: Article[] = []
-
-  if (!fs.existsSync(contentDir)) return articles
-
-  const categories = fs.readdirSync(contentDir)
-
-  for (const category of categories) {
-    const categoryPath = path.join(contentDir, category)
-    if (!fs.statSync(categoryPath).isDirectory()) continue
-
-    const files = fs.readdirSync(categoryPath).filter(f => f.endsWith('.md') && f.toLowerCase() !== 'readme.md')
-
-    for (const file of files) {
-      const slug = file.replace('.md', '')
-      const filePath = path.join(categoryPath, file)
-      const raw = fs.readFileSync(filePath, 'utf-8')
-      const { data, content } = matter(raw)
-
-      articles.push({
-        slug,
-        category,
-        title: data.title ?? slug,
-        description: data.description ?? '',
-        keywords: Array.isArray(data.keywords) ? data.keywords : [],
-        tags: Array.isArray(data.tags) ? data.tags : [],
-        content,
-        readingTime: calculateReadingTime(content),
-        headings: extractHeadings(content)
-      })
-    }
-  }
-
-  _cache = articles
-  return articles
+// Slugs of a category's articles in stable order (README.md is category docs, not an article)
+function listArticleSlugs(categoryPath: string): string[] {
+  return fs.readdirSync(categoryPath)
+    .filter(f => f.endsWith('.md') && f.toLowerCase() !== 'readme.md')
+    .sort()
+    .map(f => f.replace(/\.md$/, ''))
 }
 
-export function getArticle(category: string, slug: string): Article | null {
-  const filePath = path.join(contentDir, category, `${slug}.md`)
-  if (!fs.existsSync(filePath)) return null
+// The page header already renders the frontmatter title, so drop a leading "# Title" from the body
+function stripLeadingH1(content: string): string {
+  return content.replace(/^\s*#\s+[^\n]*\n/, '')
+}
 
-  const raw = fs.readFileSync(filePath, 'utf-8')
-  const { data, content } = matter(raw)
-
+function parseArticle(category: string, slug: string, raw: string): Article {
+  const { data, content: rawContent } = matter(raw)
+  const content = stripLeadingH1(rawContent)
   return {
     slug,
     category,
@@ -112,6 +82,36 @@ export function getArticle(category: string, slug: string): Article | null {
     readingTime: calculateReadingTime(content),
     headings: extractHeadings(content)
   }
+}
+
+export function getAllArticles(): Article[] {
+  if (_cache) return _cache
+
+  const articles: Article[] = []
+
+  if (!fs.existsSync(contentDir)) return articles
+
+  const categories = fs.readdirSync(contentDir).sort()
+
+  for (const category of categories) {
+    const categoryPath = path.join(contentDir, category)
+    if (!fs.statSync(categoryPath).isDirectory()) continue
+
+    for (const slug of listArticleSlugs(categoryPath)) {
+      const raw = fs.readFileSync(path.join(categoryPath, `${slug}.md`), 'utf-8')
+      articles.push(parseArticle(category, slug, raw))
+    }
+  }
+
+  _cache = articles
+  return articles
+}
+
+export function getArticle(category: string, slug: string): Article | null {
+  const filePath = path.join(contentDir, category, `${slug}.md`)
+  if (!fs.existsSync(filePath)) return null
+
+  return parseArticle(category, slug, fs.readFileSync(filePath, 'utf-8'))
 }
 
 export type SearchArticle = Omit<Article, 'content' | 'headings'>
@@ -138,10 +138,7 @@ export function getAdjacentArticles(category: string, slug: string): {
   const categoryPath = path.join(contentDir, category)
   if (!fs.existsSync(categoryPath)) return { prev: null, next: null }
 
-  const slugs = fs.readdirSync(categoryPath)
-    .filter(f => f.endsWith('.md'))
-    .sort()
-    .map(f => f.replace('.md', ''))
+  const slugs = listArticleSlugs(categoryPath)
 
   const idx = slugs.indexOf(slug)
   return {

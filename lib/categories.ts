@@ -24,3 +24,7 @@ export const CATEGORIES: Category[] = [
 export function getCategoryHex(id: string): string {
   return CATEGORIES.find(c => c.id === id)?.hex ?? '4ade80'
 }
+
+export function getCategoryLabel(id: string): string {
+  return CATEGORIES.find(c => c.id === id)?.label ?? id.charAt(0).toUpperCase() + id.slice(1)
+}
