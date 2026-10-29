@@ -153,6 +153,8 @@ export default function ArticleView({ article, prev, next, categoryArticles, rel
                 <ReactMarkdown
                   remarkPlugins={[remarkGfm]}
                   components={{
+                    // The code renderer below draws its own frame: drop markdown's <pre> wrapper
+                    pre: ({ children }) => <>{children}</>,
                     h1: ({ children }) => <Heading level={2}>{children}</Heading>,
                     h2: ({ children }) => <Heading level={2}>{children}</Heading>,
                     h3: ({ children }) => <Heading level={3}>{children}</Heading>,
@@ -162,25 +164,27 @@ export default function ArticleView({ article, prev, next, categoryArticles, rel
                       const { children, className, node, ...rest } = props
                       const match = /language-(\w+)/.exec(className || '')
                       
-                      if (!match) {
-                        const text = extractText(children)
+                      const raw = String(children)
+                      // Fenced blocks without a language have no class but always end in a newline
+                      if (!match && !raw.includes('\n')) {
                         return (
-                          <span className="inline-flex items-center group/code bg-slate-800/60 border border-slate-700/50 rounded px-1.5 py-0.5">
-                            <code className="text-cyan-400 font-mono text-[0.85em] before:content-none after:content-none" {...rest}>{children}</code>
-                            <CopyButton text={text} variant="inline" />
-                          </span>
+                          <code className="group/code relative inline-code" {...rest}>
+                            {children}
+                            <CopyButton text={extractText(children)} variant="inline" />
+                          </code>
                         )
                       }
-                      
-                      const language = match[1]
-                      const content = String(children).replace(/\n$/, '')
-                      
+
+                      const language = match?.[1] ?? 'text'
+                      const content = raw.replace(/\n$/, '')
+
                       if (language === 'mermaid') {
                         return <MermaidDiagram chart={content} />
                       }
-                      
+
+                      const lineCount = content.split('\n').length
                       return (
-                        <div className="relative group/code-block my-6 rounded-lg overflow-hidden border border-slate-800 shadow-sm">
+                        <div className="not-prose relative group/code-block my-6 rounded-lg overflow-hidden border border-slate-800 shadow-sm">
                           <div className="flex items-center justify-between px-4 py-2 bg-slate-900 border-b border-slate-800">
                             <span className="text-[10px] font-mono text-slate-500 uppercase tracking-wider">{language}</span>
                           </div>
@@ -189,9 +193,10 @@ export default function ArticleView({ article, prev, next, categoryArticles, rel
                             style={vscDarkPlus}
                             language={language}
                             PreTag="div"
-                            showLineNumbers={true}
-                            customStyle={{ margin: 0, background: '#0d1117', padding: '1rem', fontSize: '0.875rem' }}
-                            codeTagProps={{ style: { fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace' } }}
+                            showLineNumbers={lineCount > 5}
+                            lineNumberStyle={{ minWidth: '2.25em', color: '#475569' }}
+                            customStyle={{ margin: 0, background: '#0d1117', padding: '1rem', fontSize: '0.8125rem', lineHeight: 1.6 }}
+                            codeTagProps={{ style: { fontFamily: 'var(--font-mono)' } }}
                           />
                           <CopyButton text={content} variant="block" />
                         </div>

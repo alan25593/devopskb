@@ -56,6 +56,15 @@ export default function SearchPage({ articles }: SearchPageProps) {
   }, [])
 
   // Build FlexSearch Document index once from metadata only (no full content)
+  // Newest first, max 2 per category: a single commit often updates a whole category at once
+  const latest = useMemo(() => {
+    const perCategory: Record<string, number> = {}
+    return [...articles]
+      .sort((a, b) => b.updated.localeCompare(a.updated) || a.slug.localeCompare(b.slug))
+      .filter(a => (perCategory[a.category] = (perCategory[a.category] ?? 0) + 1) <= 2)
+      .slice(0, 6)
+  }, [articles])
+
   const index = useMemo(() => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const idx = new FlexDocument({
@@ -230,7 +239,7 @@ export default function SearchPage({ articles }: SearchPageProps) {
                   Últimos Artículos
                 </h2>
                 <div className="grid md:grid-cols-2 gap-4">
-                  {articles.slice(0, 4).map(article => (
+                  {latest.map(article => (
                     <Link
                       key={`${article.category}/${article.slug}`}
                       href={`/article/${article.category}/${article.slug}/`}
@@ -244,6 +253,9 @@ export default function SearchPage({ articles }: SearchPageProps) {
                       </div>
                       <p className="text-slate-500 text-sm leading-relaxed line-clamp-2">
                         {article.description}
+                      </p>
+                      <p className="text-[11px] text-slate-600 mt-2">
+                        Actualizado {new Date(article.updated).toLocaleDateString('es-AR', { day: 'numeric', month: 'short', year: 'numeric' })}
                       </p>
                     </Link>
                   ))}

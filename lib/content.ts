@@ -115,10 +115,13 @@ export function getArticle(category: string, slug: string): Article | null {
   return parseArticle(category, slug, fs.readFileSync(filePath, 'utf-8'))
 }
 
-export type SearchArticle = Omit<Article, 'content' | 'headings'>
+export type SearchArticle = Omit<Article, 'content' | 'headings'> & { updated: string }
 
 export function getArticlesForSearch(): SearchArticle[] {
-  return getAllArticles().map(({ content: _content, headings: _headings, ...rest }) => rest)
+  return getAllArticles().map(({ content: _content, headings: _headings, ...rest }) => ({
+    ...rest,
+    updated: getArticleLastModified(rest.category, rest.slug).toISOString(),
+  }))
 }
 
 export function getAllStaticParams() {
@@ -162,13 +165,29 @@ export function getRelatedArticles(category: string, slug: string, exclude: stri
 }
 
 // Last commit date of the article file; falls back to mtime when git is unavailable (e.g. Docker build without .git)
-export function getArticleLastModified(category: string, slug: string): Date {
-  const filePath = path.join(contentDir, category, `${slug}.md`)
+let _gitDates: Map<string, Date> | null = null
+
+// "category/slug.md" -> date of the newest commit touching it, from a single git log over content/
+function gitDates(): Map<string, Date> {
+  if (_gitDates) return _gitDates
+  _gitDates = new Map()
   try {
-    const iso = execFileSync('git', ['log', '-1', '--format=%cI', '--', filePath], { encoding: 'utf-8', stdio: ['ignore', 'pipe', 'ignore'] }).trim()
-    if (iso) return new Date(iso)
+    const out = execFileSync('git', ['log', '--format=@%cI', '--name-only', '--', 'content'],
+      { cwd: process.cwd(), encoding: 'utf-8', stdio: ['ignore', 'pipe', 'ignore'], maxBuffer: 64 * 1024 * 1024 })
+    let current: Date | null = null
+    for (const line of out.split('\n')) {
+      if (line.startsWith('@')) current = new Date(line.slice(1))
+      else if (line.startsWith('content/') && current) {
+        const key = line.slice('content/'.length)
+        if (!_gitDates.has(key)) _gitDates.set(key, current)   // log is newest-first
+      }
+    }
   } catch {}
-  return fs.statSync(filePath).mtime
+  return _gitDates
+}
+
+export function getArticleLastModified(category: string, slug: string): Date {
+  return gitDates().get(`${category}/${slug}.md`) ?? fs.statSync(path.join(contentDir, category, `${slug}.md`)).mtime
 }
 
 export function getAdjacentArticles(category: string, slug: string): {

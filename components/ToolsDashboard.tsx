@@ -87,19 +87,7 @@ export default function ToolsDashboard({ tools }: { tools: Tool[] }) {
                       href={tool.href}
                       className="relative group flex flex-col gap-3 p-5 bg-gray-900 border border-gray-800 rounded-xl hover:border-green-700 hover:bg-gray-800/50 shadow-sm hover:shadow-md transition-all"
                     >
-                      {/* Status Badge */}
-                      {tool.status && (
-                        <div className={`absolute top-4 right-4 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border flex items-center gap-1 ${
-                          tool.status === 'Nuevo' ? 'bg-purple-900/30 text-purple-300 border-purple-800/50' :
-                          tool.status === 'Beta' ? 'bg-blue-900/30 text-blue-300 border-blue-800/50' :
-                          'bg-gray-800/60 text-green-400 border-gray-700'
-                        }`}>
-                          {tool.status === 'Nuevo' ? '🆕 ' : tool.status === 'Beta' ? '🟡 ' : '🟢 '}
-                          {tool.status}
-                        </div>
-                      )}
-
-                      <div className="flex items-center gap-3 mb-1">
+                      <div className="flex items-start gap-3 mb-1">
                         <div className="w-10 h-10 rounded-lg bg-gray-800 border border-gray-700 group-hover:border-green-800 flex items-center justify-center transition-colors shrink-0">
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -115,7 +103,16 @@ export default function ToolsDashboard({ tools }: { tools: Tool[] }) {
                             <path d={tool.iconPath} />
                           </svg>
                         </div>
-                        <h2 className="font-semibold text-gray-100 group-hover:text-white text-base pr-12">{tool.label}</h2>
+                        <h2 className="font-semibold text-gray-100 group-hover:text-white text-base flex-1 min-w-0 self-center">{tool.label}</h2>
+                        {tool.status && (
+                          <span className={`shrink-0 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border ${
+                            tool.status === 'Nuevo' ? 'bg-purple-900/30 text-purple-300 border-purple-800/50' :
+                            tool.status === 'Beta' ? 'bg-amber-900/30 text-amber-300 border-amber-800/50' :
+                            'bg-gray-800/60 text-green-400 border-gray-700'
+                          }`}>
+                            {tool.status}
+                          </span>
+                        )}
                       </div>
                       
                       <p className="text-gray-500 text-sm leading-relaxed flex-1">{tool.description}</p>

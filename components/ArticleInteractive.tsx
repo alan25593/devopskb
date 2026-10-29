@@ -4,9 +4,9 @@
 
 import { useState, useEffect } from 'react'
 
-function ClipboardIcon() {
+function ClipboardIcon({ size = 14 }: { size?: number }) {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+    <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24"
       fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <rect x="9" y="2" width="13" height="13" rx="2" ry="2" />
       <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
@@ -14,9 +14,9 @@ function ClipboardIcon() {
   )
 }
 
-function CheckIcon() {
+function CheckIcon({ size = 14 }: { size?: number }) {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+    <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24"
       fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
       <polyline points="20 6 9 17 4 12" />
     </svg>
@@ -54,10 +54,11 @@ export function CopyButton({ text, variant }: { text: string; variant: 'block' |
     <button
       onClick={handleClick}
       title="Copiar"
-      className="opacity-0 group-hover/code:opacity-100 transition-opacity
-        inline-flex items-center align-middle ml-1 text-slate-500 hover:text-cyan-400 shrink-0"
+      // Floats over the chip's corner so it takes no room in the text flow
+      className="absolute -top-2.5 -right-2.5 z-10 hidden group-hover/code:flex items-center justify-center
+        w-5 h-5 rounded bg-slate-800 border border-slate-600 text-slate-400 hover:text-cyan-400 hover:border-cyan-600 shadow"
     >
-      {copied ? <CheckIcon /> : <ClipboardIcon />}
+      {copied ? <CheckIcon size={11} /> : <ClipboardIcon size={11} />}
     </button>
   )
 }
