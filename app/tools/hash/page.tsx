@@ -5,8 +5,9 @@ import ToolSchema from '@/components/ToolSchema'
 import LearnMore from '@/components/LearnMore'
 import { getToolArticles } from '@/lib/content'
 import type { Metadata } from 'next'
+import { SHARE_IMAGE } from '@/lib/seo'
 
-const TITLE = 'Hash & Base64 Toolkit | WiresOps'
+const TITLE = 'Hash & Base64 Toolkit'
 const DESCRIPTION = 'Generá Hashes locales y codificá en Base64/URL. Todo ocurre en el navegador sin enviar datos a servidores.'
 const PATH = '/tools/hash/'
 
@@ -17,13 +18,15 @@ export const metadata: Metadata = {
     canonical: PATH,
   },
   openGraph: {
+    images: [SHARE_IMAGE],
     title: TITLE,
     description: DESCRIPTION,
     url: PATH,
     type: 'website',
   },
   twitter: {
-    card: 'summary',
+    images: [SHARE_IMAGE],
+    card: 'summary_large_image',
     title: TITLE,
     description: DESCRIPTION,
   },

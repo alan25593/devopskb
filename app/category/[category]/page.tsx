@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
+import { SHARE_IMAGE } from '@/lib/seo'
 import { CATEGORIES, groupByTrack } from '@/lib/categories'
 import { getAllArticles } from '@/lib/content'
 import Sidebar from '@/components/Sidebar'
@@ -28,8 +29,8 @@ export function generateMetadata({ params }: Props): Metadata {
     description: cat.description,
     keywords: [cat.label, `${cat.label} guía`, `${cat.label} troubleshooting`, 'DevOps', 'SRE'],
     alternates: { canonical: canonicalUrl },
-    openGraph: { title, description: cat.description, type: 'website', url: canonicalUrl },
-    twitter: { card: 'summary', title, description: cat.description },
+    openGraph: { images: [SHARE_IMAGE], title, description: cat.description, type: 'website', url: canonicalUrl },
+    twitter: { card: 'summary_large_image', images: [SHARE_IMAGE], title, description: cat.description },
   }
 }
 

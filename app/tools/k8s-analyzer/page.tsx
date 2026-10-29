@@ -5,8 +5,9 @@ import ToolSchema from '@/components/ToolSchema'
 import LearnMore from '@/components/LearnMore'
 import { getToolArticles } from '@/lib/content'
 import type { Metadata } from 'next'
+import { SHARE_IMAGE } from '@/lib/seo'
 
-const TITLE = 'Kubernetes Manifest Analyzer | WiresOps'
+const TITLE = 'Kubernetes Manifest Analyzer'
 const DESCRIPTION = 'Linter de seguridad y buenas prácticas para manifiestos de Kubernetes.'
 const PATH = '/tools/k8s-analyzer/'
 
@@ -17,13 +18,15 @@ export const metadata: Metadata = {
     canonical: PATH,
   },
   openGraph: {
+    images: [SHARE_IMAGE],
     title: TITLE,
     description: DESCRIPTION,
     url: PATH,
     type: 'website',
   },
   twitter: {
-    card: 'summary',
+    images: [SHARE_IMAGE],
+    card: 'summary_large_image',
     title: TITLE,
     description: DESCRIPTION,
   },

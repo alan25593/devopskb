@@ -5,8 +5,9 @@ import ToolSchema from '@/components/ToolSchema'
 import LearnMore from '@/components/LearnMore'
 import { getToolArticles } from '@/lib/content'
 import type { Metadata } from 'next'
+import { SHARE_IMAGE } from '@/lib/seo'
 
-const TITLE = 'NetworkPolicy Visualizer | WiresOps'
+const TITLE = 'NetworkPolicy Visualizer'
 const DESCRIPTION = 'Convertí NetworkPolicies de Kubernetes en diagramas visuales interactivos para entender los flujos de tráfico.'
 const PATH = '/tools/netpol/'
 
@@ -17,13 +18,15 @@ export const metadata: Metadata = {
     canonical: PATH,
   },
   openGraph: {
+    images: [SHARE_IMAGE],
     title: TITLE,
     description: DESCRIPTION,
     url: PATH,
     type: 'website',
   },
   twitter: {
-    card: 'summary',
+    images: [SHARE_IMAGE],
+    card: 'summary_large_image',
     title: TITLE,
     description: DESCRIPTION,
   },

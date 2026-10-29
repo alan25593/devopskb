@@ -5,8 +5,9 @@ import ToolSchema from '@/components/ToolSchema'
 import LearnMore from '@/components/LearnMore'
 import { getToolArticles } from '@/lib/content'
 import type { Metadata } from 'next'
+import { SHARE_IMAGE } from '@/lib/seo'
 
-const TITLE = 'RBAC Viewer | WiresOps'
+const TITLE = 'RBAC Viewer'
 const DESCRIPTION = 'Inspeccioná RoleBindings y Roles para generar una matriz visual de permisos en Kubernetes.'
 const PATH = '/tools/rbac/'
 
@@ -17,13 +18,15 @@ export const metadata: Metadata = {
     canonical: PATH,
   },
   openGraph: {
+    images: [SHARE_IMAGE],
     title: TITLE,
     description: DESCRIPTION,
     url: PATH,
     type: 'website',
   },
   twitter: {
-    card: 'summary',
+    images: [SHARE_IMAGE],
+    card: 'summary_large_image',
     title: TITLE,
     description: DESCRIPTION,
   },

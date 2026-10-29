@@ -5,8 +5,9 @@ import ToolSchema from '@/components/ToolSchema'
 import LearnMore from '@/components/LearnMore'
 import { getToolArticles } from '@/lib/content'
 import type { Metadata } from 'next'
+import { SHARE_IMAGE } from '@/lib/seo'
 
-const TITLE = 'YAML Validator | WiresOps'
+const TITLE = 'YAML Validator'
 const DESCRIPTION = 'Validador y formateador de YAML para Kubernetes, Docker Compose y GitHub Actions. Detecta errores de indentación con línea y columna exactas.'
 const PATH = '/tools/yaml/'
 
@@ -17,13 +18,15 @@ export const metadata: Metadata = {
     canonical: PATH,
   },
   openGraph: {
+    images: [SHARE_IMAGE],
     title: TITLE,
     description: DESCRIPTION,
     url: PATH,
     type: 'website',
   },
   twitter: {
-    card: 'summary',
+    images: [SHARE_IMAGE],
+    card: 'summary_large_image',
     title: TITLE,
     description: DESCRIPTION,
   },

@@ -3,6 +3,7 @@ import { getCategoryLabel } from '@/lib/categories'
 import ArticleView from '@/components/ArticleView'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
+import { SHARE_IMAGE } from '@/lib/seo'
 
 export function generateStaticParams() {
   return getAllStaticParams()
@@ -12,23 +13,31 @@ interface Props {
   params: { category: string; slug: string }
 }
 
+// Meta descriptions over ~160 chars get cut by search engines: cut at a word boundary ourselves
+function clampDescription(text: string, max = 160): string {
+  if (text.length <= max) return text
+  return text.slice(0, max - 1).replace(/\s+\S*$/, '').replace(/[,;:.\s—-]+$/, '') + '…'
+}
+
 export function generateMetadata({ params }: Props): Metadata {
   const article = getArticle(params.category, params.slug)
   if (!article) return {}
 
   const categoryLabel = getCategoryLabel(params.category)
   const keywords = [...new Set([...article.keywords, ...article.tags, categoryLabel, 'DevOps', 'SRE'])]
-  const description = article.description || `Guía de ${article.title} — DevOps KB`
+  const description = clampDescription(article.description || `Guía de ${article.title} — DevOps KB`)
   const canonicalUrl = `/article/${params.category}/${params.slug}/`
 
   return {
-    title: article.title,
+    // Search results cut titles around 60 chars: drop the site suffix rather than the article's words
+    title: `${article.title} | DevOps KB`.length > 60 ? { absolute: article.title } : article.title,
     description,
     keywords,
     alternates: {
       canonical: canonicalUrl,
     },
     openGraph: {
+      images: [SHARE_IMAGE],
       title: article.title,
       description,
       type: 'article',
@@ -36,7 +45,8 @@ export function generateMetadata({ params }: Props): Metadata {
       tags: article.tags,
     },
     twitter: {
-      card: 'summary',
+      images: [SHARE_IMAGE],
+      card: 'summary_large_image',
       title: article.title,
       description,
     },

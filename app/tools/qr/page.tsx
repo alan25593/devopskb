@@ -3,8 +3,9 @@ import Sidebar from '@/components/Sidebar'
 import QRGenerator from '@/components/tools/QRGenerator'
 import ToolSchema from '@/components/ToolSchema'
 import type { Metadata } from 'next'
+import { SHARE_IMAGE } from '@/lib/seo'
 
-const TITLE = 'QR Code Generator | WiresOps'
+const TITLE = 'QR Code Generator'
 const DESCRIPTION = 'Generador de códigos QR gratuito. Crea códigos QR personalizados con colores y sin fondo. Descargá en PNG o SVG.'
 const PATH = '/tools/qr/'
 
@@ -15,13 +16,15 @@ export const metadata: Metadata = {
     canonical: PATH,
   },
   openGraph: {
+    images: [SHARE_IMAGE],
     title: TITLE,
     description: DESCRIPTION,
     url: PATH,
     type: 'website',
   },
   twitter: {
-    card: 'summary',
+    images: [SHARE_IMAGE],
+    card: 'summary_large_image',
     title: TITLE,
     description: DESCRIPTION,
   },
