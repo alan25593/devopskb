@@ -1,4 +1,4 @@
-import { siDocker, siGit, siKubernetes, siLinux, siTerraform } from 'simple-icons'
+import { siDocker, siGit, siJenkins, siKubernetes, siLinux, siTerraform } from 'simple-icons'
 
 export interface Category {
   id: string
@@ -13,6 +13,7 @@ const siWindowsPath = 'M0 0h11.5v11.5H0V0zm12.5 0H24v11.5H12.5V0zM0 12.5h11.5V24
 export const CATEGORIES: Category[] = [
   { id: 'docker',     label: 'Docker',     hex: siDocker.hex,     svgPath: siDocker.path     },
   { id: 'git',        label: 'Git',        hex: siGit.hex,        svgPath: siGit.path        },
+  { id: 'jenkins',    label: 'Jenkins',    hex: siJenkins.hex,    svgPath: siJenkins.path    },
   { id: 'kubernetes', label: 'Kubernetes', hex: siKubernetes.hex, svgPath: siKubernetes.path },
   { id: 'linux',      label: 'Linux',      hex: siLinux.hex,      svgPath: siLinux.path      },
   { id: 'terraform',  label: 'Terraform',  hex: siTerraform.hex,  svgPath: siTerraform.path  },

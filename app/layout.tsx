@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     default: 'DevOps KB - Snippets de Docker, Kubernetes, Linux y más',
     template: '%s | DevOps KB',
   },
-  description: 'Base de conocimiento DevOps — Docker, Kubernetes, Terraform, Linux, Git y Windows. Snippets listos para copiar.',
+  description: 'Base de conocimiento DevOps — Docker, Kubernetes, Jenkins, Terraform, Linux, Git y Windows. Snippets listos para copiar.',
   manifest: '/site.webmanifest',
   icons: {
     apple: [
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     site: '@wiresops',
     title: 'DevOps KB - Snippets de Docker, Kubernetes, Linux y más',
-    description: 'Base de conocimiento DevOps — Docker, Kubernetes, Terraform, Linux, Git y Windows.',
+    description: 'Base de conocimiento DevOps — Docker, Kubernetes, Jenkins, Terraform, Linux, Git y Windows.',
     images: [`${BASE_URL}/og-image.jpg`],
   },
   robots: {
@@ -64,7 +64,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               "@type": "WebSite",
               "name": "DevOps KB",
               "url": BASE_URL,
-              "description": "Base de conocimiento DevOps — Docker, Kubernetes, Terraform, Linux, Git y Windows. Snippets listos para copiar."
+              "description": "Base de conocimiento DevOps — Docker, Kubernetes, Jenkins, Terraform, Linux, Git y Windows. Snippets listos para copiar."
             })
           }}
         />

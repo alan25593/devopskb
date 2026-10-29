@@ -164,7 +164,7 @@ function TableOfContents({ headings, className = "hidden xl:block w-64 shrink-0 
 }
 
 const CATEGORY_LABELS: Record<string, string> = {
-  docker: 'Docker', git: 'Git', kubernetes: 'Kubernetes',
+  docker: 'Docker', git: 'Git', jenkins: 'Jenkins', kubernetes: 'Kubernetes',
   linux: 'Linux', terraform: 'Terraform', windows: 'Windows',
 }
 

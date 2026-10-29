@@ -1,6 +1,6 @@
 # DevOps KB
 
-Base de conocimiento técnica para equipos DevOps. Búsqueda rápida y offline de comandos, guías de troubleshooting y patrones de arquitectura para Docker, Kubernetes, Git y Terraform.
+Base de conocimiento técnica para equipos DevOps. Búsqueda rápida y offline de comandos, guías de troubleshooting y patrones de arquitectura para Docker, Kubernetes, Jenkins, Git y Terraform.
 
 Funciona 100% offline — sin base de datos, sin backend, sin dependencias externas en runtime.
 
@@ -24,6 +24,7 @@ Funciona 100% offline — sin base de datos, sin backend, sin dependencias exter
 | Windows | 19 |
 | Linux | 17 |
 | Clarive | 14 |
+| Jenkins | 13 |
 | Terraform | 14 |
 | Docker | 12 |
 | Git | 11 |

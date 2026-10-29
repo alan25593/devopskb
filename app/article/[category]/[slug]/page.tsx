@@ -45,7 +45,7 @@ export function generateMetadata({ params }: Props): Metadata {
 const BASE_URL = 'https://kb.wiresops.com'
 
 const CATEGORY_LABELS: Record<string, string> = {
-  docker: 'Docker', git: 'Git', kubernetes: 'Kubernetes',
+  docker: 'Docker', git: 'Git', jenkins: 'Jenkins', kubernetes: 'Kubernetes',
   linux: 'Linux', terraform: 'Terraform', windows: 'Windows',
 }
 
