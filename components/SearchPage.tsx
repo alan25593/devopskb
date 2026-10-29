@@ -82,13 +82,10 @@ export default function SearchPage({ articles }: SearchPageProps) {
 
   return (
     <div className="flex h-dvh overflow-hidden bg-slate-950">
-      <Sidebar
-        activeCategory={activeCategory}
-        onCategoryChange={handleCategoryChange}
-        mode="filter"
-      />
+      {/* Same navigation as every other page: categories open their page; filtering lives in the result chips */}
+      <Sidebar mode="link" activeCategory={null} />
 
-      <main className="flex-1 overflow-auto relative">
+      <main id="main-content" tabIndex={-1} className="flex-1 overflow-auto relative">
         <div className={`mx-auto transition-all duration-300 ${isFiltering ? 'pt-14 px-4 pb-6 md:p-6 max-w-3xl' : 'pt-16 md:pt-24 px-4 pb-12 max-w-5xl'}`}>
 
           {!isFiltering && (
@@ -214,7 +211,7 @@ export default function SearchPage({ articles }: SearchPageProps) {
                   return (
                     <button
                       key={cat.id}
-                      onClick={() => setActiveCategory(isActive ? null : cat.id)}
+                      onClick={() => handleCategoryChange(isActive ? null : cat.id)}
                       className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${
                         isActive
                           ? 'bg-cyan-900/30 border-cyan-700/50 text-cyan-300'
@@ -230,7 +227,7 @@ export default function SearchPage({ articles }: SearchPageProps) {
                 })}
                 {activeCategory && (
                   <button
-                    onClick={() => setActiveCategory(null)}
+                    onClick={() => handleCategoryChange(null)}
                     className="px-3 py-1.5 rounded-full text-xs border border-slate-800 text-slate-500 hover:text-slate-300 hover:border-slate-700 transition-colors"
                   >
                     × limpiar

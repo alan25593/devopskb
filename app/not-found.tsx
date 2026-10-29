@@ -15,7 +15,7 @@ export default function NotFound() {
     <div className="flex h-dvh overflow-hidden">
       <Sidebar mode="link" activeCategory={null} />
 
-      <main id="main-content" className="flex-1 overflow-auto">
+      <main id="main-content" tabIndex={-1} className="flex-1 overflow-auto">
         <div className="pt-16 md:pt-24 px-4 pb-12 max-w-3xl mx-auto">
           <p className="font-mono text-sm text-cyan-400 mb-3">404</p>
           <h1 className="text-3xl md:text-4xl font-bold text-slate-100 mb-4">Esta página no existe</h1>

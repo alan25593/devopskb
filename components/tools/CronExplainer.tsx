@@ -197,7 +197,7 @@ export default function CronExplainer() {
               className="text-xs text-gray-600 hover:text-green-400 border border-gray-800 hover:border-green-800 rounded px-2 py-1 transition-colors"
             >
               <span className="font-mono">{expr}</span>
-              <span className="text-gray-700 ml-1.5">— {label}</span>
+              <span className="text-gray-600 ml-1.5">— {label}</span>
             </button>
           ))}
         </div>
@@ -232,7 +232,7 @@ export default function CronExplainer() {
               <ol className="space-y-1.5">
                 {nextRuns.map((d, i) => (
                   <li key={i} className="flex items-center gap-3">
-                    <span className="text-xs text-gray-700 w-4 text-right shrink-0">{i + 1}.</span>
+                    <span className="text-xs text-gray-600 w-4 text-right shrink-0">{i + 1}.</span>
                     <span className="font-mono text-sm text-gray-200">{formatDate(d)}</span>
                   </li>
                 ))}

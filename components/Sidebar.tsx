@@ -328,7 +328,7 @@ export default function Sidebar({ activeCategory, activeSlug, activeToolSlug, on
               href="https://github.com/alan25593/devopskb"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-xs text-slate-700 hover:text-cyan-400 transition-colors"
+              className="text-xs text-slate-600 hover:text-cyan-400 transition-colors"
             >100% local · sin internet ↗</a>
             <p className="text-xs text-slate-600">
               Creado por <a

@@ -65,7 +65,7 @@ function CopyValue({ value }: { value: string }) {
     <button
       onClick={copy}
       title="Copiar"
-      className="ml-2 text-gray-700 hover:text-green-400 transition-colors opacity-0 group-hover:opacity-100"
+      className="ml-2 text-gray-600 hover:text-green-400 transition-colors opacity-0 group-hover:opacity-100"
     >
       {copied
         ? <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>

@@ -125,7 +125,7 @@ export default function HashToolkit() {
       <div className="bg-gray-900 border border-gray-800 rounded-lg p-4 relative group flex flex-col h-full">
         <h3 className="text-xs text-gray-500 uppercase font-medium mb-2">{label}</h3>
         <div className={`font-mono text-xs break-all flex-1 ${isError ? 'text-gray-600 italic' : 'text-gray-200'}`}>
-          {value || <span className="text-gray-700 italic">Esperando entrada...</span>}
+          {value || <span className="text-gray-600 italic">Esperando entrada...</span>}
         </div>
         {value && !isError && (
           <button 

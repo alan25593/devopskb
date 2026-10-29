@@ -84,7 +84,7 @@ export default function CategoryPage({ params }: Props) {
           mode="link"
         />
 
-        <main className="flex-1 overflow-auto">
+        <main id="main-content" tabIndex={-1} className="flex-1 overflow-auto">
           <div className="pt-14 px-4 pb-10 md:p-6 max-w-4xl mx-auto">
             <nav aria-label="Ruta de navegación" className="mb-6">
               <ol className="flex items-center gap-1.5 text-sm text-slate-600">

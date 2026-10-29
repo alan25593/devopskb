@@ -277,7 +277,7 @@ export default function YamlValidator() {
       </div>
 
       {result.valid && (
-        <p className="text-xs text-gray-700 mt-2">
+        <p className="text-xs text-gray-600 mt-2">
           Formatear re-indenta con 2 espacios y elimina comentarios.
         </p>
       )}

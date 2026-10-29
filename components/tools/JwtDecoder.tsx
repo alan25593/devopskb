@@ -174,7 +174,7 @@ export default function JwtDecoder() {
 
           <Section title="Signature">
             <span className="font-mono text-xs text-gray-500 break-all">{result.signature}</span>
-            <p className="text-xs text-gray-700 mt-2">La firma no se puede verificar sin la clave secreta.</p>
+            <p className="text-xs text-gray-600 mt-2">La firma no se puede verificar sin la clave secreta.</p>
           </Section>
         </>
       )}

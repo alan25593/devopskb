@@ -37,17 +37,34 @@ export function slugify(text: string): string {
     .replace(/-+/g, '-')
 }
 
+// Heading ids unique within a page: repeated titles ("Crear un usuario") get -2, -3...
+// The article renderer and the TOC must create one each and feed it headings in document order.
+export function createSlugger(): (text: string) => string {
+  const seen = new Map<string, number>()
+  return text => {
+    const base = slugify(text) || 'seccion'
+    const n = (seen.get(base) ?? 0) + 1
+    seen.set(base, n)
+    return n === 1 ? base : `${base}-${n}`
+  }
+}
+
+// Plain text of a markdown heading, as the rendered heading shows it
+function headingText(markdown: string): string {
+  return markdown.replace(/\[([^\]]*)\]\([^)]*\)/g, '$1').replace(/[*_`]/g, '').trim()
+}
+
 function extractHeadings(content: string): Heading[] {
   const headings: Heading[] = []
-  // Matches ## or ### at the start of a line
-  const regex = /^(#{2,3})\s+(.+)$/gm
-  let match
-  while ((match = regex.exec(content)) !== null) {
-    headings.push({
-      level: match[1].length,
-      text: match[2].trim(),
-      id: slugify(match[2].trim())
-    })
+  const slug = createSlugger()
+  // Fenced code can hold lines starting with "#" (shell comments) that are not headings
+  const prose = content.replace(/^(`{3,}|~{3,})[^\n]*\n[\s\S]*?^\1[^\n]*$/gm, '')
+  // Every rendered heading level consumes an id, but the TOC lists only levels 2-3 (h1 renders as h2)
+  for (const match of prose.matchAll(/^(#{1,4})\s+(.+)$/gm)) {
+    const text = headingText(match[2])
+    const id = slug(text)
+    const level = Math.max(2, match[1].length)
+    if (level <= 3) headings.push({ level, text, id })
   }
   return headings
 }

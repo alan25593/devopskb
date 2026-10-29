@@ -35,7 +35,7 @@ export default function ToolsPage() {
     <div className="flex h-dvh overflow-hidden">
       <Sidebar mode="link" activeCategory={null} activeToolSlug="tools" />
 
-      <main className="flex-1 overflow-auto">
+      <main id="main-content" tabIndex={-1} className="flex-1 overflow-auto">
         <div className="pt-14 px-4 pb-12 md:p-8 max-w-5xl mx-auto">
 
           <nav aria-label="Ruta de navegación" className="mb-6">

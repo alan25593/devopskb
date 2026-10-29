@@ -40,7 +40,7 @@ export default function NetpolPage() {
       <Sidebar mode="link" activeCategory={null} activeToolSlug="netpol" />
       <ToolSchema name="NetworkPolicy Visualizer" description={DESCRIPTION} url={PATH} />
 
-      <main className="flex-1 overflow-auto">
+      <main id="main-content" tabIndex={-1} className="flex-1 overflow-auto">
         <div className="pt-14 px-4 pb-6 md:p-6 max-w-7xl mx-auto">
           <nav aria-label="Ruta de navegación" className="mb-6">
             <ol className="flex items-center gap-1.5 text-sm text-gray-600 flex-wrap">

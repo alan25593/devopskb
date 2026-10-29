@@ -2,7 +2,7 @@ import Link from 'next/link'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
-import { slugify } from '@/lib/content'
+import { createSlugger } from '@/lib/content'
 import type { Article, Heading as HeadingType, RelatedArticle } from '@/lib/content'
 import { getCategoryLabel } from '@/lib/categories'
 import type { Tool } from '@/lib/tools'
@@ -57,9 +57,10 @@ function Callout({ children }: { children: React.ReactNode }) {
   )
 }
 
-function Heading({ level, children }: { level: number; children: React.ReactNode }) {
+function Heading({ level, slug, children }: { level: number; slug: (text: string) => string; children: React.ReactNode }) {
   const text = extractText(children)
-  const id = slugify(text)
+  // Rendered in document order, so ids match the ones extractHeadings gave the TOC
+  const id = slug(text)
   const Tag = `h${level}` as keyof JSX.IntrinsicElements
   return (
     <Tag id={id} className="group/heading relative scroll-mt-20">
@@ -127,6 +128,7 @@ interface Props {
 
 export default function ArticleView({ article, prev, next, categoryArticles, related = [], tools = [] }: Props) {
   const categoryLabel = getCategoryLabel(article.category)
+  const slug = createSlugger()
 
   return (
     <div className="flex h-dvh overflow-hidden">
@@ -137,7 +139,7 @@ export default function ArticleView({ article, prev, next, categoryArticles, rel
         mode="link"
       />
 
-      <main id="article-main" className="flex-1 overflow-auto">
+      <main id="main-content" tabIndex={-1} className="flex-1 overflow-auto">
         <div className="pt-14 px-4 pb-6 md:p-6 max-w-[1200px] mx-auto flex flex-col xl:flex-row xl:items-start gap-8">
           
           <div className="flex-1 max-w-3xl xl:w-full">
@@ -210,10 +212,10 @@ export default function ArticleView({ article, prev, next, categoryArticles, rel
                     // The code renderer below draws its own frame: drop markdown's <pre> wrapper
                     pre: ({ children }) => <>{children}</>,
                     blockquote: ({ children }) => <Callout>{children}</Callout>,
-                    h1: ({ children }) => <Heading level={2}>{children}</Heading>,
-                    h2: ({ children }) => <Heading level={2}>{children}</Heading>,
-                    h3: ({ children }) => <Heading level={3}>{children}</Heading>,
-                    h4: ({ children }) => <Heading level={4}>{children}</Heading>,
+                    h1: ({ children }) => <Heading level={2} slug={slug}>{children}</Heading>,
+                    h2: ({ children }) => <Heading level={2} slug={slug}>{children}</Heading>,
+                    h3: ({ children }) => <Heading level={3} slug={slug}>{children}</Heading>,
+                    h4: ({ children }) => <Heading level={4} slug={slug}>{children}</Heading>,
                     table: ({ children }) => <div className="overflow-x-auto my-6 border border-slate-800 rounded-lg"><table className="w-full text-left m-0">{children}</table></div>,
                     code(props) {
                       const { children, className, node, ...rest } = props
@@ -319,7 +321,7 @@ export default function ArticleView({ article, prev, next, categoryArticles, rel
         </div>
       </main>
 
-      <ScrollToTop targetId="article-main" />
+      <ScrollToTop targetId="main-content" />
     </div>
   )
 }
