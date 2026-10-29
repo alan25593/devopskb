@@ -3,16 +3,11 @@
 import { useState, useEffect, useRef, useMemo } from 'react'
 import Link from 'next/link'
 import type { SearchArticle } from '@/lib/content'
+import { buildIndex, search, queryWords, normalize } from '@/lib/search'
 import { CATEGORIES } from '@/lib/categories'
 import { TOOLS, groupTools } from '@/lib/tools'
 import Sidebar from './Sidebar'
 import CategoryTag from './CategoryTag'
-
-// FlexSearch types are loose — cast to any where needed
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const _flexsearch = require('flexsearch')
-// webpack may resolve the ESM bundle (default export) or CJS bundle (named exports)
-const FlexDocument = _flexsearch.Document ?? _flexsearch.default?.Document
 
 interface SearchPageProps {
   articles: SearchArticle[]
@@ -23,13 +18,21 @@ export default function SearchPage({ articles }: SearchPageProps) {
   const [activeCategory, setActiveCategory] = useState<string | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
-  // Sync category from URL query param on mount
+  // Restore category and query from the URL (?cat=, ?q=) so searches can be shared
   useEffect(() => {
-    const cat = new URLSearchParams(window.location.search).get('cat')
-    if (cat) {
-      setActiveCategory(cat)
-    }
+    const params = new URLSearchParams(window.location.search)
+    const cat = params.get('cat')
+    const q = params.get('q')
+    if (cat) setActiveCategory(cat)
+    if (q) setQuery(q)
   }, [])
+
+  useEffect(() => {
+    const url = new URL(window.location.href)
+    if (query.trim()) url.searchParams.set('q', query.trim())
+    else url.searchParams.delete('q')
+    window.history.replaceState({}, '', url.pathname + url.search)
+  }, [query])
 
   const handleCategoryChange = (cat: string | null) => {
     setActiveCategory(cat)
@@ -44,19 +47,6 @@ export default function SearchPage({ articles }: SearchPageProps) {
     }
   }
 
-  useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-        e.preventDefault()
-        inputRef.current?.focus()
-        inputRef.current?.select()
-      }
-    }
-    window.addEventListener('keydown', handler)
-    return () => window.removeEventListener('keydown', handler)
-  }, [])
-
-  // Build FlexSearch Document index once from metadata only (no full content)
   // Newest first, max 2 per category: a single commit often updates a whole category at once
   const latest = useMemo(() => {
     const perCategory: Record<string, number> = {}
@@ -66,92 +56,26 @@ export default function SearchPage({ articles }: SearchPageProps) {
       .slice(0, 6)
   }, [articles])
 
-  const index = useMemo(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const idx = new FlexDocument({
-      document: {
-        id: 'id',
-        index: [
-          { field: 'keywords',    tokenize: 'forward', resolution: 9 },
-          { field: 'tags',        tokenize: 'forward', resolution: 8 },
-          { field: 'title',       tokenize: 'forward', resolution: 8 },
-          { field: 'category',    tokenize: 'forward', resolution: 7 },
-          { field: 'description', tokenize: 'forward', resolution: 5 },
-        ],
-      },
-    })
+  const index = useMemo(() => buildIndex(articles), [articles])
 
-    articles.forEach((article, i) => {
-      idx.add({
-        id: i,
-        title: article.title,
-        category: article.category,
-        tags: article.tags.join(' '),
-        keywords: article.keywords.join(' '),
-        description: article.description,
-      })
-    })
-
-    return idx
-  }, [articles])
-
-  // Tools are few: plain accent-insensitive substring match on every word is enough
+  // Tools are few: every query word must appear in the tool's text
   const matchingTools = useMemo(() => {
-    const norm = (s: string) => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
-    const words = norm(query.trim()).split(/\s+/).filter(w => w.length >= 2)
+    const words = queryWords(query)
     if (words.length === 0 || activeCategory) return []
     return TOOLS.filter(t => {
-      const haystack = norm(`${t.id} ${t.label} ${t.description} ${t.group}`)
+      const haystack = normalize(`${t.id} ${t.label} ${t.description} ${t.group}`)
       return words.every(w => haystack.includes(w))
     })
   }, [query, activeCategory])
 
   const { results, isFuzzy } = useMemo(() => {
-    let filtered = articles
-    let fuzzy = false
-
-    const trimmed = query.trim()
-    if (trimmed.length > 0) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const searchWord = (word: string, opts: any) => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const raw: any[] = index.search(word, opts)
-        const ids = new Set<number>()
-        raw.forEach((f: { result: number[] }) => f.result.forEach(id => ids.add(id)))
-        return ids
-      }
-
-      const words = trimmed.split(/\s+/).filter(w => w.length >= 2)
-      if (words.length === 0) {
-        filtered = articles
-      } else {
-        // Primary: AND logic — each word must appear (prefix match)
-        let matchIds: Set<number> | null = null
-        for (const word of words) {
-          const ids = searchWord(word, { limit: articles.length })
-          matchIds = matchIds === null ? ids : new Set([...matchIds].filter((id: number) => ids.has(id)))
-        }
-
-        if (!matchIds || matchIds.size === 0) {
-          // Fallback: OR logic with FlexSearch suggest — any word match
-          fuzzy = true
-          const allIds = new Set<number>()
-          for (const word of words) {
-            searchWord(word, { limit: articles.length, suggest: true })
-              .forEach(id => allIds.add(id))
-          }
-          filtered = Array.from(allIds).map(id => articles[id]).filter(Boolean)
-        } else {
-          filtered = Array.from(matchIds).map(id => articles[id]).filter(Boolean)
-        }
-      }
+    if (!query.trim()) {
+      const all = activeCategory ? articles.filter(a => a.category === activeCategory) : articles
+      return { results: all, isFuzzy: false }
     }
-
-    if (activeCategory) {
-      filtered = filtered.filter(a => a.category === activeCategory)
-    }
-
-    return { results: filtered, isFuzzy: fuzzy }
+    const { hits, partial } = search(index, query, articles.length)
+    const found = hits.map(h => h.doc).filter(a => !activeCategory || a.category === activeCategory)
+    return { results: found, isFuzzy: partial }
   }, [query, activeCategory, articles, index])
 
   const isFiltering = query.length > 0 || activeCategory !== null

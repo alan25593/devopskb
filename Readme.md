@@ -9,7 +9,7 @@ Funciona 100% offline — sin base de datos, sin backend, sin dependencias exter
 ## Características
 
 - **Búsqueda en lenguaje natural** — busca "frenar un contenedor" y encuentra `docker compose stop`
-- **Offline-first** — todo el índice corre en el navegador (FlexSearch), sin requests externos
+- **Offline-first** — la búsqueda corre en el navegador con un motor propio (sin tildes, tolerante a typos, ordenada por relevancia), sin requests externos
 - **Atajo de teclado** — `Ctrl+K` para abrir la búsqueda desde cualquier vista
 - **Copy-to-clipboard** — un clic para copiar cualquier bloque de código
 - **Navegación prev/next** — entre artículos de la misma categoría
@@ -37,7 +37,7 @@ Funciona 100% offline — sin base de datos, sin backend, sin dependencias exter
 |------|-----------|
 | Framework | Next.js 14 (App Router, static export) |
 | UI | React 18 + Tailwind CSS 3 |
-| Búsqueda | FlexSearch 0.7 (client-side) |
+| Búsqueda | Motor propio en `lib/search.ts` (client-side) |
 | Markdown | gray-matter + react-markdown + remark-gfm |
 | Iconos | simple-icons |
 | Lenguaje | TypeScript 5 |
@@ -122,7 +122,7 @@ knowdb/
 │   └── article/[category]/[slug]/
 │       └── page.tsx                     # Vista de artículo individual
 ├── components/
-│   ├── SearchPage.tsx                   # UI de búsqueda + FlexSearch
+│   ├── SearchPage.tsx                   # UI de búsqueda (motor en lib/search.ts)
 │   ├── ArticleView.tsx                  # Renderizado markdown
 │   ├── Sidebar.tsx                      # Navegación lateral
 │   └── CategoryTag.tsx                  # Badge de categoría

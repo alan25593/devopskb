@@ -2,7 +2,7 @@
 title: "Pipelines Declarativos vs Scripted: Sintaxis, Stages y Control de Flujo"
 category: "jenkins"
 tags: ["pipeline", "declarative", "scripted", "groovy", "parallel", "stash"]
-keywords: ["jenkinsfile declarativo", "jenkinsfile scripted", "diferencia declarative scripted", "pipeline block", "node block", "stage jenkins", "parallel jenkins", "stash unstash", "timeout jenkins", "catchError", "when expression", "options jenkins", "triggers cron jenkins", "disableConcurrentBuilds", "buildDiscarder", "currentBuild description", "returnStdout"]
+keywords: ["jenkinsfile declarativo", "pipeline paralelo", "stages en paralelo", "jenkinsfile scripted", "diferencia declarative scripted", "pipeline block", "node block", "stage jenkins", "parallel jenkins", "stash unstash", "timeout jenkins", "catchError", "when expression", "options jenkins", "triggers cron jenkins", "disableConcurrentBuilds", "buildDiscarder", "currentBuild description", "returnStdout"]
 description: "Comparación práctica entre pipelines declarativos y scripted en Jenkins: estructura, options, triggers, when, parallel, stash/unstash entre nodos, timeouts, manejo de errores y metadatos del build."
 ---
 

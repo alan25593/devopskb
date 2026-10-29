@@ -1,15 +1,19 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { Command } from 'cmdk'
 import { useRouter } from 'next/navigation'
 import { TOOLS } from '@/lib/tools'
 import { CATEGORIES } from '@/lib/categories'
 import type { SearchArticle } from '@/lib/content'
+import { buildIndex, search, queryWords, normalize } from '@/lib/search'
+
+const MAX_ARTICLES = 8
 
 export default function CommandPalette() {
   const [open, setOpen] = useState(false)
   const [articles, setArticles] = useState<SearchArticle[]>([])
+  const [query, setQuery] = useState('')
   const router = useRouter()
 
   useEffect(() => {
@@ -17,6 +21,8 @@ export default function CommandPalette() {
       if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
         e.preventDefault()
         setOpen((open) => !open)
+      } else if (e.key === 'Escape') {
+        setOpen(false)
       }
     }
 
@@ -26,12 +32,23 @@ export default function CommandPalette() {
 
   useEffect(() => {
     if (open && articles.length === 0) {
-      fetch('/api/search')
+      fetch('/search.json')
         .then(res => res.json())
         .then(data => setArticles(data))
         .catch(console.error)
     }
   }, [open, articles.length])
+
+  useEffect(() => { if (!open) setQuery('') }, [open])
+
+  // cmdk's built-in filter only sees item labels: we rank with the shared search engine instead
+  const index = useMemo(() => buildIndex(articles), [articles])
+  const words = queryWords(query)
+  const articleHits = useMemo(() => (query.trim() ? search(index, query, 50).hits.map(h => h.doc) : []), [index, query])
+  const tools = words.length === 0 ? TOOLS : TOOLS.filter(t =>
+    words.every(w => normalize(`${t.id} ${t.label} ${t.description} ${t.group}`).includes(w)))
+  const categories = words.length === 0 ? CATEGORIES : CATEGORIES.filter(c =>
+    words.some(w => normalize(`${c.id} ${c.label}`).includes(w)))
 
   const runCommand = (command: () => void) => {
     setOpen(false)
@@ -44,14 +61,16 @@ export default function CommandPalette() {
     <div className="fixed inset-0 z-[100] flex items-start justify-center pt-[15vh] sm:pt-[20vh]">
       <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setOpen(false)} />
       <div className="relative w-full max-w-2xl bg-gray-900 border border-gray-700 rounded-xl shadow-2xl overflow-hidden mx-4">
-        <Command label="Global Command Menu" loop className="w-full">
+        <Command label="Global Command Menu" loop shouldFilter={false} className="w-full">
           <div className="flex items-center px-4 border-b border-gray-800">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-500 mr-2">
               <circle cx="11" cy="11" r="8"></circle>
               <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
             </svg>
-            <Command.Input 
+            <Command.Input
               autoFocus
+              value={query}
+              onValueChange={setQuery}
               placeholder="Buscar herramienta, tecnología o artículo... (ej: Docker, PromQL, yaml)" 
               className="w-full bg-transparent py-4 outline-none text-gray-100 placeholder:text-gray-500 text-sm md:text-base"
             />
@@ -65,11 +84,13 @@ export default function CommandPalette() {
               No se encontraron resultados para tu búsqueda.
             </Command.Empty>
 
+            {tools.length > 0 && (
+              <>
             <Command.Group heading="Herramientas (Tools)" className="[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-2 [&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:font-semibold [&_[cmdk-group-heading]]:text-gray-500 [&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:tracking-wider">
-              {TOOLS.map((tool) => (
+              {tools.map((tool) => (
                 <Command.Item
                   key={`tool-${tool.id}`}
-                  onSelect={() => runCommand(() => router.push(tool.href))}
+                  onSelect={() => runCommand(() => router.push(`${tool.href}/`))}
                   className="flex items-center gap-3 px-3 py-2.5 mt-1 rounded-md cursor-pointer data-[selected=true]:bg-green-900/40 data-[selected=true]:text-green-300 text-gray-300 transition-colors"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="opacity-70"><path d={tool.iconPath}/></svg>
@@ -77,16 +98,18 @@ export default function CommandPalette() {
                 </Command.Item>
               ))}
             </Command.Group>
+                <div className="h-px bg-gray-800 my-2 mx-2" />
+              </>
+            )}
 
-            <div className="h-px bg-gray-800 my-2 mx-2" />
 
-            {articles.length > 0 && (
+            {articleHits.length > 0 && (
               <>
                 <Command.Group heading="Artículos (Base de Conocimiento)" className="[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-2 [&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:font-semibold [&_[cmdk-group-heading]]:text-gray-500 [&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:tracking-wider">
-                  {articles.map((article) => (
+                  {articleHits.slice(0, MAX_ARTICLES).map((article) => (
                     <Command.Item
                       key={`article-${article.category}-${article.slug}`}
-                      onSelect={() => runCommand(() => router.push(`/article/${article.category}/${article.slug}`))}
+                      onSelect={() => runCommand(() => router.push(`/article/${article.category}/${article.slug}/`))}
                       className="flex items-center gap-3 px-3 py-2.5 mt-1 rounded-md cursor-pointer data-[selected=true]:bg-green-900/40 data-[selected=true]:text-green-300 text-gray-300 transition-colors"
                     >
                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="opacity-70 text-gray-400">
@@ -102,13 +125,22 @@ export default function CommandPalette() {
                       </div>
                     </Command.Item>
                   ))}
+                  {articleHits.length > MAX_ARTICLES && (
+                    <Command.Item
+                      onSelect={() => runCommand(() => router.push(`/?q=${encodeURIComponent(query.trim())}`))}
+                      className="flex items-center gap-3 px-3 py-2.5 mt-1 rounded-md cursor-pointer data-[selected=true]:bg-green-900/40 data-[selected=true]:text-green-300 text-gray-400 transition-colors text-sm"
+                    >
+                      Ver los {articleHits.length} resultados →
+                    </Command.Item>
+                  )}
                 </Command.Group>
                 <div className="h-px bg-gray-800 my-2 mx-2" />
               </>
             )}
 
+            {categories.length > 0 && (
             <Command.Group heading="Categorías" className="[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-2 [&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:font-semibold [&_[cmdk-group-heading]]:text-gray-500 [&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:tracking-wider">
-              {CATEGORIES.map((cat) => (
+              {categories.map((cat) => (
                 <Command.Item
                   key={`cat-${cat.id}`}
                   onSelect={() => runCommand(() => router.push(`/category/${cat.id}/`))}
@@ -119,6 +151,7 @@ export default function CommandPalette() {
                 </Command.Item>
               ))}
             </Command.Group>
+            )}
           </Command.List>
         </Command>
       </div>

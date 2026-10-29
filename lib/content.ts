@@ -116,11 +116,16 @@ export function getArticle(category: string, slug: string): Article | null {
   return parseArticle(category, slug, fs.readFileSync(filePath, 'utf-8'))
 }
 
-export type SearchArticle = Omit<Article, 'content' | 'headings'> & { updated: string }
+// Search payload: metadata plus section titles (bodies are too heavy to ship to the browser)
+export type SearchArticle = Omit<Article, 'content' | 'headings' | 'readingTime'> & {
+  updated: string
+  headings: string[]
+}
 
 export function getArticlesForSearch(): SearchArticle[] {
-  return getAllArticles().map(({ content: _content, headings: _headings, ...rest }) => ({
+  return getAllArticles().map(({ content: _content, readingTime: _rt, headings, ...rest }) => ({
     ...rest,
+    headings: headings.map(h => h.text),
     updated: getArticleLastModified(rest.category, rest.slug).toISOString(),
   }))
 }
