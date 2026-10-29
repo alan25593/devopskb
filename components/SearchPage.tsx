@@ -209,16 +209,16 @@ export default function SearchPage({ articles }: SearchPageProps) {
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
                   {CATEGORIES.map(cat => (
-                    <button
+                    <Link
                       key={cat.id}
-                      onClick={() => setActiveCategory(cat.id)}
+                      href={`/category/${cat.id}/`}
                       className="group flex flex-col items-center justify-center gap-3 bg-slate-900/30 backdrop-blur-sm border border-slate-800 rounded-2xl p-5 hover:border-emerald-500/50 hover:bg-slate-800/40 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-emerald-900/10"
                     >
                       <svg role="img" viewBox="0 0 24 24" width="28" height="28" fill={`#${cat.hex}`} className="opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300">
                         <path d={cat.svgPath} />
                       </svg>
                       <span className="text-xs font-medium text-slate-300 group-hover:text-emerald-300 transition-colors">{cat.label}</span>
-                    </button>
+                    </Link>
                   ))}
                 </div>
               </section>

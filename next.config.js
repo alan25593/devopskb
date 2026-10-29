@@ -11,6 +11,7 @@ const nextConfig = {
         ...config.resolve.fallback,
         fs: false,
         path: false,
+        child_process: false,
       }
     }
     return config

@@ -198,7 +198,7 @@ export default function ArticleView({ article, prev, next, categoryArticles }: P
               <ol className="flex items-center gap-1.5 text-sm text-slate-600 flex-wrap">
                 <li><Link href="/" className="hover:text-cyan-400 transition-colors">Inicio</Link></li>
                 <li aria-hidden="true">/</li>
-                <li><Link href={`/?cat=${article.category}`} className="hover:text-cyan-400 transition-colors">{categoryLabel}</Link></li>
+                <li><Link href={`/category/${article.category}/`} className="hover:text-cyan-400 transition-colors">{categoryLabel}</Link></li>
                 <li aria-hidden="true">/</li>
                 <li className="text-slate-400 truncate max-w-[200px]" aria-current="page">{article.title}</li>
               </ol>

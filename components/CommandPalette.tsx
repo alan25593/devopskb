@@ -111,7 +111,7 @@ export default function CommandPalette() {
               {CATEGORIES.map((cat) => (
                 <Command.Item
                   key={`cat-${cat.id}`}
-                  onSelect={() => runCommand(() => router.push(`/?cat=${cat.id}`))}
+                  onSelect={() => runCommand(() => router.push(`/category/${cat.id}/`))}
                   className="flex items-center gap-3 px-3 py-2.5 mt-1 rounded-md cursor-pointer data-[selected=true]:bg-blue-900/40 data-[selected=true]:text-blue-300 text-gray-300 transition-colors"
                 >
                   <svg viewBox="0 0 24 24" width="16" height="16" fill={`#${cat.hex}`} className="opacity-80"><path d={cat.svgPath}/></svg>

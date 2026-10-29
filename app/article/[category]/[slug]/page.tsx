@@ -1,4 +1,4 @@
-import { getAllStaticParams, getArticle, getAdjacentArticles, getArticlesByCategory } from '@/lib/content'
+import { getAllStaticParams, getArticle, getAdjacentArticles, getArticlesByCategory, getArticleLastModified } from '@/lib/content'
 import { getCategoryLabel } from '@/lib/categories'
 import ArticleView from '@/components/ArticleView'
 import { notFound } from 'next/navigation'
@@ -64,6 +64,7 @@ export default function ArticlePage({ params }: Props) {
         description: article.description,
         keywords: [...article.keywords, ...article.tags].join(', '),
         url: articleUrl,
+        dateModified: getArticleLastModified(params.category, params.slug).toISOString(),
         inLanguage: 'es',
         publisher: { '@type': 'Organization', name: 'DevOps KB', url: BASE_URL },
       },
@@ -71,7 +72,7 @@ export default function ArticlePage({ params }: Props) {
         '@type': 'BreadcrumbList',
         itemListElement: [
           { '@type': 'ListItem', position: 1, name: 'Inicio', item: BASE_URL },
-          { '@type': 'ListItem', position: 2, name: categoryLabel, item: `${BASE_URL}/?cat=${params.category}` },
+          { '@type': 'ListItem', position: 2, name: categoryLabel, item: `${BASE_URL}/category/${params.category}/` },
           { '@type': 'ListItem', position: 3, name: article.title, item: articleUrl },
         ],
       },

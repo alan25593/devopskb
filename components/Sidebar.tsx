@@ -119,7 +119,7 @@ export default function Sidebar({ activeCategory, activeSlug, activeToolSlug, on
         if (mode === 'link') {
           return (
             <div key={cat.id}>
-              <Link href={`/?cat=${cat.id}`} className={commonClass} onClick={close} title={cat.label}>
+              <Link href={`/category/${cat.id}/`} className={commonClass} onClick={close} title={cat.label}>
                 <BrandIcon hex={cat.hex} svgPath={cat.svgPath} label={cat.label} size={isCollapsed ? 18 : 15} />
                 {!isCollapsed && <span>{cat.label}</span>}
               </Link>

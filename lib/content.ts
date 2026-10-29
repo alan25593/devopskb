@@ -1,4 +1,5 @@
 import fs from 'fs'
+import { execFileSync } from 'child_process'
 import path from 'path'
 import matter from 'gray-matter'
 
@@ -129,6 +130,16 @@ export function getArticlesByCategory(category: string): Pick<Article, 'slug' | 
   return getAllArticles()
     .filter(a => a.category === category)
     .map(({ slug, category: cat, title }) => ({ slug, category: cat, title }))
+}
+
+// Last commit date of the article file; falls back to mtime when git is unavailable (e.g. Docker build without .git)
+export function getArticleLastModified(category: string, slug: string): Date {
+  const filePath = path.join(contentDir, category, `${slug}.md`)
+  try {
+    const iso = execFileSync('git', ['log', '-1', '--format=%cI', '--', filePath], { encoding: 'utf-8', stdio: ['ignore', 'pipe', 'ignore'] }).trim()
+    if (iso) return new Date(iso)
+  } catch {}
+  return fs.statSync(filePath).mtime
 }
 
 export function getAdjacentArticles(category: string, slug: string): {
