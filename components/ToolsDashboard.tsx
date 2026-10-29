@@ -61,7 +61,8 @@ export default function ToolsDashboard({ tools }: { tools: Tool[] }) {
                 <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-5 border-b border-gray-800 pb-2 flex items-center gap-2">
                   {groupName} <span className="bg-gray-800 text-gray-500 text-[10px] px-1.5 py-0.5 rounded">{groupItems.length}</span>
                 </h2>
-                <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                {/* Column count follows the group size so no card is left alone on the last row */}
+                <div className={`grid gap-5 sm:grid-cols-2 ${groupItems.length % 3 === 0 ? 'lg:grid-cols-3' : ''}`}>
                   {groupItems.map(tool => (
                     <Link
                       key={tool.id}
@@ -84,7 +85,7 @@ export default function ToolsDashboard({ tools }: { tools: Tool[] }) {
                             <path d={tool.iconPath} />
                           </svg>
                         </div>
-                        <h2 className="font-semibold text-gray-100 group-hover:text-white text-base flex-1 min-w-0 self-center">{tool.label}</h2>
+                        <h2 className="font-semibold text-gray-100 group-hover:text-white text-base flex-1 min-w-0 break-words self-center">{tool.label}</h2>
                         {tool.status && (
                           <span className={`shrink-0 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border ${
                             tool.status === 'Nuevo' ? 'bg-purple-900/30 text-purple-300 border-purple-800/50' :

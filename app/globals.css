@@ -48,8 +48,9 @@ body {
   content: none;
 }
 
-/* Typography adds quote marks to blockquotes: our blockquotes are notes, not citations */
-.prose blockquote p:first-of-type::before,
-.prose blockquote p:last-of-type::after {
-  content: none;
-}
+/* Callouts (markdown blockquotes) render outside typography: restyle their inline content */
+.callout-body strong { color: #e2e8f0; font-weight: 600; }
+.callout-body a { color: #22d3ee; text-decoration: underline; text-underline-offset: 2px; }
+.callout-body ul, .callout-body ol { padding-left: 1.25rem; }
+.callout-body ul { list-style: disc; }
+.callout-body ol { list-style: decimal; }

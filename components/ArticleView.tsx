@@ -21,6 +21,43 @@ function extractText(node: React.ReactNode): string {
   return ''
 }
 
+// Blockquotes in the KB are notes, not citations: pick a tone from how they start
+const CALLOUTS = {
+  warning: {
+    match: /^(ojo|importante|nunca|cuidado|atenci[oó]n|advertencia|peligro|gotcha|no )/i,
+    box: 'border-amber-500/70 bg-amber-950/25',
+    icon: 'text-amber-400',
+    path: 'M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0zM12 9v4M12 17h.01',
+  },
+  tip: {
+    match: /^(truco|consejo|tip|regla|buena pr[aá]ctica)/i,
+    box: 'border-emerald-500/70 bg-emerald-950/25',
+    icon: 'text-emerald-400',
+    path: 'M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.74V17h8v-2.26A7 7 0 0 0 12 2z',
+  },
+  note: {
+    match: /.*/,
+    box: 'border-cyan-600/70 bg-cyan-950/20',
+    icon: 'text-cyan-400',
+    path: 'M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zM12 16v-4M12 8h.01',
+  },
+}
+
+function Callout({ children }: { children: React.ReactNode }) {
+  const text = extractText(children).trim()
+  const tone = text.match(CALLOUTS.warning.match) ? CALLOUTS.warning
+    : text.match(CALLOUTS.tip.match) ? CALLOUTS.tip
+    : CALLOUTS.note
+  return (
+    <div className={`not-prose my-6 flex gap-3 rounded-r-lg border-l-4 px-4 py-3 text-sm leading-relaxed text-slate-300 ${tone.box}`}>
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`mt-0.5 shrink-0 ${tone.icon}`} aria-hidden="true">
+        <path d={tone.path} />
+      </svg>
+      <div className="callout-body min-w-0 space-y-2">{children}</div>
+    </div>
+  )
+}
+
 function Heading({ level, children }: { level: number; children: React.ReactNode }) {
   const text = extractText(children)
   const id = slugify(text)
@@ -173,6 +210,7 @@ export default function ArticleView({ article, prev, next, categoryArticles, rel
                   components={{
                     // The code renderer below draws its own frame: drop markdown's <pre> wrapper
                     pre: ({ children }) => <>{children}</>,
+                    blockquote: ({ children }) => <Callout>{children}</Callout>,
                     h1: ({ children }) => <Heading level={2}>{children}</Heading>,
                     h2: ({ children }) => <Heading level={2}>{children}</Heading>,
                     h3: ({ children }) => <Heading level={3}>{children}</Heading>,
