@@ -1,7 +1,8 @@
 ---
 title: "Docker Rootless y User Namespaces"
-category: "Docker"
+category: "docker"
 tags: ["docker", "security", "rootless", "namespaces"]
+keywords: ["docker rootless", "userns-remap", "user namespaces docker", "docker sin root", "subuid subgid", "aislar contenedores", "seguridad daemon docker"]
 description: "Asegura tu entorno aislando contenedores con rootless y userns-remap."
 ---
 

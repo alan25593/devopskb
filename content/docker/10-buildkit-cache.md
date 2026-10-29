@@ -1,7 +1,8 @@
 ---
 title: "BuildKit Avanzado y Caché en CI/CD"
-category: "Docker"
+category: "docker"
 tags: ["docker", "buildkit", "cache", "ci-cd"]
+keywords: ["buildkit", "docker build cache", "mount type cache", "cache-from cache-to", "build secrets", "acelerar docker build", "cache ci docker", "docker buildx cache github actions"]
 description: "Optimiza tus tiempos de build con BuildKit y cachés de montaje."
 ---
 

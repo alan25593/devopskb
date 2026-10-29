@@ -1,7 +1,8 @@
 ---
 title: "Gestión de Logs y Rotación"
-category: "Docker"
+category: "docker"
 tags: ["docker", "logs", "loki", "json-file", "monitoring"]
+keywords: ["logs docker", "rotar logs docker", "max-size max-file", "json-file", "local log driver", "logs llenan disco", "loki docker driver", "promtail docker", "docker logs centralizados"]
 description: "Cómo evitar que los logs de Docker te llenen el disco y cómo enviarlos a Loki."
 ---
 

@@ -45,6 +45,8 @@ Cuando tenés `.terraform-version` en el repo, cualquier integrante que use tfen
 
 ## Terragrunt — DRY para Terraform
 
+> Guía completa con patrones reales: [Terragrunt fundamentos](/article/terraform/15-terragrunt-fundamentos/) y [_template / live](/article/terraform/16-terragrunt-template-live/).
+
 Terragrunt es un wrapper de Terraform que elimina la repetición de backends, providers y configuraciones comunes entre múltiples módulos/entornos.
 
 ### El problema que resuelve
