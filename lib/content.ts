@@ -132,6 +132,35 @@ export function getArticlesByCategory(category: string): Pick<Article, 'slug' | 
     .map(({ slug, category: cat, title }) => ({ slug, category: cat, title }))
 }
 
+export type RelatedArticle = Pick<Article, 'slug' | 'category' | 'title' | 'description'>
+
+// Ranks other articles by shared tags (weighted) and keywords; `exclude` holds "category/slug" keys already linked (prev/next)
+export function getRelatedArticles(category: string, slug: string, exclude: string[] = [], limit = 3): RelatedArticle[] {
+  const all = getAllArticles()
+  const current = all.find(a => a.category === category && a.slug === slug)
+  if (!current) return []
+
+  const norm = (xs: string[]) => new Set(xs.map(x => x.toLowerCase()))
+  const tags = norm(current.tags)
+  const keywords = norm(current.keywords)
+  tags.delete(category)
+
+  return all
+    .filter(a => !(a.category === category && a.slug === slug) && !exclude.includes(`${a.category}/${a.slug}`))
+    .map(a => {
+      const sharedTags = a.tags.filter(t => tags.has(t.toLowerCase())).length
+      const sharedKeywords = a.keywords.filter(k => keywords.has(k.toLowerCase())).length
+      const sameCategory = a.category === category
+      const score = sharedTags * 3 + sharedKeywords + (sameCategory && sharedTags + sharedKeywords > 0 ? 1 : 0)
+      // Generic tags ("basics", "config") are shared across categories: crossing over needs a stronger match
+      return { a, score: sameCategory ? score : score >= 6 ? score : 0 }
+    })
+    .filter(({ score }) => score >= 3)
+    .sort((x, y) => y.score - x.score || x.a.slug.localeCompare(y.a.slug))
+    .slice(0, limit)
+    .map(({ a: { slug, category, title, description } }) => ({ slug, category, title, description }))
+}
+
 // Last commit date of the article file; falls back to mtime when git is unavailable (e.g. Docker build without .git)
 export function getArticleLastModified(category: string, slug: string): Date {
   const filePath = path.join(contentDir, category, `${slug}.md`)

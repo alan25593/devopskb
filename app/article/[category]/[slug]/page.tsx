@@ -1,4 +1,4 @@
-import { getAllStaticParams, getArticle, getAdjacentArticles, getArticlesByCategory, getArticleLastModified } from '@/lib/content'
+import { getAllStaticParams, getArticle, getAdjacentArticles, getArticlesByCategory, getArticleLastModified, getRelatedArticles } from '@/lib/content'
 import { getCategoryLabel } from '@/lib/categories'
 import ArticleView from '@/components/ArticleView'
 import { notFound } from 'next/navigation'
@@ -51,6 +51,11 @@ export default function ArticlePage({ params }: Props) {
 
   const { prev, next } = getAdjacentArticles(params.category, params.slug)
   const categoryArticles = getArticlesByCategory(params.category)
+  const related = getRelatedArticles(
+    params.category,
+    params.slug,
+    [prev, next].filter(Boolean).map(a => `${a!.category}/${a!.slug}`)
+  )
 
   const categoryLabel = getCategoryLabel(params.category)
   const articleUrl = `${BASE_URL}/article/${params.category}/${params.slug}/`
@@ -91,6 +96,7 @@ export default function ArticlePage({ params }: Props) {
         prev={prev}
         next={next}
         categoryArticles={categoryArticles}
+        related={related}
       />
     </>
   )

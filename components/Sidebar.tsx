@@ -1,11 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { CATEGORIES } from '@/lib/categories'
+import { CATEGORIES, groupByTrack } from '@/lib/categories'
 import { TOOLS } from '@/lib/tools'
 
-const SHORT_TITLE_RE = /^(terraform|docker|kubernetes|git|linux|windows)[\s:—–-]+/i
+const SHORT_TITLE_RE = new RegExp(`^(${CATEGORIES.map(c => c.label).join('|')})[\\s:—–-]+`, 'i')
 
 function BrandIcon({ hex, svgPath, label, size = 15 }: { hex: string; svgPath: string; label: string; size?: number }) {
   return (
@@ -89,6 +89,11 @@ export default function Sidebar({ activeCategory, activeSlug, activeToolSlug, on
   const [open, setOpen] = useState(false)
   const [isCollapsed, setIsCollapsed] = useState(false)
 
+  // Long categories push the current article below the fold: bring it into view
+  useEffect(() => {
+    document.querySelector('aside [data-active-article]')?.scrollIntoView({ block: 'center' })
+  }, [activeSlug])
+
   const close = () => setOpen(false)
   const toggleCollapse = () => setIsCollapsed(!isCollapsed)
 
@@ -125,25 +130,33 @@ export default function Sidebar({ activeCategory, activeSlug, activeToolSlug, on
               </Link>
               {isActive && !isCollapsed && categoryArticles && categoryArticles.length > 0 && (
                 <div className="ml-5 mt-0.5 mb-2 border-l border-slate-800 pl-3 space-y-0.5">
-                  {categoryArticles.map(a => {
-                    const isCurrentArticle = a.slug === activeSlug
-                    const shortTitle = a.title.replace(SHORT_TITLE_RE, '')
-                    return (
-                      <Link
-                        key={a.slug}
-                        href={`/article/${a.category}/${a.slug}/`}
-                        onClick={close}
-                        title={a.title}
-                        className={`block text-xs py-1 px-2 rounded truncate transition-colors ${
-                          isCurrentArticle
-                            ? 'text-cyan-400 bg-cyan-900/20 font-medium'
-                            : 'text-slate-600 hover:text-slate-200 hover:bg-slate-800/60'
-                        }`}
-                      >
-                        {shortTitle}
-                      </Link>
-                    )
-                  })}
+                  {groupByTrack(cat.id, categoryArticles).map(group => (
+                    <div key={group.label ?? 'all'}>
+                      {group.label && (
+                        <p className="text-[10px] uppercase tracking-wider text-slate-500 font-semibold px-2 pt-2 pb-1">{group.label}</p>
+                      )}
+                      {group.items.map(a => {
+                        const isCurrentArticle = a.slug === activeSlug
+                        const shortTitle = a.title.replace(SHORT_TITLE_RE, '')
+                        return (
+                          <Link
+                            key={a.slug}
+                            href={`/article/${a.category}/${a.slug}/`}
+                            onClick={close}
+                            title={a.title}
+                            data-active-article={isCurrentArticle || undefined}
+                            className={`block text-xs py-1 px-2 rounded truncate transition-colors ${
+                              isCurrentArticle
+                                ? 'text-cyan-400 bg-cyan-900/20 font-medium'
+                                : 'text-slate-600 hover:text-slate-200 hover:bg-slate-800/60'
+                            }`}
+                          >
+                            {shortTitle}
+                          </Link>
+                        )
+                      })}
+                    </div>
+                  ))}
                 </div>
               )}
             </div>

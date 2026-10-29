@@ -1,10 +1,20 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import mermaid from 'mermaid'
 
-// Inicializar Mermaid con tema oscuro y alto contraste para DevOps KB
-mermaid.initialize({
+// Mermaid pesa ~1 MB: se descarga solo en páginas que tienen un diagrama, y se inicializa una vez
+let mermaidPromise: Promise<typeof import('mermaid').default> | null = null
+
+function loadMermaid() {
+  mermaidPromise ??= import('mermaid').then(({ default: mermaid }) => {
+    mermaid.initialize(MERMAID_CONFIG)
+    return mermaid
+  })
+  return mermaidPromise
+}
+
+// Tema oscuro y alto contraste para DevOps KB
+const MERMAID_CONFIG: Parameters<typeof import('mermaid').default.initialize>[0] = {
   startOnLoad: false,
   theme: 'base',
   securityLevel: 'loose',
@@ -42,7 +52,7 @@ mermaid.initialize({
     fontFamily: 'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
     fontSize: '13px'
   }
-})
+}
 
 export default function MermaidDiagram({ chart }: { chart: string }) {
   const ref = useRef<HTMLDivElement>(null)
@@ -55,6 +65,7 @@ export default function MermaidDiagram({ chart }: { chart: string }) {
     const renderDiagram = async () => {
       try {
         const id = `mermaid-svg-${Math.round(Math.random() * 1000000)}`
+        const mermaid = await loadMermaid()
         const { svg: renderedSvg } = await mermaid.render(id, chart)
         if (isMounted) {
           setSvg(renderedSvg)

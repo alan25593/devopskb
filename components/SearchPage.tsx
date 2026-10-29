@@ -207,7 +207,7 @@ export default function SearchPage({ articles }: SearchPageProps) {
                   </h2>
                   <span className="text-xs text-slate-500">{articles.length} artículos</span>
                 </div>
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-4 xl:grid-cols-8 gap-3 md:gap-4">
                   {CATEGORIES.map(cat => (
                     <Link
                       key={cat.id}
@@ -218,6 +218,7 @@ export default function SearchPage({ articles }: SearchPageProps) {
                         <path d={cat.svgPath} />
                       </svg>
                       <span className="text-xs font-medium text-slate-300 group-hover:text-emerald-300 transition-colors">{cat.label}</span>
+                      <span className="text-[10px] text-slate-500 -mt-2">{articles.filter(a => a.category === cat.id).length} artículos</span>
                     </Link>
                   ))}
                 </div>

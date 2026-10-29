@@ -1,17 +1,15 @@
-'use client'
-
-import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism'
 import { slugify } from '@/lib/content'
-import type { Article, Heading as HeadingType } from '@/lib/content'
+import type { Article, Heading as HeadingType, RelatedArticle } from '@/lib/content'
 import { getCategoryLabel } from '@/lib/categories'
 import Sidebar from './Sidebar'
 import CategoryTag from './CategoryTag'
 import MermaidDiagram from './MermaidDiagram'
+import { CopyButton, ScrollToTop } from './ArticleInteractive'
 
 function extractText(node: React.ReactNode): string {
   if (typeof node === 'string') return node
@@ -21,65 +19,6 @@ function extractText(node: React.ReactNode): string {
     return extractText((node as React.ReactElement).props.children)
   return ''
 }
-
-function ClipboardIcon() {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-      fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="9" y="2" width="13" height="13" rx="2" ry="2" />
-      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-    </svg>
-  )
-}
-
-function CheckIcon() {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-      fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-      <polyline points="20 6 9 17 4 12" />
-    </svg>
-  )
-}
-
-function CopyButton({ text, variant }: { text: string; variant: 'block' | 'inline' }) {
-  const [copied, setCopied] = useState(false)
-
-  const handleClick = async (e: React.MouseEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-    try {
-      await navigator.clipboard.writeText(text)
-      setCopied(true)
-      setTimeout(() => setCopied(false), 1500)
-    } catch {}
-  }
-
-  if (variant === 'block') {
-    return (
-      <button
-        onClick={handleClick}
-        title="Copiar"
-        className="absolute top-2 right-2 opacity-100 md:opacity-0 md:group-hover/code-block:opacity-100 transition-opacity
-          flex items-center gap-1 bg-slate-800 border border-slate-700 hover:border-cyan-600 hover:bg-slate-700 text-slate-300 hover:text-white
-          rounded px-2 py-1 text-xs font-mono select-none shadow-sm"
-      >
-        {copied ? <><CheckIcon /> copiado</> : <><ClipboardIcon /> copiar</>}
-      </button>
-    )
-  }
-
-  return (
-    <button
-      onClick={handleClick}
-      title="Copiar"
-      className="opacity-0 group-hover/code:opacity-100 transition-opacity
-        inline-flex items-center align-middle ml-1 text-slate-500 hover:text-cyan-400 shrink-0"
-    >
-      {copied ? <CheckIcon /> : <ClipboardIcon />}
-    </button>
-  )
-}
-
 
 function Heading({ level, children }: { level: number; children: React.ReactNode }) {
   const text = extractText(children)
@@ -96,36 +35,6 @@ function Heading({ level, children }: { level: number; children: React.ReactNode
       </a>
       {children}
     </Tag>
-  )
-}
-
-function ScrollToTop({ targetRef }: { targetRef: React.RefObject<HTMLElement | null> }) {
-  const [visible, setVisible] = useState(false)
-
-  useEffect(() => {
-    const el = targetRef.current
-    if (!el) return
-    const onScroll = () => setVisible(el.scrollTop > 250)
-    el.addEventListener('scroll', onScroll, { passive: true })
-    return () => el.removeEventListener('scroll', onScroll)
-  }, [targetRef])
-
-  const scrollUp = () => targetRef.current?.scrollTo({ top: 0, behavior: 'smooth' })
-
-  return (
-    <button
-      onClick={scrollUp}
-      title="Volver arriba"
-      className={`fixed bottom-6 right-6 z-50 bg-slate-800 border border-slate-700 hover:border-cyan-500
-        text-slate-500 hover:text-cyan-400 rounded-full p-3 shadow-lg
-        transition-all duration-200
-        ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3 pointer-events-none'}`}
-    >
-      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
-        fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-        <polyline points="18 15 12 9 6 15" />
-      </svg>
-    </button>
   )
 }
 
@@ -175,10 +84,10 @@ interface Props {
   prev?: Article | null
   next?: Article | null
   categoryArticles?: NavArticle[]
+  related?: RelatedArticle[]
 }
 
-export default function ArticleView({ article, prev, next, categoryArticles }: Props) {
-  const mainRef = useRef<HTMLElement>(null)
+export default function ArticleView({ article, prev, next, categoryArticles, related = [] }: Props) {
   const categoryLabel = getCategoryLabel(article.category)
 
   return (
@@ -190,7 +99,7 @@ export default function ArticleView({ article, prev, next, categoryArticles }: P
         mode="link"
       />
 
-      <main ref={mainRef} className="flex-1 overflow-auto">
+      <main id="article-main" className="flex-1 overflow-auto">
         <div className="pt-14 px-4 pb-6 md:p-6 max-w-[1200px] mx-auto flex flex-col xl:flex-row xl:items-start gap-8">
           
           <div className="flex-1 max-w-3xl xl:w-full">
@@ -294,8 +203,27 @@ export default function ArticleView({ article, prev, next, categoryArticles }: P
                 </ReactMarkdown>
               </div>
 
+              {related.length > 0 && (
+                <section aria-labelledby="related-heading" className="mt-16 pt-8 border-t border-slate-800/60">
+                  <h2 id="related-heading" className="text-xs font-semibold text-slate-500 tracking-wider uppercase mb-4">Artículos relacionados</h2>
+                  <div className="grid sm:grid-cols-3 gap-3">
+                    {related.map(r => (
+                      <Link
+                        key={`${r.category}/${r.slug}`}
+                        href={`/article/${r.category}/${r.slug}/`}
+                        className="group flex flex-col gap-2 p-4 rounded-xl bg-slate-900/50 border border-slate-800 hover:border-cyan-700 hover:bg-slate-800/50 transition-all"
+                      >
+                        <CategoryTag category={r.category} className="self-start" />
+                        <span className="text-sm font-medium text-slate-300 group-hover:text-cyan-400 transition-colors line-clamp-2">{r.title}</span>
+                        {r.description && <span className="text-xs text-slate-500 line-clamp-2">{r.description}</span>}
+                      </Link>
+                    ))}
+                  </div>
+                </section>
+              )}
+
               {(prev || next) && (
-                <nav aria-label="Navegación entre artículos" className="mt-16 pt-8 border-t border-slate-800/60 grid grid-cols-2 gap-4">
+                <nav aria-label="Navegación entre artículos" className={`${related.length > 0 ? 'mt-6' : 'mt-16 pt-8 border-t border-slate-800/60'} grid grid-cols-2 gap-4`}>
                   {prev ? (
                     <Link
                       href={`/article/${prev.category}/${prev.slug}/`}
@@ -324,7 +252,7 @@ export default function ArticleView({ article, prev, next, categoryArticles }: P
         </div>
       </main>
 
-      <ScrollToTop targetRef={mainRef} />
+      <ScrollToTop targetId="article-main" />
     </div>
   )
 }

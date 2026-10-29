@@ -34,6 +34,35 @@ export function getCategoryHex(id: string): string {
   return CATEGORIES.find(c => c.id === id)?.hex ?? '4ade80'
 }
 
+// Learning tracks keyed by the first digit of the slug's numeric prefix (101-..., 201-...)
+const TRACKS: Record<string, Record<string, string>> = {
+  kubernetes: {
+    '1': '100 · Fundamentos',
+    '2': '200 · Administración (CKA)',
+    '3': '300 · Aplicaciones (CKAD)',
+    '4': '400 · Seguridad (CKS)',
+  },
+}
+
+export interface ArticleGroup<T> {
+  label: string | null
+  items: T[]
+}
+
+export function groupByTrack<T extends { slug: string }>(categoryId: string, items: T[]): ArticleGroup<T>[] {
+  const tracks = TRACKS[categoryId]
+  if (!tracks) return [{ label: null, items }]
+
+  const groups: ArticleGroup<T>[] = []
+  for (const item of items) {
+    const label = tracks[/^(\d)\d\d/.exec(item.slug)?.[1] ?? ''] ?? 'Otros'
+    const last = groups[groups.length - 1]
+    if (last?.label === label) last.items.push(item)
+    else groups.push({ label, items: [item] })
+  }
+  return groups
+}
+
 export function getCategoryLabel(id: string): string {
   return CATEGORIES.find(c => c.id === id)?.label ?? id.charAt(0).toUpperCase() + id.slice(1)
 }

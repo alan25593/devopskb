@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
-import { CATEGORIES } from '@/lib/categories'
+import { CATEGORIES, groupByTrack } from '@/lib/categories'
 import { getAllArticles } from '@/lib/content'
 import Sidebar from '@/components/Sidebar'
 
@@ -106,19 +106,26 @@ export default function CategoryPage({ params }: Props) {
               </p>
             </header>
 
+            {groupByTrack(cat.id, articles.map((a, i) => ({ ...a, position: i + 1 }))).map(group => (
+            <section key={group.label ?? 'all'} className="mb-10">
+            {group.label && (
+              <h2 className="text-sm font-semibold text-slate-400 uppercase tracking-widest mb-4">
+                {group.label} <span className="text-slate-600 normal-case tracking-normal font-normal">· {group.items.length} artículos</span>
+              </h2>
+            )}
             <ol className="space-y-3">
-              {articles.map((a, i) => (
+              {group.items.map(a => (
                 <li key={a.slug}>
                   <Link
                     href={`/article/${a.category}/${a.slug}/`}
                     className="group flex gap-4 bg-slate-900/40 border border-slate-800 rounded-xl p-4 hover:border-cyan-700/50 hover:bg-slate-800/60 transition-all duration-300"
                   >
                     <span className="text-xs font-mono text-slate-600 group-hover:text-cyan-500 pt-0.5 w-6 shrink-0 text-right transition-colors">
-                      {String(i + 1).padStart(2, '0')}
+                      {String(a.position).padStart(2, '0')}
                     </span>
                     <div className="min-w-0 flex-1">
                       <div className="flex items-baseline justify-between gap-3 mb-1">
-                        <h2 className="font-medium text-slate-200 group-hover:text-cyan-300 transition-colors">{a.title}</h2>
+                        <h3 className="font-medium text-slate-200 group-hover:text-cyan-300 transition-colors">{a.title}</h3>
                         <span className="text-[11px] text-slate-500 shrink-0">{a.readingTime} min</span>
                       </div>
                       {a.description && (
@@ -129,6 +136,8 @@ export default function CategoryPage({ params }: Props) {
                 </li>
               ))}
             </ol>
+            </section>
+            ))}
           </div>
         </main>
       </div>
