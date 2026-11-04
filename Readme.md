@@ -26,6 +26,7 @@ Funciona 100% offline — sin base de datos, sin backend, sin dependencias exter
 | Windows | 19 |
 | Linux | 17 |
 | Clarive | 14 |
+| GitLab | 17 |
 | Jenkins | 13 |
 | Git | 11 |
 

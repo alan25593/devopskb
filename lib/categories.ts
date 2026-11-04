@@ -1,4 +1,4 @@
-import { siDocker, siGit, siJenkins, siKubernetes, siLinux, siTerraform } from 'simple-icons'
+import { siDocker, siGit, siGitlab, siJenkins, siKubernetes, siLinux, siTerraform } from 'simple-icons'
 
 export interface Category {
   id: string
@@ -16,6 +16,8 @@ export const CATEGORIES: Category[] = [
     description: 'Imágenes, Dockerfile, Compose, redes, volúmenes, daemon.json, Traefik, monitoreo, registry privado y troubleshooting de contenedores en producción.' },
   { id: 'git',        label: 'Git',        hex: siGit.hex,        svgPath: siGit.path,
     description: 'Git del día a día a avanzado: ramas y fusión, remotos, hooks, tags y releases, LFS, commits firmados, worktrees, submódulos y GitOps.' },
+  { id: 'gitlab',     label: 'GitLab',     hex: siGitlab.hex,     svgPath: siGitlab.path,
+    description: 'GitLab CI/CD desde cero tomando Jenkins como referencia: .gitlab-ci.yml, rules, runners, variables y secretos, components, environments, registry, self-managed y migración.' },
   { id: 'jenkins',    label: 'Jenkins',    hex: siJenkins.hex,    svgPath: siJenkins.path,
     description: 'Pipelines declarativos y scripted, Shared Libraries, agentes, credenciales, Artifactory y SonarQube, orquestación de despliegues, backup/DRP y troubleshooting.' },
   { id: 'kubernetes', label: 'Kubernetes', hex: siKubernetes.hex, svgPath: siKubernetes.path,

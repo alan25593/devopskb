@@ -113,7 +113,7 @@ export const TOOLS: Tool[] = [
     group: 'Seguridad & Crypto',
     badges: ['Browser Only', 'Offline'],
     status: 'Stable',
-    articles: ['kubernetes/119-usuarios-y-autenticacion', 'jenkins/05-credenciales-y-secretos', 'linux/07-seguridad-y-hardening'],
+    articles: ['kubernetes/119-usuarios-y-autenticacion', 'jenkins/05-credenciales-y-secretos', 'linux/07-seguridad-y-hardening', 'gitlab/05-variables-y-secretos'],
   },
   {
     id: 'hash',
@@ -146,7 +146,7 @@ export const TOOLS: Tool[] = [
     group: 'Data & Dev',
     badges: ['Browser Only', 'Offline'],
     status: 'Stable',
-    articles: ['docker/03-compose', 'kubernetes/104-conceptos', 'kubernetes/114-secrets-y-configmaps'],
+    articles: ['docker/03-compose', 'kubernetes/104-conceptos', 'kubernetes/114-secrets-y-configmaps', 'gitlab/03-gitlab-ci-yml-basico'],
   },
   {
     id: 'json',
@@ -191,7 +191,7 @@ export const TOOLS: Tool[] = [
     group: 'Utilidades',
     badges: ['Offline', 'Browser Only'],
     status: 'Stable',
-    articles: ['linux/17-cron-clasico', 'kubernetes/109-jobs-y-cronjobs', 'windows/14-tareas-programadas', 'jenkins/02-pipelines-declarativos-y-scripted'],
+    articles: ['linux/17-cron-clasico', 'kubernetes/109-jobs-y-cronjobs', 'windows/14-tareas-programadas', 'jenkins/02-pipelines-declarativos-y-scripted', 'gitlab/09-pipelines-avanzados'],
   },
   {
     id: 'timestamp',
