@@ -80,6 +80,9 @@ run.doStop()                // equivalente al botón X
 
 // Deshabilitar todos los jobs de un folder
 Jenkins.instance.getItemByFullName('Automation').getAllJobs().each { it.setDisabled(true) }
+
+// Migración masiva de repositorios Git (SSH a HTTPS) en Pipelines y Freestyle
+// Guía completa con script y dry-run: /article/jenkins/14-migrar-repos-ssh-a-https/
 ```
 
 ---
