@@ -171,7 +171,6 @@ export const TOOLS: Tool[] = [
     articles: ['linux/03-procesamiento-de-texto', 'linux/04-shell-scripting'],
   },
   {
-
     id: 'promql',
     label: 'PromQL Builder',
     description: 'Construí consultas PromQL complejas de forma visual paso a paso sin pelear con la sintaxis.',
@@ -221,6 +220,17 @@ export const TOOLS: Tool[] = [
     description: 'Generá códigos QR vectoriales al instante, sin enviar datos. Personalizá colores, sacá el fondo y descargalos como PNG o SVG.',
     href: '/tools/qr',
     iconPath: 'M3 3h6v6H3zM15 3h6v6h-6zM3 15h6v6H3zM15 15h1.5v1.5H15zM18.5 15H21v1.5h-2.5zM15 18.5h1.5V21H15zM18.5 18.5H21V21h-2.5z',
+    group: 'Utilidades',
+    badges: ['Offline', 'Browser Only', 'Instantáneo'],
+    status: 'Nuevo',
+    articles: [],
+  },
+  {
+    id: 'color',
+    label: 'Color Picker & Converter',
+    description: 'Selector y conversor de colores: HEX, RGB, RGBA, HSL, HSV, CMYK y Tailwind. Incluye paletas de WiresOps, marcas cloud y contraste WCAG.',
+    href: '/tools/color',
+    iconPath: 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10c1.02 0 2-.83 2-1.85 0-.48-.19-.92-.5-1.25-.32-.34-.5-.78-.5-1.26 0-1.02.83-1.85 1.85-1.85H17c2.76 0 5-2.24 5-5 0-4.97-4.48-9-10-9zM6.5 11.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm3-3c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm5 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm3 3c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z',
     group: 'Utilidades',
     badges: ['Offline', 'Browser Only', 'Instantáneo'],
     status: 'Nuevo',
