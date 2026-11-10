@@ -176,6 +176,38 @@ El script de arriba solo migra el **SCM del job**, es decir, de dónde baja su p
 | **Pipelines inline** (*Pipeline script* en vez de *from SCM*) | `git url: 'ssh://...', credentialsId: '...'` dentro de `<script>` en el `config.xml` | Falla el checkout |
 | **Jenkinsfiles del repo** | `checkout([... userRemoteConfigs: [[url: 'ssh://...']]])`, `git url:` y variables `REPO_X = "ssh://..."` | Fallan los checkouts dentro del pipeline |
 
+### El caso que se escapa: submódulos
+
+El `.gitmodules` vive en los repos de los desarrolladores, no en Jenkins ni en el repo de pipelines, así que ningún relevamiento sobre Jenkins lo encuentra. Si dice `url = git@bitbucket.org:mi-workspace/core.git`, después de migrar el clon principal a HTTPS el submódulo sigue yendo por SSH y falla:
+
+```
+fatal: clone of 'git@bitbucket.org:mi-workspace/core.git' into submodule path '.../core' failed
+git@bitbucket.org: Permission denied (publickey).
+```
+
+No hace falta tocar los repos de los devs: antes del checkout, un `insteadOf` en el agente reescribe la URL a HTTPS, y `SubmoduleOption(parentCredentials: true)` le pasa al submódulo la credencial del padre. Funciona con git viejo (2.25) y en agentes efímeros:
+
+```groovy
+// vars/gitHttpsSubmodules.groovy
+def call() {
+    String k = 'url.https://bitbucket.org/mi-workspace/.insteadOf'
+    if (isUnix()) {
+        sh "git config --global --unset-all ${k} || true; git config --global --add ${k} git@bitbucket.org:mi-workspace/; git config --global --add ${k} ssh://git@bitbucket.org/mi-workspace/"
+    } else {
+        bat "@echo off
+git config --global --unset-all ${k}
+git config --global --add ${k} git@bitbucket.org:mi-workspace/
+git config --global --add ${k} ssh://git@bitbucket.org/mi-workspace/
+exit /b 0"
+    }
+}
+// en el pipeline, dentro del node y antes del checkout:
+gitHttpsSubmodules()
+checkout([$class: 'GitSCM', ..., extensions: [[$class: 'SubmoduleOption', parentCredentials: true, recursiveSubmodules: true]]])
+```
+
+Conviene limitarlo al workspace propio (`mi-workspace/`), para no reescribir repos de otros workspaces que todavía usen SSH a propósito.
+
 ### 1. Relevar todo antes de tocar nada
 
 Este script es de solo lectura: recorre el `config.xml` de cada item (sin las ramas de las multibranch, que heredan del padre) y la config de librerías globales.
