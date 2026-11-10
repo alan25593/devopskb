@@ -37,10 +37,10 @@ Es muy común necesitar migrar reglas, vistas o configuraciones entre diferentes
 
 Guardar (exportar) una regla a un módulo del profile:
 ```bash
-cla FormosaSave -c formosadev --profile FormosaCM_N202508_19_Alan_rule --include rules --json_query '{"id":{"$in":["406","339","346"]}}' > /opt/clarive/features/profiles/lib/Clarive/Profile/FormosaCM_N202508_19_Alan_rule.pm
+cla MiSave -c mi-config --profile MiProfile_rules --include rules --json_query '{"id":{"$in":["406","339","346"]}}' > /opt/clarive/features/profiles/lib/Clarive/Profile/MiProfile_rules.pm
 ```
 
 Importar (cargar) una regla desde el entorno REPL de Perl:
 ```perl
-repl -e 'use Clarive::FormosaScrumLoader; Clarive::FormosaScrumLoader->module_loader("FormosaCM_N202508_19_Alan_category")'
+repl -e 'use Clarive::MiScrumLoader; Clarive::MiScrumLoader->module_loader("MiProfile_category")'
 ```

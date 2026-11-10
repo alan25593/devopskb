@@ -23,7 +23,7 @@ Ningún secreto vive en el Jenkinsfile, en `resources/` ni en scripts versionado
 withCredentials([
     usernamePassword(credentialsId: 'db-admin', usernameVariable: 'DB_USER', passwordVariable: 'DB_PASS'),
     string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN'),
-    sshUserPrivateKey(credentialsId: 'devopsSSH', keyFileVariable: 'SSH_KEY', usernameVariable: 'SSH_USER'),
+    sshUserPrivateKey(credentialsId: 'git-ssh-key', keyFileVariable: 'SSH_KEY', usernameVariable: 'SSH_USER'),
     file(credentialsId: 'kubeconfig-qa', variable: 'KUBECONFIG')
 ]) {
     sh 'sqlplus -s "$DB_USER/$DB_PASS@ORCL" @script.sql'   // comillas simples: Groovy NO interpola

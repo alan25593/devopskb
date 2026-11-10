@@ -213,7 +213,7 @@ env.SHOULD_DEPLOY = changed ? 'true' : 'false'
 ```
 
 - Los builds fallidos/abortados no cuentan como estado → el próximo reintenta.
-- `git ls-remote` necesita la clave SSH: envolver en `sshagent(['devopsSSH'])` o `withCredentials(sshUserPrivateKey(...))`.
+- `git ls-remote` necesita la clave SSH: envolver en `sshagent(['git-ssh-key'])` o `withCredentials(sshUserPrivateKey(...))`.
 - `disableConcurrentBuilds()` evita dos autodeploys solapados.
 
 ---

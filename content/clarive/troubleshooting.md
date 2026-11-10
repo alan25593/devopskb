@@ -41,11 +41,11 @@ db.sem.updateOne(
 ### 2. Reiniciar Cola del Daemon
 Si el daemon se traba o necesita un reinicio limpio:
 
-1. Detener el dispatcher: `cla disp-stop -c formosadev;`
-2. Verificar procesos vivos: `cla ps -c formosadev;`
+1. Detener el dispatcher: `cla disp-stop -c mi-config;`
+2. Verificar procesos vivos: `cla ps -c mi-config;`
 3. Si el daemon sigue colgado, matarlo desde el SO: `kill <PID>`
-4. Iniciar servicio del daemon: `cla service.event.daemon -c formosadev -d`
-5. Iniciar dispatcher: `cla disp-start -c formosadev --daemon -d`
+4. Iniciar servicio del daemon: `cla service.event.daemon -c mi-config -d`
+5. Iniciar dispatcher: `cla disp-start -c mi-config --daemon -d`
 
 ## Limpiar Objetos Bloqueados en MongoDB
 

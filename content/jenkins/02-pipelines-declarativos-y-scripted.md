@@ -49,7 +49,7 @@ pipeline {
     }
 
     environment {
-        CREDENTIALS_ID = 'devopsSSH'
+        CREDENTIALS_ID = 'git-ssh-key'
     }
 
     stages {
